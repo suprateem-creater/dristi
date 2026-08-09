@@ -1,0 +1,210 @@
+@import "tailwindcss";
+
+:root {
+  --rose-gold: #C9A08A;
+  --blush: #E8B4B8;
+  --deep-blush: #D4838A;
+  --cream: #FDFBF7;
+  --warm-white: #FFF8F0;
+  --charcoal: #3D3D3D;
+  --soft-charcoal: #5A5A5A;
+  --gold: #D4A853;
+  --light-gold: #F0D080;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+body {
+  background-color: var(--cream);
+  color: var(--charcoal);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  text-align: center;
+}
+
+.font-serif {
+  font-family: 'Playfair Display', serif;
+}
+
+.font-script {
+  font-family: 'Dancing Script', cursive;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--cream);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--blush);
+  border-radius: 3px;
+}
+
+/* Canvas overlay */
+#heart-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(-3deg); }
+  50% { transform: translateY(-20px) rotate(3deg); }
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14% { transform: scale(1.15); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.1); }
+  70% { transform: scale(1); }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(201, 160, 138, 0.4); }
+  50% { box-shadow: 0 0 40px rgba(201, 160, 138, 0.8), 0 0 80px rgba(201, 160, 138, 0.3); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes typewriter {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes confetti-fall {
+  0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+@keyframes orbit {
+  from { transform: rotate(0deg) translateX(60px) rotate(0deg); }
+  to { transform: rotate(360deg) translateX(60px) rotate(-360deg); }
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(2); opacity: 0; }
+}
+
+@keyframes vinyl-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes waveform {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}
+
+@keyframes float-card {
+  0%, 100% { transform: translateY(0px) rotate(var(--rotation, 0deg)); }
+  50% { transform: translateY(-12px) rotate(var(--rotation, 0deg)); }
+}
+
+@keyframes candle-flicker {
+  0%, 100% { transform: scaleY(1) scaleX(1); opacity: 1; }
+  25% { transform: scaleY(1.1) scaleX(0.9); opacity: 0.9; }
+  75% { transform: scaleY(0.9) scaleX(1.1); opacity: 1; }
+}
+
+/* Tilt card 3D */
+.tilt-card {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.card-inner.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 16px;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+}
+
+/* Polaroid */
+.polaroid {
+  background: white;
+  padding: 12px 12px 40px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  cursor: grab;
+  user-select: none;
+}
+
+.polaroid:active {
+  cursor: grabbing;
+}
+
+/* Glassmorphism */
+.glass {
+  background: rgba(253, 251, 247, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.5);
+}
+
+/* Timeline line */
+.timeline-line {
+  background: linear-gradient(to bottom, transparent, var(--blush), var(--rose-gold), var(--blush), transparent);
+}
+
+/* Glowing heart */
+.glowing-heart {
+  filter: drop-shadow(0 0 10px rgba(212, 131, 138, 0.8)) drop-shadow(0 0 20px rgba(212, 131, 138, 0.4));
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
