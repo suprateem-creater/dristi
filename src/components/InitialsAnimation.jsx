@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
-import { couple } from '../coupleData';
+import { useCouple } from '../CoupleContext';
 
 export default function InitialsAnimation() {
+  const { couple } = useCouple();
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const springX = useSpring(mouseX, { stiffness: 150, damping: 20 });

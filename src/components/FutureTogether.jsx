@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { couple } from '../coupleData';
+import { useCouple } from '../CoupleContext';
 
 export default function FutureTogether() {
+  const { couple } = useCouple();
   const [expanded, setExpanded] = useState(null);
 
   return (

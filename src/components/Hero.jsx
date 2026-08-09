@@ -1,9 +1,10 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Countdown from './Countdown';
-import { couple } from '../coupleData';
+import { useCouple } from '../CoupleContext';
 
 export default function Hero() {
+  const { couple } = useCouple();
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
   const y = useTransform(scrollYProgress, [0, 1], [0, 200]);

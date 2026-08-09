@@ -21,11 +21,20 @@ import RandomLoveMessage from './components/RandomLoveMessage';
 import KissButton      from './components/KissButton';
 import AnniversaryCake from './components/AnniversaryCake';
 import ForeverSection  from './components/ForeverSection';
+import FloatingNav     from './components/FloatingNav';
 import { couple }      from './coupleData';
 import { motion }      from 'framer-motion';
 
+import { Routes, Route, useSearchParams, Link } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from './firebase';
+import { useCouple } from './CoupleContext';
+import Editor from './Editor';
+
 /* ── Hero Section ─────────────────────────────────────────── */
 function Hero() {
+  const { couple } = useCouple();
   return (
     <section id="hero" className="hero-section">
       {/* Ambient gradient orbs */}
@@ -96,74 +105,185 @@ function Hero() {
   );
 }
 
-/* ── App ──────────────────────────────────────────────────── */
-export default function App() {
+
+/** Full-page section wrapper with smooth entrance animation on scroll */
+function SectionReveal({ children, delay = 0 }) {
+  const ref = useRef(null);
+  const revealed = useRef(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const reveal = () => {
+      if (revealed.current) return;
+      revealed.current = true;
+      if (delay > 0) {
+        setTimeout(() => el.classList.add('visible'), delay);
+      } else {
+        el.classList.add('visible');
+      }
+    };
+
+    // If already in or above the viewport on mount, reveal immediately
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight + 100) {
+      reveal();
+      return;
+    }
+
+    // Otherwise use IntersectionObserver with generous rootMargin
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          reveal();
+          observer.unobserve(el);
+        }
+      },
+      { threshold: 0, rootMargin: '0px 0px 80px 0px' }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [delay]);
+
+  return (
+    <div ref={ref} className="section-page section-reveal">
+      {children}
+    </div>
+  );
+}
+
+function MainApp() {
+  const [searchParams] = useSearchParams();
+  const { setCouple } = useCouple();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const applyConfig = (data) => {
+      if (!data) return;
+      if (data.anniversaryDate) {
+        data.anniversaryDateObj = new Date(data.anniversaryDate);
+      } else if (!data.anniversaryDateObj) {
+        data.anniversaryDateObj = new Date("2026-09-15T00:00:00");
+      }
+      if (data.timeCapsuleDate) {
+        data.timeCapsuleDate = new Date(data.timeCapsuleDate);
+      }
+
+      setCouple(prev => ({
+        ...prev,
+        ...data,
+        photos: Array.isArray(data.photos) && data.photos.filter(Boolean).length > 0 ? data.photos.filter(Boolean) : prev.photos,
+        polaroidPhotos: Array.isArray(data.polaroidPhotos) && data.polaroidPhotos.filter(p => p && p.src).length > 0 ? data.polaroidPhotos.filter(p => p && p.src) : prev.polaroidPhotos,
+        memories: Array.isArray(data.memories) && data.memories.filter(m => m && m.photo).length > 0 ? data.memories.filter(m => m && m.photo) : prev.memories,
+      }));
+      setLoading(false);
+    };
+
+    // 1. Check for 100% Free Cloud Blob (?blob=...)
+    const blobId = searchParams.get('blob');
+    if (blobId) {
+      fetch(`https://jsonblob.com/api/jsonBlob/${blobId}`)
+        .then(r => r.json())
+        .then(data => applyConfig(data))
+        .catch(err => {
+          console.error("Error loading config from cloud blob:", err);
+          setLoading(false);
+        });
+      return;
+    }
+
+    // 2. Check for Firestore id (?id=...)
+    const id = searchParams.get('id');
+    if (id) {
+      getDoc(doc(db, 'configs', id))
+        .then(snap => {
+          if (snap.exists()) {
+            applyConfig(snap.data());
+          } else {
+            setLoading(false);
+          }
+        })
+        .catch(err => {
+          console.error("Error loading config from Firestore:", err);
+          setLoading(false);
+        });
+      return;
+    }
+
+    // 3. Check for URL hash (#data=...)
+    const hash = window.location.hash;
+    const urlData = searchParams.get('data');
+    if (hash && hash.startsWith('#data=')) {
+      try {
+        const directData = JSON.parse(decodeURIComponent(hash.slice(6)));
+        applyConfig(directData);
+        return;
+      } catch (e) {
+        console.error("Error parsing hash data:", e);
+      }
+    } else if (urlData) {
+      try {
+        const directData = JSON.parse(decodeURIComponent(urlData));
+        applyConfig(directData);
+        return;
+      } catch (e) {
+        console.error("Error parsing query data:", e);
+      }
+    }
+
+    setLoading(false);
+  }, [searchParams, setCouple]);
+
+  if (loading) {
+    return <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Playfair Display', fontSize: '24px', color: '#D4838A', background: 'linear-gradient(135deg, #F8F0EA, #FDF5EF)' }}>Loading our memories...</div>;
+  }
+
   return (
     <>
-      {/* Global heart canvas — renders on top of everything */}
       <HeartCanvas />
-
+      <FloatingNav />
       <Hero />
 
-      {/* ① Reasons I Love You */}
-      <LoveReasons />
+      <SectionReveal><LoveReasons /></SectionReveal>
+      <SectionReveal delay={60}><MemoryCarousel /></SectionReveal>
+      <SectionReveal><PhotoGallery /></SectionReveal>
+      <SectionReveal delay={60}><Timeline /></SectionReveal>
+      <SectionReveal><LoveLetter /></SectionReveal>
+      <SectionReveal delay={60}><OpenWhenCards /></SectionReveal>
+      <SectionReveal><LoveMap /></SectionReveal>
+      <SectionReveal delay={60}><Constellation /></SectionReveal>
+      <SectionReveal><OurSong /></SectionReveal>
+      <SectionReveal delay={60}><LoveQuiz /></SectionReveal>
+      <SectionReveal><PolaroidWall /></SectionReveal>
+      <SectionReveal delay={60}><HeartbeatSection /></SectionReveal>
+      <SectionReveal><LoveMeter /></SectionReveal>
+      <SectionReveal delay={60}><CoupleInitials /></SectionReveal>
+      <SectionReveal><FutureDreams /></SectionReveal>
+      <SectionReveal delay={60}><TimeCapsule /></SectionReveal>
+      <SectionReveal><RandomLoveMessage /></SectionReveal>
+      <SectionReveal delay={60}><KissButton /></SectionReveal>
+      <SectionReveal><AnniversaryCake /></SectionReveal>
+      <SectionReveal><ForeverSection /></SectionReveal>
 
-      {/* ② Our Favorite Memories carousel */}
-      <MemoryCarousel />
-
-      {/* ③ Memory Vault — parallax photo gallery */}
-      <PhotoGallery />
-
-      {/* ④ Firsts Timeline */}
-      <Timeline />
-
-      {/* ⑤ Love Letter */}
-      <LoveLetter />
-
-      {/* ⑥ Open When Cards */}
-      <OpenWhenCards />
-
-      {/* ⑦ Our Love Map */}
-      <LoveMap />
-
-      {/* ⑧ Relationship Constellation */}
-      <Constellation />
-
-      {/* ⑨ Our Song */}
-      <OurSong />
-
-      {/* ⑩ Love Quiz */}
-      <LoveQuiz />
-
-      {/* ⑪ Polaroid Wall */}
-      <PolaroidWall />
-
-      {/* ⑫ Heartbeat */}
-      <HeartbeatSection />
-
-      {/* ⑬ Love Meter */}
-      <LoveMeter />
-
-      {/* ⑭ Couple Initials */}
-      <CoupleInitials />
-
-      {/* ⑮ Future Together */}
-      <FutureDreams />
-
-      {/* ⑯ Digital Time Capsule */}
-      <TimeCapsule />
-
-      {/* ⑰ Random Love Message */}
-      <RandomLoveMessage />
-
-      {/* ⑱ Kiss Button */}
-      <KissButton />
-
-      {/* ⑲ Anniversary Cake */}
-      <AnniversaryCake />
-
-      {/* ⑳ Forever Section */}
-      <ForeverSection />
+      {/* Floating Customize / Editor Button */}
+      <Link
+        to="/editor"
+        className="fixed bottom-6 right-6 z-50 bg-white/90 hover:bg-white text-[#D4838A] border border-[#D4838A]/30 px-4 py-2.5 rounded-full shadow-lg backdrop-blur-sm text-sm font-semibold flex items-center gap-2 hover:scale-105 transition active:scale-95 cursor-pointer"
+        style={{ fontFamily: 'Outfit, sans-serif' }}
+      >
+        <span>✏️ Customize Site</span>
+      </Link>
     </>
+  );
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<MainApp />} />
+      <Route path="/editor" element={<Editor />} />
+      <Route path="/edit" element={<Editor />} />
+    </Routes>
   );
 }

@@ -79,21 +79,28 @@ export default function KissButton() {
   };
 
   return (
-    <section className="py-20 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #FFF8F0, #FFE4E8)' }}>
+    <section id="kiss" className="section-wrapper text-center relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #F8EFEA 0%, #FFF5F0 50%, #FAF0EA 100%)' }}>
       <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none" style={{ zIndex: 9998 }} aria-hidden="true" />
 
-      <div className="max-w-xl mx-auto text-center relative z-10">
-        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-10">
-          <p className="text-sm uppercase tracking-widest mb-4" style={{ color: '#D4838A' }}>Just Because</p>
-          <h2 className="text-4xl md:text-5xl" style={{ fontFamily: 'Playfair Display', color: '#3D3D3D' }}>Send a Kiss</h2>
+      <div className="section-container max-w-lg">
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="section-header mb-8"
+        >
+          <span className="section-eyebrow">Just Because</span>
+          <h2 className="section-title">Send a Kiss</h2>
+          <p className="section-subtitle">Tap the giant kiss to send a virtual shower of love!</p>
         </motion.div>
 
         <motion.button
-          whileHover={{ scale: 1.08, boxShadow: '0 12px 40px rgba(212,131,138,0.45)' }}
+          type="button"
+          whileHover={{ scale: 1.1, boxShadow: '0 16px 40px rgba(244,63,94,0.4)' }}
           whileTap={{ scale: 0.9 }}
           onClick={sendKiss}
-          className="text-5xl mb-8 rounded-full w-28 h-28 flex items-center justify-center mx-auto border-none cursor-pointer"
-          style={{ background: 'linear-gradient(135deg, #FFE4E8, #D4838A)', boxShadow: '0 8px 32px rgba(212,131,138,0.3)' }}
+          className="text-6xl mb-6 rounded-full w-28 h-28 flex items-center justify-center mx-auto border-none cursor-pointer select-none bg-gradient-to-br from-rose-200 via-rose-300 to-rose-400 shadow-xl"
           aria-label="Send a kiss"
         >
           💋

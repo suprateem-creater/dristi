@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
-import { couple } from '../coupleData';
+import { useCouple } from '../CoupleContext';
 import { spawnHearts } from './HeartCanvas';
 
 export default function ForeverSection({ topRef }) {
+  const { couple } = useCouple();
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -21,6 +22,7 @@ export default function ForeverSection({ topRef }) {
 
   return (
     <section
+      id="forever"
       className="relative min-h-screen flex flex-col items-center justify-center px-4 overflow-hidden text-center"
       style={{ background: 'linear-gradient(180deg, #1A0A20 0%, #0A0A1A 40%, #1A0512 100%)' }}
       onClick={handleTap}

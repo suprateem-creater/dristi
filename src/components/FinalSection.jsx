@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
-import { couple } from '../coupleData';
+import { useCouple } from '../CoupleContext';
 import { spawnHearts } from './HeartCanvas';
 
 export default function FinalSection() {
+  const { couple } = useCouple();
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };

@@ -1,78 +1,158 @@
 import { useEffect, useRef, useCallback } from 'react';
 
-const COLORS = ['#E8B4B8', '#C9A08A', '#D4838A', '#F0D080', '#FF8FAB', '#FFB3C1'];
+// Curated authentic romantic palette: rose quartz, champagne blush, soft coral, warm peach, ethereal pearl
+const PALETTES = [
+  { main: 'rgba(232, 160, 175, ', glow: 'rgba(255, 180, 195, 0.4)' },
+  { main: 'rgba(212, 131, 138, ', glow: 'rgba(230, 150, 160, 0.35)' },
+  { main: 'rgba(201, 160, 138, ', glow: 'rgba(225, 180, 160, 0.3)' },
+  { main: 'rgba(244, 194, 194, ', glow: 'rgba(255, 210, 210, 0.4)' },
+  { main: 'rgba(248, 225, 215, ', glow: 'rgba(255, 235, 225, 0.3)' },
+];
 
-class HeartParticle {
-  constructor(x, y, isFloat = false) {
-    this.x = x;
-    this.y = y;
-    this.size = Math.random() * 18 + 8;
-    this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
-    this.isFloat = isFloat;
-    
-    if (isFloat) {
-      this.vx = (Math.random() - 0.5) * 1;
-      this.vy = -(Math.random() * 2 + 1);
-      this.decay = Math.random() * 0.005 + 0.002; // Slower fade for background hearts
-    } else {
-      this.vx = (Math.random() - 0.5) * 4;
-      this.vy = -(Math.random() * 4 + 2);
-      this.decay = Math.random() * 0.02 + 0.015;
-    }
-    this.alpha = 1;
-    this.scale = 1;
+class RomanticParticle {
+  constructor(w, h, isSpark = false, startX, startY) {
+    this.reset(w, h, isSpark, startX, startY);
   }
 
-  update() {
-    this.x += this.vx;
-    this.y += this.vy;
+  reset(w, h, isSpark = false, startX, startY) {
+    this.isSpark = isSpark;
+    this.x = startX !== undefined ? startX : Math.random() * w;
+    this.y = startY !== undefined ? startY : (isSpark ? startY : h + Math.random() * 50);
     
-    if (this.isFloat) {
-      this.vx += (Math.random() - 0.5) * 0.1; // Gentle horizontal sway
-    } else {
-      this.vy += 0.05; // Gentle gravity for burst
+    // Depth layer: 0 = far background, 1 = mid, 2 = foreground
+    this.depth = isSpark ? 2 : Math.random();
+    this.size = isSpark
+      ? Math.random() * 9 + 4
+      : (this.depth < 0.3 ? Math.random() * 8 + 6 : (this.depth < 0.7 ? Math.random() * 14 + 10 : Math.random() * 20 + 16));
+    
+    this.palette = PALETTES[Math.floor(Math.random() * PALETTES.length)];
+    
+    // Base speed and fluid swaying harmonics
+    this.baseSpeed = isSpark ? (Math.random() * 3 + 1.5) : (0.4 + this.depth * 0.7);
+    this.swayFreq = 0.0015 + Math.random() * 0.002;
+    this.swayAmp = 18 + this.depth * 35;
+    this.phase = Math.random() * Math.PI * 2;
+    this.originX = this.x;
+    
+    // Smooth 3D tilt & rotation
+    this.rotation = (Math.random() - 0.5) * 0.8;
+    this.rotSpeed = (Math.random() - 0.5) * 0.012;
+    this.tilt = Math.random() * Math.PI;
+    this.tiltSpeed = 0.015 + Math.random() * 0.02;
+
+    // Alpha & decay
+    this.maxAlpha = isSpark ? 0.9 : (0.18 + this.depth * 0.32);
+    this.alpha = isSpark ? this.maxAlpha : 0;
+    this.fadeIn = !isSpark;
+    this.decay = isSpark ? (0.012 + Math.random() * 0.015) : 0;
+
+    // Spark burst physics
+    if (isSpark) {
+      const angle = Math.random() * Math.PI * 2;
+      const force = Math.random() * 4 + 1;
+      this.vx = Math.cos(angle) * force;
+      this.vy = Math.sin(angle) * force - 1.5;
     }
-    
-    this.alpha -= this.decay;
-    this.scale += this.isFloat ? 0.005 : 0.02;
-    return this.alpha > 0;
+  }
+
+  update(time, w, h) {
+    if (this.isSpark) {
+      this.x += this.vx;
+      this.y += this.vy;
+      this.vx *= 0.95;
+      this.vy += 0.06; // gentle gravity
+      this.alpha -= this.decay;
+      this.rotation += this.rotSpeed * 2;
+      return this.alpha > 0;
+    }
+
+    // Natural fluid ascent with harmonic sinusoidal drift
+    this.y -= this.baseSpeed;
+    this.x = this.originX + Math.sin(time * this.swayFreq + this.phase) * this.swayAmp;
+    this.rotation += this.rotSpeed;
+    this.tilt += this.tiltSpeed;
+
+    // Smooth fade-in and fade-out at borders
+    if (this.fadeIn) {
+      this.alpha += 0.008;
+      if (this.alpha >= this.maxAlpha) {
+        this.alpha = this.maxAlpha;
+        this.fadeIn = false;
+      }
+    } else if (this.y < 80) {
+      this.alpha = Math.max(0, this.maxAlpha * (this.y / 80));
+    }
+
+    // Wrap around smoothly when leaving top of screen
+    if (this.y < -30) {
+      this.reset(w, h);
+    }
+    return true;
   }
 
   draw(ctx) {
+    if (this.alpha <= 0.01) return;
+
     ctx.save();
-    ctx.globalAlpha = this.alpha;
     ctx.translate(this.x, this.y);
-    ctx.scale(this.scale, this.scale);
-    ctx.fillStyle = this.color;
-    drawHeart(ctx, 0, 0, this.size);
+    ctx.rotate(this.rotation);
+    
+    // Natural flutter perspective scale
+    const horizontalScale = Math.cos(this.tilt) * 0.35 + 0.65;
+    ctx.scale(horizontalScale, 1);
+
+    const s = this.size * 0.5;
+
+    // Soft luminous radial aura glow
+    const glowGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, s * 2.2);
+    glowGrad.addColorStop(0, `${this.palette.main}${this.alpha * 0.5})`);
+    glowGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    ctx.fillStyle = glowGrad;
+    ctx.beginPath();
+    ctx.arc(0, 0, s * 2.2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Authentic delicate soft heart geometry
+    ctx.beginPath();
+    ctx.moveTo(0, s * 0.35);
+    ctx.bezierCurveTo(0, -s * 0.45, -s * 1.1, -s * 0.45, -s * 1.1, s * 0.15);
+    ctx.bezierCurveTo(-s * 1.1, s * 0.65, -s * 0.25, s * 1.05, 0, s * 1.35);
+    ctx.bezierCurveTo(s * 0.25, s * 1.05, s * 1.1, s * 0.65, s * 1.1, s * 0.15);
+    ctx.bezierCurveTo(s * 1.1, -s * 0.45, 0, -s * 0.45, 0, s * 0.35);
+
+    // Ethereal subtle gradient fill
+    const heartGrad = ctx.createLinearGradient(-s, -s, s, s * 1.4);
+    heartGrad.addColorStop(0, `${this.palette.main}${this.alpha * 0.95})`);
+    heartGrad.addColorStop(0.6, `${this.palette.main}${this.alpha * 0.75})`);
+    heartGrad.addColorStop(1, `${this.palette.main}${this.alpha * 0.5})`);
+
+    ctx.fillStyle = heartGrad;
+    ctx.fill();
+
+    // Subtle soft petal highlight on the top left curvature
+    ctx.beginPath();
+    ctx.arc(-s * 0.45, -s * 0.05, s * 0.25, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha * 0.4})`;
+    ctx.fill();
+
     ctx.restore();
   }
 }
 
-function drawHeart(ctx, x, y, size) {
-  const s = size * 0.5;
-  ctx.beginPath();
-  ctx.moveTo(x, y + s * 0.3);
-  ctx.bezierCurveTo(x, y - s * 0.3, x - s, y - s * 0.3, x - s, y + s * 0.1);
-  ctx.bezierCurveTo(x - s, y + s * 0.5, x, y + s * 0.9, x, y + s);
-  ctx.bezierCurveTo(x, y + s * 0.9, x + s, y + s * 0.5, x + s, y + s * 0.1);
-  ctx.bezierCurveTo(x + s, y - s * 0.3, x, y - s * 0.3, x, y + s * 0.3);
-  ctx.fill();
-}
-
-export function spawnHearts(x, y, count = 4, isFloat = false) {
-  window.__heartSpawner && window.__heartSpawner(x, y, count, isFloat);
+export function spawnHearts(x, y, count = 5) {
+  window.__heartSpawner && window.__heartSpawner(x, y, count);
 }
 
 export default function HeartCanvas() {
   const canvasRef = useRef(null);
   const particlesRef = useRef([]);
+  const sparksRef = useRef([]);
   const rafRef = useRef(null);
 
-  const spawnParticles = useCallback((x, y, count, isFloat = false) => {
-    const n = count || Math.floor(Math.random() * 3) + 3;
+  const spawnParticles = useCallback((x, y, count = 5) => {
+    const n = Math.min(count, 12);
     for (let i = 0; i < n; i++) {
-      particlesRef.current.push(new HeartParticle(x, y, isFloat));
+      sparksRef.current.push(new RomanticParticle(window.innerWidth, window.innerHeight, true, x, y));
     }
   }, []);
 
@@ -85,50 +165,73 @@ export default function HeartCanvas() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    const ctx = canvas.getContext('2d', { alpha: true });
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
     const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx.scale(dpr, dpr);
     };
     resize();
     window.addEventListener('resize', resize, { passive: true });
 
-    const ctx = canvas.getContext('2d');
+    // Initialize optimal pool of smooth, organic floating ambient hearts
+    const ambientCount = width < 768 ? 18 : 28;
+    particlesRef.current = Array.from({ length: ambientCount }).map(() => {
+      const p = new RomanticParticle(width, height);
+      p.y = Math.random() * height; // Spread across initial screen
+      p.alpha = Math.random() * p.maxAlpha;
+      return p;
+    });
 
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particlesRef.current = particlesRef.current.filter(p => {
-        const alive = p.update();
-        if (alive) p.draw(ctx);
-        return alive;
-      });
+    let startTime = performance.now();
+
+    const animate = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      ctx.clearRect(0, 0, width, height);
+
+      // Render & update ambient floating particles
+      for (let i = 0; i < particlesRef.current.length; i++) {
+        const p = particlesRef.current[i];
+        p.update(elapsed, width, height);
+        p.draw(ctx);
+      }
+
+      // Render & update interactive click sparks
+      if (sparksRef.current.length > 0) {
+        sparksRef.current = sparksRef.current.filter(s => {
+          const alive = s.update(elapsed, width, height);
+          if (alive) s.draw(ctx);
+          return alive;
+        });
+      }
+
       rafRef.current = requestAnimationFrame(animate);
     };
+
     rafRef.current = requestAnimationFrame(animate);
 
     const handlePointer = (e) => {
       const x = e.clientX ?? (e.touches?.[0]?.clientX);
       const y = e.clientY ?? (e.touches?.[0]?.clientY);
       if (x !== undefined && y !== undefined) {
-        spawnParticles(x, y, Math.floor(Math.random() * 3) + 3, false);
+        spawnParticles(x, y, 6);
       }
     };
 
     window.addEventListener('click', handlePointer, { passive: true });
     window.addEventListener('touchstart', handlePointer, { passive: true });
 
-    // Background floating hearts
-    const bgInterval = setInterval(() => {
-      const x = Math.random() * window.innerWidth;
-      const y = window.innerHeight + 20;
-      spawnParticles(x, y, 1, true);
-    }, 500);
-
     return () => {
       window.removeEventListener('resize', resize);
       window.removeEventListener('click', handlePointer);
       window.removeEventListener('touchstart', handlePointer);
       cancelAnimationFrame(rafRef.current);
-      clearInterval(bgInterval);
     };
   }, [spawnParticles]);
 

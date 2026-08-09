@@ -4,7 +4,7 @@
   --rose-gold: #C9A08A;
   --blush: #E8B4B8;
   --deep-blush: #D4838A;
-  --cream: #FDFBF7;
+  --cream: #FAF5F0;
   --warm-white: #FFF8F0;
   --charcoal: #3D3D3D;
   --soft-charcoal: #5A5A5A;
@@ -16,44 +16,186 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 html {
   scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
 }
 
 #root {
-  max-width: 1280px;
+  width: 100%;
+  max-width: 100%;
   margin: 0 auto;
-  overflow: hidden;
+  position: relative;
+  overflow-x: hidden;
 }
 
 body {
-  background-color: var(--cream);
+  background: linear-gradient(180deg, #F8F0EA 0%, #FDF5EF 15%, #FFF5F0 30%, #FEF0EB 50%, #FAF0EA 70%, #F5EDE7 100%);
+  background-attachment: fixed;
   color: var(--charcoal);
-  font-family: 'Inter', sans-serif;
+  font-family: 'Plus Jakarta Sans', 'Outfit', sans-serif;
   overflow-x: hidden;
-  text-align: center;
+  line-height: 1.65;
+  letter-spacing: -0.01em;
 }
 
 .font-serif {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+}
+
+.font-display {
+  font-family: 'Playfair Display', 'Cormorant Garamond', serif;
 }
 
 .font-script {
-  font-family: 'Dancing Script', cursive;
+  font-family: 'Caveat', 'Great Vibes', cursive;
+}
+
+.font-cursive {
+  font-family: 'Great Vibes', cursive;
+}
+
+.font-sans {
+  font-family: 'Plus Jakarta Sans', 'Outfit', sans-serif;
+}
+
+/* ── Unified Layout & Spacing System ──────────────────────── */
+.section-wrapper {
+  width: 100%;
+  padding: 5rem 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .section-wrapper {
+    padding: 6.5rem 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-wrapper {
+    padding: 7.5rem 2rem;
+  }
+}
+
+/* ── Universal Section Centering & Layout ─────────────────── */
+section,
+.section-wrapper {
+  width: 100%;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  position: relative;
+  box-sizing: border-box;
+}
+
+section > div:not(.absolute):not(.fixed):not(.hero-orb):not(.petal):not(canvas),
+.section-container {
+  width: 100%;
+  max-width: 68rem;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  box-sizing: border-box;
+}
+
+.hero-content {
+  width: 100%;
+  max-width: 48rem;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  text-align: center !important;
+  box-sizing: border-box;
+}
+
+.section-header {
+  width: 100%;
+  max-width: 44rem;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  margin-bottom: 3.5rem;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+.section-page {
+  width: 100%;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative;
+}
+
+.section-page > section,
+.section-page > div > section {
+  width: 100%;
+  position: relative;
+}
+
+.section-eyebrow {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--deep-blush);
+  margin-bottom: 0.75rem;
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.section-title {
+  font-family: 'Cormorant Garamond', 'Playfair Display', serif;
+  font-size: clamp(2.4rem, 5.5vw, 3.8rem);
+  font-weight: 700;
+  line-height: 1.15;
+  color: #2D2D2D;
+  margin-bottom: 0.85rem;
+  text-align: center !important;
+  width: 100%;
+  letter-spacing: -0.02em;
+}
+
+.section-subtitle {
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
+  color: #6E625B;
+  line-height: 1.65;
+  max-width: 38rem;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  text-align: center !important;
+  width: 100%;
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--cream);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--blush);
-  border-radius: 3px;
+  background: linear-gradient(to bottom, var(--blush), var(--rose-gold));
+  border-radius: 10px;
 }
 
 /* Canvas overlay */
@@ -61,13 +203,42 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   pointer-events: none;
   z-index: 9999;
 }
 
-/* Animations */
+/* ── Full-Width Section Layout ────────────────────────────── */
+
+.section-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.section-page > section,
+.section-page > div > section {
+  width: 100%;
+  position: relative;
+}
+
+/* ── Section Reveal Animations ───────────────────────────── */
+
+.section-reveal {
+  width: 100%;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.7s ease-out, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.section-reveal.is-animating {
+  opacity: 0.95;
+}
+
+/* ── Keyframe Animations ─────────────────────────────────── */
+
 @keyframes float {
   0%, 100% { transform: translateY(0px) rotate(-3deg); }
   50% { transform: translateY(-20px) rotate(3deg); }
@@ -206,5 +377,9 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+  .section-reveal {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

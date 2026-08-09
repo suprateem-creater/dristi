@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { couple } from '../coupleData';
+import { useCouple } from '../CoupleContext';
 
 export default function OurSong() {
+  const { couple } = useCouple();
   const [playing, setPlaying] = useState(false);
   const [audioUrl, setAudioUrl] = useState(null);
   const audioRef = useRef(null);
@@ -43,7 +44,7 @@ export default function OurSong() {
   }, [audioUrl]);
 
   return (
-    <section className="py-24 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #1A0A20, #0D1A2E)' }}>
+    <section id="song" className="py-24 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #1A0A20, #0D1A2E)' }}>
       <div className="max-w-xl mx-auto text-center relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}

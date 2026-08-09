@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { couple } from '../coupleData';
+import { useCouple } from '../CoupleContext';
 import { spawnHearts } from './HeartCanvas';
 
 export default function RandomMessage() {
+  const { couple } = useCouple();
   const [msg, setMsg] = useState(null);
   const [key, setKey] = useState(0);
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { couple } from '../coupleData';
+import { useCouple } from '../CoupleContext';
 
 function pad(n) { return String(n).padStart(2, '0'); }
 
@@ -16,14 +16,28 @@ function getElapsed(startDate) {
 }
 
 export default function Countdown() {
-  const [time, setTime] = useState(getElapsed(couple.anniversaryDateObj));
+  const { couple } = useCouple();
+  
+  const getDate = () => {
+    if (couple.anniversaryDateObj instanceof Date && !isNaN(couple.anniversaryDateObj)) {
+      return couple.anniversaryDateObj;
+    }
+    if (couple.anniversaryDate) {
+      const parsed = new Date(couple.anniversaryDate);
+      if (!isNaN(parsed)) return parsed;
+    }
+    return new Date("2026-09-15T00:00:00");
+  };
+
+  const [time, setTime] = useState(() => getElapsed(getDate()));
 
   useEffect(() => {
+    setTime(getElapsed(getDate()));
     const interval = setInterval(() => {
-      setTime(getElapsed(couple.anniversaryDateObj));
+      setTime(getElapsed(getDate()));
     }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [couple.anniversaryDateObj, couple.anniversaryDate]);
 
   const units = [
     { label: 'Days', value: time.days },
@@ -33,7 +47,7 @@ export default function Countdown() {
   ];
 
   return (
-    <div className="flex flex-wrap justify-center gap-4 md:gap-8">
+    <div className="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-8">
       {units.map(({ label, value }) => (
         <motion.div
           key={label}
@@ -43,21 +57,22 @@ export default function Countdown() {
           className="flex flex-col items-center"
         >
           <div
-            className="glass rounded-2xl px-5 py-4 min-w-[80px] text-center"
-            style={{ border: '1px solid rgba(201,160,138,0.3)' }}
+            className="rounded-2xl sm:rounded-3xl px-6 sm:px-8 py-5 min-w-[88px] sm:min-w-[104px] text-center shadow-md hover:shadow-lg transition-all"
+            style={{
+              background: 'rgba(255, 253, 249, 0.85)',
+              backdropFilter: 'blur(12px)',
+              border: '1px solid rgba(201,160,138,0.4)',
+              boxShadow: '0 8px 24px rgba(201,160,138,0.15)',
+            }}
           >
-            <motion.span
-              key={value}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.15 }}
-              className="block text-3xl md:text-4xl font-bold"
-              style={{ fontFamily: 'Playfair Display', color: '#C9A08A' }}
+            <span
+              className="block text-3xl sm:text-4xl font-serif font-bold text-[#A84E59]"
+              style={{ fontVariantNumeric: 'tabular-nums' }}
             >
               {value}
-            </motion.span>
+            </span>
           </div>
-          <span className="mt-2 text-xs uppercase tracking-widest" style={{ color: '#D4838A' }}>
+          <span className="mt-3 text-xs font-extrabold uppercase tracking-widest text-[#C9A08A]">
             {label}
           </span>
         </motion.div>

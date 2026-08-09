@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { spawnHearts } from './HeartCanvas';
 
-const LABELS = ['A Little', 'Pretty Much', 'A Lot', 'So Much', 'Infinity', 'Still Not Enough ∞'];
+const LABELS = ['A Little', 'Pretty Much', 'A Lot', 'So Much', 'To the Moon & Back', 'Still Not Enough ∞'];
 
 export default function LoveMeter() {
   const [value, setValue] = useState(0);
@@ -13,17 +13,16 @@ export default function LoveMeter() {
     setValue(v);
     if (v === 100 && !burst) {
       setBurst(true);
-      // Spawn hearts all over screen
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < 18; i++) {
         setTimeout(() => {
           spawnHearts(
             Math.random() * window.innerWidth,
             Math.random() * window.innerHeight,
-            5
+            4
           );
-        }, i * 60);
+        }, i * 70);
       }
-      setTimeout(() => setBurst(false), 2000);
+      setTimeout(() => setBurst(false), 2200);
     }
   };
 
@@ -31,44 +30,46 @@ export default function LoveMeter() {
   const label = LABELS[Math.min(labelIndex, LABELS.length - 1)];
 
   return (
-    <section className="py-24 px-4" style={{ background: 'linear-gradient(135deg, #FFF0F3, #FDFBF7)' }}>
-      <div className="max-w-xl mx-auto text-center">
+    <section id="lovemeter" className="section-wrapper text-center" style={{ background: 'linear-gradient(180deg, #F8EFEA 0%, #FFF5F0 50%, #FAF0EA 100%)' }}>
+      <div className="section-container max-w-lg">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 25 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mb-12"
+          transition={{ duration: 0.7 }}
+          className="section-header mb-10"
         >
-          <p className="text-sm uppercase tracking-widest mb-4" style={{ color: '#D4838A' }}>An Important Question</p>
-          <h2 className="text-4xl md:text-5xl mb-4" style={{ fontFamily: 'Playfair Display', color: '#3D3D3D' }}>
-            How Much Do We Love Each Other?
-          </h2>
+          <span className="section-eyebrow">An Important Question</span>
+          <h2 className="section-title">How Much Do We Love Each Other?</h2>
+          <p className="section-subtitle">Drag the slider to test our official love meter.</p>
         </motion.div>
 
-        {/* Heart meter */}
-        <div className="relative flex justify-center mb-8">
+        {/* Heart graphic meter */}
+        <div className="relative flex justify-center mb-6">
           <motion.div
             animate={{
-              scale: burst ? [1, 1.4, 1] : [1, 1.08, 1],
+              scale: burst ? [1, 1.35, 1] : [1, 1.05, 1],
             }}
             transition={{
-              duration: burst ? 0.3 : 1.2,
+              duration: burst ? 0.35 : 1.5,
               repeat: Infinity,
               ease: 'easeInOut',
             }}
-            className="relative"
+            className="relative drop-shadow-[0_10px_25px_rgba(244,114,182,0.3)]"
           >
-            <svg width="160" height="150" viewBox="0 0 160 150">
-              {/* Background heart */}
+            <svg width="150" height="140" viewBox="0 0 160 150">
               <path
                 d="M80 135 C 40 100, 0 80, 0 50 C 0 25, 20 10, 40 10 C 55 10, 68 18, 80 30 C 92 18, 105 10, 120 10 C 140 10, 160 25, 160 50 C 160 80, 120 100, 80 135Z"
                 fill="rgba(232,180,184,0.3)"
               />
-              {/* Filled heart (clip) */}
               <defs>
                 <clipPath id="heartClip">
                   <path d="M80 135 C 40 100, 0 80, 0 50 C 0 25, 20 10, 40 10 C 55 10, 68 18, 80 30 C 92 18, 105 10, 120 10 C 140 10, 160 25, 160 50 C 160 80, 120 100, 80 135Z" />
                 </clipPath>
+                <linearGradient id="heartGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#F43F5E" />
+                  <stop offset="100%" stopColor="#FB7185" />
+                </linearGradient>
               </defs>
               <rect
                 x="0"
@@ -77,55 +78,54 @@ export default function LoveMeter() {
                 height="150"
                 fill="url(#heartGrad)"
                 clipPath="url(#heartClip)"
-                style={{ transition: 'y 0.3s ease' }}
+                style={{ transition: 'y 0.25s ease' }}
               />
-              <defs>
-                <linearGradient id="heartGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#D4838A" />
-                  <stop offset="100%" stopColor="#C9A08A" />
-                </linearGradient>
-              </defs>
             </svg>
           </motion.div>
         </div>
 
-        {/* Label */}
-        <AnimatePresence mode="wait">
-          <motion.p
-            key={label}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="text-2xl font-semibold mb-8"
-            style={{ fontFamily: 'Playfair Display', color: '#C9A08A' }}
-          >
-            {label}
-          </motion.p>
-        </AnimatePresence>
+        {/* Dynamic Label */}
+        <div className="min-h-12 flex items-center justify-center mb-6">
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={label}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              className="text-2xl sm:text-3xl font-bold font-serif text-rose-600"
+            >
+              {label}
+            </motion.p>
+          </AnimatePresence>
+        </div>
 
-        {/* Slider */}
-        <input
-          type="range"
-          min="0"
-          max="100"
-          value={value}
-          onChange={handleChange}
-          className="w-full h-2 appearance-none rounded-full cursor-pointer"
-          style={{
-            background: `linear-gradient(to right, #D4838A ${value}%, rgba(232,180,184,0.3) ${value}%)`,
-            WebkitAppearance: 'none',
-          }}
-        />
-        <p className="mt-4 text-sm" style={{ color: '#5A5A5A' }}>Drag to measure the love ❤️</p>
+        {/* Custom Slider */}
+        <div className="px-2">
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={value}
+            onChange={handleChange}
+            className="w-full h-3 appearance-none rounded-full cursor-pointer accent-rose-500 bg-gray-200"
+            style={{
+              background: `linear-gradient(to right, #F43F5E ${value}%, #E5E7EB ${value}%)`,
+            }}
+          />
+          <div className="flex justify-between text-xs font-semibold text-gray-400 mt-2">
+            <span>0%</span>
+            <span>50%</span>
+            <span>100% ∞</span>
+          </div>
+        </div>
 
         {burst && (
           <motion.p
-            initial={{ opacity: 0, scale: 0.5 }}
+            initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="mt-6 text-xl font-semibold"
-            style={{ fontFamily: 'Dancing Script', color: '#D4838A', fontSize: '1.8rem' }}
+            className="mt-6 text-2xl font-bold font-script text-rose-600"
           >
-            Still Not Enough! 🌹
+            Overflowing with Love! 🌹✨
           </motion.p>
         )}
       </div>

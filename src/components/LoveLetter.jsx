@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { couple } from '../coupleData';
+import { useCouple } from '../CoupleContext';
 import { spawnHearts } from './HeartCanvas';
 
 export default function LoveLetter() {
+  const { couple } = useCouple();
   const [open, setOpen] = useState(false);
   const [typed, setTyped] = useState('');
   const text = couple.loveLetterText;
@@ -26,19 +27,64 @@ export default function LoveLetter() {
     spawnHearts(e.clientX, e.clientY, 8);
   };
 
+  // Ambient decorative petals with stable positions
+  const petals = useMemo(() => 
+    Array.from({ length: 18 }).map((_, i) => ({
+      left: `${5 + Math.random() * 90}%`,
+      top: `${5 + Math.random() * 90}%`,
+      size: Math.random() * 16 + 8,
+      delay: Math.random() * 6,
+      duration: Math.random() * 5 + 5,
+      rotation: Math.random() * 360,
+      emoji: ['🌸', '✨', '💫', '🩷', '🤍', '·'][i % 6],
+      opacity: 0.15 + Math.random() * 0.25,
+    })), []);
+
   return (
-    <section className="py-24 px-4 relative overflow-hidden" style={{ background: '#FDFBF7' }}>
-      <div className="max-w-2xl mx-auto text-center">
+    <section
+      id="letter"
+      className="section-wrapper text-center relative overflow-hidden"
+      style={{ background: 'linear-gradient(160deg, #FFF8F3 0%, #FDE8E4 30%, #FFF0F0 60%, #FEF5EE 100%)' }}
+    >
+      {/* Ambient Floating Decorations */}
+      {petals.map((p, i) => (
+        <motion.span
+          key={i}
+          animate={{
+            y: [0, -20, 0],
+            x: [0, Math.sin(i) * 10, 0],
+            rotate: [p.rotation, p.rotation + 30, p.rotation],
+          }}
+          transition={{ duration: p.duration, repeat: Infinity, delay: p.delay, ease: 'easeInOut' }}
+          className="absolute pointer-events-none select-none"
+          style={{ left: p.left, top: p.top, fontSize: p.size, opacity: p.opacity }}
+        >
+          {p.emoji}
+        </motion.span>
+      ))}
+
+      {/* Soft ambient radial glow */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse 70% 60% at 50% 40%, rgba(232,180,184,0.15), transparent 70%)',
+        }}
+      />
+
+      <div className="section-container max-w-2xl text-center relative z-10">
+        {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 25 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mb-16"
+          transition={{ duration: 0.7 }}
+          className="section-header mb-12"
         >
-          <p className="text-sm uppercase tracking-widest mb-4" style={{ color: '#D4838A' }}>A Little Surprise</p>
-          <h2 className="text-4xl md:text-5xl" style={{ fontFamily: 'Playfair Display', color: '#3D3D3D' }}>
-            A Letter For You
-          </h2>
+          <span className="section-eyebrow">A Little Surprise</span>
+          <h2 className="section-title">A Letter For You</h2>
+          <p className="section-subtitle">
+            Some feelings are too precious for spoken words — so I sealed them here, just for you.
+          </p>
         </motion.div>
 
         <AnimatePresence mode="wait">
@@ -48,70 +94,152 @@ export default function LoveLetter() {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.5, y: -50 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.5, type: 'spring', stiffness: 200, damping: 20 }}
               className="inline-block cursor-pointer group"
               onClick={handleOpen}
             >
-              {/* Envelope */}
-              <div className="relative mx-auto w-64 h-44">
-                {/* Body */}
+              {/* Envelope Card */}
+              <div className="relative mx-auto w-72 h-52">
+                {/* Shadow under envelope */}
                 <div
-                  className="w-full h-full rounded-lg shadow-2xl flex items-center justify-center"
-                  style={{ background: 'linear-gradient(135deg, #FFE4E8, #FFF0F3)', border: '2px solid rgba(201,160,138,0.4)' }}
-                >
-                  <span className="text-5xl" style={{ filter: 'drop-shadow(0 4px 8px rgba(212,131,138,0.4))' }}>💌</span>
-                </div>
-                {/* Flap */}
-                <motion.div
-                  animate={{ rotateX: [0, -20, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                  className="absolute top-0 left-0 w-full"
-                  style={{ height: '50%', transformOrigin: 'top', transformStyle: 'preserve-3d' }}
+                  className="absolute bottom-0 left-1/2 -translate-x-1/2 w-56 h-4 rounded-full"
+                  style={{ background: 'rgba(0,0,0,0.08)', filter: 'blur(12px)' }}
                 />
-                {/* Seal */}
-                <div
-                  className="absolute -top-3 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full flex items-center justify-center text-sm"
-                  style={{ background: '#D4838A', color: 'white', boxShadow: '0 0 12px rgba(212,131,138,0.5)' }}
+
+                {/* Envelope body */}
+                <motion.div
+                  whileHover={{ y: -6, boxShadow: '0 20px 50px rgba(212,131,138,0.3)' }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                  className="w-full h-full rounded-2xl shadow-xl flex items-center justify-center relative overflow-hidden"
+                  style={{
+                    background: 'linear-gradient(160deg, #FFE8EC, #FFF3F0, #FFE4E8)',
+                    border: '2px solid rgba(201,160,138,0.35)',
+                  }}
+                >
+                  {/* Inner paper peek */}
+                  <div
+                    className="absolute top-3 left-1/2 -translate-x-1/2 w-[85%] h-[30%] rounded-t-lg"
+                    style={{ background: '#FFFDF9', border: '1px solid rgba(201,160,138,0.15)', borderBottom: 'none' }}
+                  />
+
+                  {/* Diagonal fold lines */}
+                  <div className="absolute inset-0 pointer-events-none">
+                    <div className="absolute top-0 left-0 w-full h-full"
+                      style={{
+                        background: 'linear-gradient(135deg, transparent 30%, rgba(212,131,138,0.06) 30%, rgba(212,131,138,0.06) 31%, transparent 31%)',
+                      }}
+                    />
+                  </div>
+
+                  <span className="text-6xl relative z-10 group-hover:scale-110 transition-transform duration-300" style={{ filter: 'drop-shadow(0 4px 12px rgba(212,131,138,0.4))' }}>
+                    💌
+                  </span>
+                </motion.div>
+
+                {/* Wax seal */}
+                <motion.div
+                  animate={{ scale: [1, 1.12, 1] }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                  className="absolute -top-4 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full flex items-center justify-center text-base font-bold shadow-lg"
+                  style={{
+                    background: 'radial-gradient(circle, #E85D75, #D4838A)',
+                    color: 'white',
+                    boxShadow: '0 4px 16px rgba(212,131,138,0.6)',
+                    border: '2px solid rgba(255,255,255,0.5)',
+                  }}
                 >
                   ♡
-                </div>
+                </motion.div>
               </div>
+
               <motion.p
-                animate={{ opacity: [0.6, 1, 0.6] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="mt-6 text-sm"
+                animate={{ opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 2.5, repeat: Infinity }}
+                className="mt-8 text-sm font-medium"
                 style={{ color: '#D4838A' }}
               >
-                Click to open your letter ✨
+                Tap to open your letter ✨
               </motion.p>
+
+              {/* Decorative quote */}
+              <p className="mt-4 text-xs italic max-w-xs mx-auto leading-relaxed" style={{ color: '#B8A8A0', fontFamily: 'Dancing Script', fontSize: '0.95rem' }}>
+                "The best love letters are the ones that arrive when you need them most."
+              </p>
             </motion.div>
           ) : (
             <motion.div
               key="letter"
-              initial={{ opacity: 0, y: 40, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.6, type: 'spring' }}
-              className="rounded-3xl p-8 md:p-12 text-left shadow-2xl relative"
-              style={{ background: '#FFFDF9', border: '1px solid rgba(201,160,138,0.3)', fontFamily: 'Dancing Script' }}
+              initial={{ opacity: 0, y: 40, scale: 0.92, rotateX: 10 }}
+              animate={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
+              transition={{ duration: 0.7, type: 'spring', stiffness: 180, damping: 18 }}
+              className="rounded-3xl p-8 md:p-12 text-left shadow-2xl relative overflow-hidden"
+              style={{
+                background: 'linear-gradient(170deg, #FFFDF9 0%, #FFF8F2 40%, #FFFDF9 100%)',
+                border: '1px solid rgba(201,160,138,0.3)',
+                fontFamily: 'Dancing Script',
+                boxShadow: '0 25px 60px rgba(0,0,0,0.12), 0 0 0 1px rgba(201,160,138,0.1)',
+              }}
             >
-              <div className="absolute top-4 right-4 text-2xl">💌</div>
+              {/* Corner decorations */}
+              <div className="absolute top-3 left-4 text-xl opacity-30 pointer-events-none">🌿</div>
+              <div className="absolute top-3 right-4 text-xl opacity-30 pointer-events-none">🌿</div>
+              <div className="absolute bottom-3 left-4 text-xl opacity-30 pointer-events-none rotate-180">🌿</div>
+              <div className="absolute bottom-3 right-4 text-xl opacity-30 pointer-events-none rotate-180">🌿</div>
+
+              {/* Faint paper texture lines */}
+              <div className="absolute inset-0 pointer-events-none opacity-[0.04]"
+                style={{
+                  backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 28px, #C9A08A 28px, #C9A08A 29px)',
+                }}
+              />
+
+              {/* Date */}
+              <p className="text-xs uppercase tracking-widest mb-4 text-right font-bold" style={{ color: '#C9A08A' }}>
+                {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+              </p>
+
+              {/* Greeting */}
+              <p className="text-2xl mb-4 font-bold font-serif" style={{ color: '#D4838A' }}>
+                My dearest {couple.partner2 || 'love'},
+              </p>
+
+              {/* Letter body with typewriter */}
               <pre
-                className="text-base md:text-lg leading-relaxed whitespace-pre-wrap"
-                style={{ color: '#3D3D3D', fontFamily: 'Dancing Script', fontSize: '1.1rem' }}
+                className="text-xl sm:text-2xl leading-relaxed whitespace-pre-wrap relative z-10 font-script font-medium"
+                style={{ color: '#3A2E2B', fontSize: '1.45rem', lineHeight: 1.85 }}
               >
                 {typed}
                 {typed.length < text.length && (
-                  <span className="inline-block w-0.5 h-5 bg-current animate-pulse ml-0.5" />
+                  <span className="inline-block w-0.5 h-6 bg-rose-400 animate-pulse ml-0.5" />
                 )}
               </pre>
+
+              {/* Sign-off */}
+              {typed.length >= text.length && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="mt-8 text-right font-script"
+                >
+                  <p className="text-xl" style={{ color: '#D4838A', fontSize: '1.5rem' }}>
+                    Forever yours,
+                  </p>
+                  <p className="text-2xl font-bold mt-1" style={{ color: '#A84E59', fontSize: '1.75rem' }}>
+                    {couple.partner1 || 'Me'} 💕
+                  </p>
+                </motion.div>
+              )}
+
+              {/* Close button */}
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setOpen(false)}
-                className="mt-8 text-sm px-4 py-2 rounded-full"
-                style={{ background: 'rgba(201,160,138,0.2)', color: '#C9A08A', fontFamily: 'Inter' }}
+                className="mt-8 text-xs font-bold px-6 py-2.5 rounded-full cursor-pointer shadow-sm transition-colors"
+                style={{ background: 'rgba(212,131,138,0.15)', color: '#D4838A', border: '1px solid rgba(212,131,138,0.3)' }}
               >
-                Close letter
+                Seal the letter again 💌
               </motion.button>
             </motion.div>
           )}

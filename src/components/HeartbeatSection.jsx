@@ -1,18 +1,19 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { couple } from '../coupleData';
+import { useCouple } from '../CoupleContext';
 import { spawnHearts } from './HeartCanvas';
 
 const HEARTBEAT_MESSAGES = [
   "You make my heart race. ❤️",
-  "Still choosing you.",
-  "My favorite person.",
-  "365 days. Still you.",
-  "Every beat is yours.",
-  "You are my heartbeat.",
+  "Still choosing you every single day.",
+  "My favorite place is in your arms.",
+  "365 days and I'm still falling for you.",
+  "Every single beat belongs to you.",
+  "You are my whole universe. ✨",
 ];
 
 export default function HeartbeatSection() {
+  const { couple } = useCouple();
   const [beats, setBeats] = useState(1);
   const [msgIndex, setMsgIndex] = useState(0);
   const timerRef = useRef(null);
@@ -21,68 +22,75 @@ export default function HeartbeatSection() {
     const newBeats = Math.min(beats + 1, 5);
     setBeats(newBeats);
     setMsgIndex(i => (i + 1) % HEARTBEAT_MESSAGES.length);
-    spawnHearts(e.clientX, e.clientY, 6);
+    spawnHearts(e.clientX, e.clientY, 8);
     clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => setBeats(1), 3000);
+    timerRef.current = setTimeout(() => setBeats(1), 3500);
   };
 
   useEffect(() => () => clearTimeout(timerRef.current), []);
 
-  const duration = Math.max(0.4, 1.2 / beats);
+  const duration = Math.max(0.45, 1.2 / beats);
 
   return (
-    <section className="py-24 px-4 text-center relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #FFF0F3, #FDFBF7)' }}>
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="mb-12"
-      >
-        <p className="text-sm uppercase tracking-widest mb-4" style={{ color: '#D4838A' }}>Feel It</p>
-        <h2 className="text-4xl md:text-5xl" style={{ fontFamily: 'Playfair Display', color: '#3D3D3D' }}>
-          My Heart ♡
-        </h2>
-        <p className="mt-3 text-sm" style={{ color: '#5A5A5A' }}>Tap the heart to feel it</p>
-      </motion.div>
+    <section id="heartbeat" className="section-wrapper text-center" style={{ background: 'linear-gradient(180deg, #FAF0EA 0%, #FFF2F4 50%, #F8EFEA 100%)' }}>
+      <div className="section-container max-w-xl">
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="section-header mb-12"
+        >
+          <span className="section-eyebrow">Feel It</span>
+          <h2 className="section-title">My Heartbeat For You</h2>
+          <p className="section-subtitle">Tap the beating heart to feel how fast you make it beat.</p>
+        </motion.div>
 
-      <div className="relative flex justify-center items-center">
-        {/* Pulse rings */}
-        {[1, 2, 3].map(i => (
+        <div className="relative flex justify-center items-center h-48 sm:h-56 mb-6">
+          {/* Pulse rings */}
+          {[1, 2, 3].map(i => (
+            <motion.div
+              key={i}
+              animate={{ scale: [1, 2 + i * 0.35], opacity: [0.45, 0] }}
+              transition={{ duration: duration * 1.6, repeat: Infinity, delay: i * duration * 0.35, ease: 'easeOut' }}
+              className="absolute rounded-full pointer-events-none"
+              style={{ width: 130, height: 130, border: '2px solid rgba(212,131,138,0.45)' }}
+            />
+          ))}
+
+          {/* Heart button */}
+          <motion.button
+            type="button"
+            onClick={handleHeartClick}
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.9 }}
+            animate={{ scale: [1, 1.15, 1] }}
+            transition={{ duration, repeat: Infinity, ease: 'easeInOut' }}
+            className="relative z-10 text-8xl sm:text-9xl cursor-pointer border-none bg-transparent select-none drop-shadow-[0_0_30px_rgba(244,63,94,0.5)]"
+            aria-label="Tap the heart"
+          >
+            ❤️
+          </motion.button>
+        </div>
+
+        <AnimatePresence mode="wait">
           <motion.div
-            key={i}
-            animate={{ scale: [1, 2 + i * 0.3], opacity: [0.5, 0] }}
-            transition={{ duration: duration * 1.5, repeat: Infinity, delay: i * duration * 0.3, ease: 'easeOut' }}
-            className="absolute rounded-full"
-            style={{ width: 120, height: 120, border: '2px solid rgba(212,131,138,0.4)' }}
-          />
-        ))}
-
-        {/* Heart */}
-        <motion.button
-          onClick={handleHeartClick}
-          animate={{ scale: [1, 1.12, 1] }}
-          transition={{ duration, repeat: Infinity, ease: 'easeInOut' }}
-          className="relative z-10 text-8xl md:text-9xl cursor-pointer border-none bg-transparent focus:outline-none"
-          style={{ filter: 'drop-shadow(0 0 20px rgba(212,131,138,0.6))' }}
-          aria-label="Tap the heart"
-        >
-          ❤️
-        </motion.button>
+            key={msgIndex}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
+            transition={{ duration: 0.35 }}
+            className="min-h-16 flex items-center justify-center"
+          >
+            <p
+              className="text-xl sm:text-2xl font-bold font-script text-rose-600 leading-snug"
+              style={{ fontSize: '1.65rem' }}
+            >
+              "{HEARTBEAT_MESSAGES[msgIndex]}"
+            </p>
+          </motion.div>
+        </AnimatePresence>
       </div>
-
-      <AnimatePresence mode="wait">
-        <motion.p
-          key={msgIndex}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.4 }}
-          className="mt-8 text-xl"
-          style={{ fontFamily: 'Dancing Script', color: '#D4838A', fontSize: '1.6rem' }}
-        >
-          {HEARTBEAT_MESSAGES[msgIndex]}
-        </motion.p>
-      </AnimatePresence>
     </section>
   );
 }

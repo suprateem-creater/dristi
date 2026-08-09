@@ -1,73 +1,156 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { couple } from '../coupleData';
+import { useCouple } from '../CoupleContext';
+import { Sparkles, Calendar, Heart } from 'lucide-react';
 
 function TimelineItem({ item, index }) {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: '-80px' });
+  const inView = useInView(ref, { once: true, margin: '-60px' });
   const isLeft = index % 2 === 0;
 
   return (
-    <div ref={ref} className={`flex items-center gap-4 md:gap-8 ${isLeft ? 'flex-row' : 'flex-row-reverse'} mb-12`}>
-      {/* Content */}
-      <motion.div
-        initial={{ opacity: 0, x: isLeft ? -60 : 60 }}
-        animate={inView ? { opacity: 1, x: 0 } : {}}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        className="w-5/12 glass rounded-2xl p-5 cursor-default hover:shadow-lg transition-shadow"
-        style={{ border: '1px solid rgba(201,160,138,0.25)' }}
-      >
-        <div className="text-2xl mb-2">{item.icon}</div>
-        <h3 className="font-semibold text-lg mb-1" style={{ fontFamily: 'Playfair Display', color: '#C9A08A' }}>
-          {item.event}
-        </h3>
-        <p className="text-sm mb-2" style={{ color: '#D4838A' }}>{item.date}</p>
-        <p className="text-sm" style={{ color: '#5A5A5A' }}>{item.desc}</p>
-      </motion.div>
+    <div ref={ref} className="relative mb-16 md:mb-24 last:mb-0">
+      {/* Desktop alternating layout */}
+      <div className={`hidden md:flex items-center justify-between gap-10 ${isLeft ? 'flex-row' : 'flex-row-reverse'}`}>
+        
+        {/* Content Card (Spacious Luxury Box) */}
+        <motion.div
+          initial={{ opacity: 0, x: isLeft ? -60 : 60, scale: 0.95 }}
+          animate={inView ? { opacity: 1, x: 0, scale: 1 } : {}}
+          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+          whileHover={{ y: -6, scale: 1.02 }}
+          className="w-[46%] rounded-3xl px-8 sm:px-12 py-8 sm:py-10 shadow-lg hover:shadow-2xl transition-all duration-300 border border-rose-200/90 relative overflow-hidden group select-none text-left"
+          style={{
+            background: 'linear-gradient(155deg, #FFFDFB 0%, #FFF5F7 60%, #FEEDF2 100%)',
+            boxShadow: '0 20px 50px rgba(212,131,138,0.12), 0 4px 16px rgba(0,0,0,0.03)',
+          }}
+        >
+          {/* Top Row: Icon Badge + Date Chip */}
+          <div className="flex items-center justify-between gap-4 mb-6">
+            <div className="w-14 h-14 rounded-2xl bg-white shadow-sm border border-rose-100 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
+              {item.icon || '🌸'}
+            </div>
 
-      {/* Center dot */}
-      <div className="flex flex-col items-center w-2/12">
+            <div className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-rose-50/90 border border-rose-200/80 text-xs font-extrabold uppercase tracking-widest text-rose-600 shadow-xs">
+              <Calendar size={12} className="text-rose-400" />
+              <span>{item.date}</span>
+            </div>
+          </div>
+
+          {/* Text Container with generous inner margin */}
+          <div className="pr-4 sm:pr-8">
+            {/* Event Title */}
+            <h3 className="font-serif font-bold text-2xl sm:text-3xl text-gray-900 mb-3 leading-snug tracking-tight">
+              {item.event}
+            </h3>
+
+            {/* Description */}
+            <p className="text-base sm:text-lg text-gray-700 leading-relaxed font-sans font-normal">
+              {item.desc}
+            </p>
+          </div>
+
+          {/* Bottom decorative flourish */}
+          <div className="mt-8 pt-4 border-t border-rose-100 flex items-center justify-between text-xs text-rose-400 font-script text-base">
+            <span className="flex items-center gap-1">
+              <Sparkles size={13} className="text-rose-300" /> Chapter #{index + 1}
+            </span>
+            <Heart size={13} className="fill-rose-300 text-rose-300 opacity-60" />
+          </div>
+        </motion.div>
+
+        {/* Center Glowing Pearl Node */}
+        <div className="w-[8%] flex justify-center relative">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={inView ? { scale: 1 } : {}}
+            transition={{ duration: 0.5, delay: 0.2, type: 'spring', stiffness: 300, damping: 20 }}
+            className="w-8 h-8 rounded-full border-4 border-white bg-gradient-to-tr from-rose-400 to-rose-500 shadow-[0_0_24px_rgba(244,114,182,0.8)] z-20 flex items-center justify-center text-white text-xs"
+          >
+            ♡
+          </motion.div>
+        </div>
+
+        {/* Opposite Spacer */}
+        <div className="w-[46%]" />
+      </div>
+
+      {/* Mobile left-aligned layout */}
+      <div className="flex md:hidden items-start gap-4 pl-1">
         <motion.div
           initial={{ scale: 0 }}
           animate={inView ? { scale: 1 } : {}}
-          transition={{ duration: 0.4, delay: 0.3 }}
-          className="w-5 h-5 rounded-full border-2 z-10"
-          style={{ background: '#C9A08A', borderColor: '#FDFBF7', boxShadow: '0 0 12px rgba(201,160,138,0.6)' }}
-        />
-      </div>
+          className="w-7 h-7 rounded-full border-3 border-white bg-gradient-to-tr from-rose-400 to-rose-500 shadow-md flex-shrink-0 mt-3 z-20 flex items-center justify-center text-white text-[10px]"
+        >
+          ♡
+        </motion.div>
 
-      {/* Spacer */}
-      <div className="w-5/12" />
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="flex-1 rounded-3xl p-7 sm:p-9 shadow-md border border-rose-200/90 text-left"
+          style={{
+            background: 'linear-gradient(155deg, #FFFDFB 0%, #FFF5F7 60%, #FEEDF2 100%)',
+          }}
+        >
+          <div className="flex items-center justify-between gap-3 mb-4">
+            <div className="w-12 h-12 rounded-2xl bg-white shadow-xs border border-rose-100 flex items-center justify-center text-2xl flex-shrink-0">
+              {item.icon || '🌸'}
+            </div>
+            <span className="text-[11px] font-extrabold uppercase tracking-wider text-rose-600 bg-rose-50 px-3 py-1 rounded-full border border-rose-200">
+              {item.date}
+            </span>
+          </div>
+
+          <div className="pr-3 sm:pr-5">
+            <h3 className="font-serif font-bold text-xl sm:text-2xl text-gray-900 mb-2 leading-snug">
+              {item.event}
+            </h3>
+
+            <p className="text-sm sm:text-base text-gray-700 leading-relaxed font-sans">
+              {item.desc}
+            </p>
+          </div>
+        </motion.div>
+      </div>
     </div>
   );
 }
 
 export default function Timeline() {
+  const { couple } = useCouple();
   return (
-    <section className="py-24 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #FDFBF7 0%, #FFF0F3 50%, #FDFBF7 100%)' }}>
-      {/* Vertical line */}
-      <div
-        className="absolute left-1/2 top-0 bottom-0 w-px timeline-line"
-        style={{ transform: 'translateX(-50%)' }}
-      />
+    <section id="timeline" className="section-wrapper" style={{ background: 'linear-gradient(180deg, #F8EFEA 0%, #FFF5F0 50%, #FAF0EA 100%)' }}>
+      <div className="section-container max-w-5xl relative">
+        
+        {/* Desktop Center Vertical Glowing Track */}
+        <div
+          className="hidden md:block absolute left-1/2 top-36 bottom-16 w-1 -translate-x-1/2 bg-gradient-to-b from-rose-200 via-rose-400 to-rose-200 rounded-full shadow-[0_0_12px_rgba(244,114,182,0.4)] pointer-events-none"
+        />
 
-      <div className="max-w-4xl mx-auto">
+        {/* Mobile Left Vertical Track */}
+        <div
+          className="block md:hidden absolute left-4.5 top-36 bottom-12 w-0.5 bg-gradient-to-b from-rose-200 via-rose-400 to-rose-200 rounded-full pointer-events-none"
+        />
+
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 25 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          transition={{ duration: 0.7 }}
+          className="section-header mb-16"
         >
-          <p className="text-sm uppercase tracking-widest mb-4" style={{ color: '#D4838A' }}>Our Story</p>
-          <h2 className="text-4xl md:text-5xl" style={{ fontFamily: 'Playfair Display', color: '#3D3D3D' }}>
-            The Firsts Timeline
-          </h2>
+          <span className="section-eyebrow">Our Story</span>
+          <h2 className="section-title">The Firsts Timeline</h2>
+          <p className="section-subtitle">Every chapter of our journey, from our very first hello to today.</p>
         </motion.div>
 
-        {couple.timeline.map((item, i) => (
-          <TimelineItem key={i} item={item} index={i} />
-        ))}
+        <div className="space-y-4">
+          {(couple.timeline || []).map((item, i) => (
+            <TimelineItem key={i} item={item} index={i} />
+          ))}
+        </div>
       </div>
     </section>
   );

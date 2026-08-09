@@ -13,7 +13,12 @@ export const couple = {
   songCover: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&q=80",
   firstMeeting: "A coffee shop on a rainy afternoon",
   firstDate: "A sunset walk at the botanical garden",
-  timeCapsuleDate: new Date("2027-08-09T00:00:00"),
+  timeCapsuleDate: "September 15, 2026",
+  timeCapsuleTitle: "Our Time Capsule",
+  timeCapsuleSubtitle: "Sealed with Love",
+  timeCapsuleTeaser: "Something beautiful is waiting inside...",
+  timeCapsuleOpenedTitle: "The Capsule Has Opened! 🥂",
+  timeCapsuleMessage: "Two years ago, we sealed this moment in time — a promise to keep growing, keep choosing, and keep loving. If you're reading this, we did it. Here's to us. 🥂",
 
   loveReasons: [
     { front: "Your Laugh", back: "The way your whole face lights up when you laugh is my favorite sound in the universe." },
@@ -71,7 +76,7 @@ export const couple = {
     { date: "Nov 1, 2025", event: "First 'I Love You'", icon: "❤️", desc: "You said it first. I said it back immediately." },
     { date: "Dec 25, 2025", event: "First Christmas", icon: "🎄", desc: "A cabin in the snow. The best holiday of my life." },
     { date: "Apr 3, 2026", event: "First Trip", icon: "✈️", desc: "Amalfi Coast. We got lost and found everything." },
-    { date: "Aug 9, 2026", event: "First Anniversary", icon: "🎉", desc: "365 days. A thousand memories. Forever to go." },
+    { date: "Sep 15, 2026", event: "First Anniversary", icon: "🎉", desc: "365 days. A thousand memories. Forever to go." },
   ],
 
   photos: [
@@ -89,12 +94,14 @@ export const couple = {
     { label: "Open when you miss me", icon: "🌙", message: "Close your eyes. Remember that afternoon when we got caught in the rain and laughed until we couldn't breathe. That's where I am. Always close." },
     { label: "Open when you're sad", icon: "🌧️", message: "Every storm passes. And when it does, I'll be right here — your umbrella, your sunshine, your safe place. You are not alone." },
     { label: "Open when you need a smile", icon: "☀️", message: "Remember when you tried to make pasta and it turned into a soup? Or that time you waved back at someone waving at someone else? You are endlessly delightful." },
+    { label: "Open when you can't sleep", icon: "✨", message: "Wrap your blanket tight and think of all the late nights we talked until dawn. I'm looking at the very same moon, dreaming of you. Rest easy, my love." },
     { label: "Open when you want to remember us", icon: "📖", message: "We are coffee and lazy mornings. Late night drives and lousy playlists. Fighting over blankets and forgiving in seconds. We are home to each other." },
     { label: "Open when it's our anniversary", icon: "🎉", message: "Another year. Another thousand reasons. Another forever beginning today. Happy Anniversary, my love. Here's to every beautiful chapter still ahead." },
   ],
 
   loveMap: [
-    { name: "Rishra", coords: [22.7233, 88.3494], date: "Sep 15, 2026", story: "Where our beautiful journey blossoms every day.", emoji: "💖" },
+    { name: "Rishra", coords: [22.7233, 88.3494], date: "Our Beginning", story: "Where our journey started.", emoji: "🌸" },
+    { name: "Delhi", coords: [28.6139, 77.2090], date: "Sep 15, 2026", story: "Where our beautiful journey continues to blossom.", emoji: "💖" },
   ],
 
   constellationStars: [

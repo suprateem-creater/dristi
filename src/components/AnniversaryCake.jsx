@@ -46,13 +46,21 @@ export default function AnniversaryCake() {
   const reset = () => { setBlown([false, false]); setRevealed(false); };
 
   return (
-    <section className="py-24 px-4 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #FFF8F0, #FDFBF7)' }}>
+    <section id="cake" className="section-wrapper text-center relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #F8EFEA 0%, #FFF5F0 50%, #FAF0EA 100%)' }}>
       <Confetti active={confetti} />
-      <div className="max-w-lg mx-auto text-center">
-        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-14">
-          <p className="text-sm uppercase tracking-widest mb-4" style={{ color: '#D4838A' }}>One Year of Magic</p>
-          <h2 className="text-4xl md:text-5xl" style={{ fontFamily: 'Playfair Display', color: '#3D3D3D' }}>Make a Wish</h2>
-          {!blown.every(Boolean) && <p className="mt-3 text-sm" style={{ color: '#5A5A5A' }}>Tap each candle to blow it out 🎂</p>}
+      <div className="section-container max-w-lg">
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="section-header mb-12"
+        >
+          <span className="section-eyebrow">One Year of Magic</span>
+          <h2 className="section-title">Make a Wish</h2>
+          <p className="section-subtitle">
+            {!blown.every(Boolean) ? 'Tap each glowing candle to blow it out together 🎂' : 'Your wish is sealed in our hearts! ✨'}
+          </p>
         </motion.div>
 
         {/* Cake */}

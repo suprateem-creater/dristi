@@ -1,131 +1,214 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { couple } from '../coupleData';
+import { useCouple } from '../CoupleContext';
 import { spawnHearts } from './HeartCanvas';
+import { Check, X as CloseIcon, Sparkles, Award } from 'lucide-react';
+
+const DEFAULT_QUESTIONS = [
+  {
+    question: "Where was our very first date?",
+    options: ["A cozy coffee shop", "The botanical garden", "By the sunset beach", "A quiet bookstore café"],
+    correct: 0,
+  },
+  {
+    question: "What was the first movie we watched together?",
+    options: ["La La Land", "About Time", "Before Sunrise", "The Notebook"],
+    correct: 1,
+  },
+  {
+    question: "Who said 'I love you' first?",
+    options: ["You did 💕", "I did! 🥰", "We said it at the same time!", "It was a secret"],
+    correct: 2,
+  },
+  {
+    question: "What is our favorite thing to do on a lazy Sunday?",
+    options: ["Sleep in & make brunch", "Go on long road trips", "Binge-watch our favorite show", "Cook together"],
+    correct: 0,
+  },
+];
+
+const OPTION_LETTERS = ['A', 'B', 'C', 'D'];
 
 export default function LoveQuiz() {
-  const questions = couple.quizQuestions;
+  const { couple } = useCouple();
+  const questions = (couple.loveQuiz && couple.loveQuiz.length > 0) ? couple.loveQuiz : DEFAULT_QUESTIONS;
+
   const [step, setStep] = useState(0);
-  const [selected, setSelected] = useState(null);
   const [score, setScore] = useState(0);
-  const [done, setDone] = useState(false);
+  const [selected, setSelected] = useState(null);
   const [feedback, setFeedback] = useState(null);
+  const [done, setDone] = useState(false);
+  const [finalScore, setFinalScore] = useState(0);
 
-  const q = questions[step];
+  const q = questions[step] || questions[0];
 
-  const handleAnswer = (i, e) => {
+  const handleAnswer = (index, e) => {
     if (selected !== null) return;
-    setSelected(i);
-    const correct = i === q.correct;
-    setFeedback(correct ? 'correct' : 'wrong');
-    if (correct) setScore(s => s + 1);
+    setSelected(index);
+    const correct = index === q.correct;
+    if (correct) {
+      setScore(s => s + 1);
+      setFeedback('correct');
+      const x = e?.clientX ?? window.innerWidth / 2;
+      const y = e?.clientY ?? window.innerHeight / 2;
+      spawnHearts(x, y, 8);
+    } else {
+      setFeedback('wrong');
+    }
 
     setTimeout(() => {
-      setFeedback(null);
       setSelected(null);
-      if (step + 1 >= questions.length) {
-        setDone(true);
-        if (correct && score + 1 === questions.length) {
-          // Perfect score — burst
-          for (let j = 0; j < 15; j++) {
-            setTimeout(() => spawnHearts(Math.random() * window.innerWidth, Math.random() * window.innerHeight, 5), j * 80);
-          }
-        }
-      } else {
+      setFeedback(null);
+      if (step + 1 < questions.length) {
         setStep(s => s + 1);
+      } else {
+        setFinalScore(score + (correct ? 1 : 0));
+        setDone(true);
       }
-    }, 1000);
+    }, 1300);
   };
 
   const restart = () => {
-    setStep(0); setScore(0); setDone(false); setSelected(null); setFeedback(null);
+    setStep(0);
+    setScore(0);
+    setSelected(null);
+    setFeedback(null);
+    setDone(false);
+    setFinalScore(0);
   };
 
-  const finalScore = score;
   const getResult = () => {
-    if (finalScore === questions.length) return `You know our story by heart ❤️`;
-    if (finalScore >= questions.length * 0.7) return `You know us so well 💕`;
-    if (finalScore >= questions.length * 0.5) return `You're learning our story 📖`;
-    return `Time to relive our memories together 🌸`;
+    const total = questions.length;
+    if (finalScore === total) return `Perfect score! You know us better than anyone in the universe 💕`;
+    if (finalScore >= total * 0.75) return `So close to perfection! You truly know my heart 🌸`;
+    return `Every moment with you is a memory worth celebrating 🥂`;
   };
 
   return (
-    <section className="py-24 px-4" style={{ background: 'linear-gradient(135deg, #FFF8F0, #FFE4E8)' }}>
-      <div className="max-w-2xl mx-auto">
+    <section id="quiz" className="section-wrapper" style={{ background: 'linear-gradient(180deg, #F8EFEA 0%, #FFF5F0 50%, #FAF0EA 100%)' }}>
+      <div className="section-container max-w-4xl">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 25 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          transition={{ duration: 0.7 }}
+          className="section-header mb-10"
         >
-          <p className="text-sm uppercase tracking-widest mb-4" style={{ color: '#D4838A' }}>Test Your Knowledge</p>
-          <h2 className="text-4xl md:text-5xl" style={{ fontFamily: 'Playfair Display', color: '#3D3D3D' }}>
-            How Well Do You Know Us?
-          </h2>
+          <span className="section-eyebrow">Test Your Memory</span>
+          <h2 className="section-title">How Well Do You Know Us?</h2>
+          <p className="section-subtitle">A mini playful quiz celebrating all the little moments we shared.</p>
         </motion.div>
 
         <AnimatePresence mode="wait">
           {!done ? (
             <motion.div
               key={step}
-              initial={{ opacity: 0, x: 60 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -60 }}
-              transition={{ duration: 0.4 }}
-              className="rounded-3xl p-8"
-              style={{ background: '#FFFDF9', border: '1px solid rgba(201,160,138,0.3)' }}
+              initial={{ opacity: 0, y: 25, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -25, scale: 0.98 }}
+              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              className="bg-white/95 backdrop-blur-xl rounded-3xl p-8 sm:p-14 md:p-16 shadow-2xl border border-rose-200/90 relative overflow-hidden"
+              style={{
+                boxShadow: '0 25px 60px rgba(212,131,138,0.18), 0 4px 16px rgba(0,0,0,0.04)',
+              }}
             >
-              {/* Progress */}
-              <div className="flex gap-2 mb-6">
-                {questions.map((_, i) => (
-                  <div
-                    key={i}
-                    className="h-1.5 flex-1 rounded-full transition-all duration-500"
-                    style={{ background: i <= step ? '#D4838A' : 'rgba(212,131,138,0.3)' }}
-                  />
-                ))}
+              {/* Progress bar and counter */}
+              <div className="flex items-center justify-between gap-4 mb-10">
+                <div className="flex gap-3 flex-1">
+                  {questions.map((_, i) => (
+                    <div
+                      key={i}
+                      className="h-3 flex-1 rounded-full transition-all duration-500 shadow-xs"
+                      style={{
+                        background: i <= step ? 'linear-gradient(90deg, #F43F5E, #E11D48)' : '#F3E8E8',
+                      }}
+                    />
+                  ))}
+                </div>
+                <span className="text-xs font-extrabold uppercase tracking-widest text-rose-500 px-4 py-1.5 bg-rose-50 rounded-full border border-rose-200 flex-shrink-0">
+                  Question {step + 1} of {questions.length}
+                </span>
               </div>
-              <p className="text-xs mb-3" style={{ color: '#D4838A' }}>
-                Question {step + 1} of {questions.length}
-              </p>
-              <h3 className="text-xl font-semibold mb-8" style={{ fontFamily: 'Playfair Display', color: '#3D3D3D' }}>
-                {q.question}
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {q.options.map((opt, i) => (
-                  <motion.button
-                    key={i}
-                    whileHover={selected === null ? { scale: 1.02 } : {}}
-                    whileTap={selected === null ? { scale: 0.98 } : {}}
-                    onClick={(e) => handleAnswer(i, e)}
-                    disabled={selected !== null}
-                    className="p-4 rounded-2xl text-left text-sm font-medium transition-all"
-                    style={{
-                      background:
-                        selected === i
-                          ? i === q.correct ? 'linear-gradient(135deg, #7BCB8A, #5EAE70)' : 'linear-gradient(135deg, #E87B7B, #C45555)'
-                          : selected !== null && i === q.correct
-                          ? 'linear-gradient(135deg, #7BCB8A, #5EAE70)'
-                          : 'rgba(232,180,184,0.2)',
-                      color: selected !== null ? (i === q.correct || selected === i ? 'white' : '#3D3D3D') : '#3D3D3D',
-                      border: '1px solid rgba(201,160,138,0.3)',
-                    }}
-                  >
-                    {opt}
-                  </motion.button>
-                ))}
+
+              {/* Large Prominent Question with Generous Spacing */}
+              <div className="text-center my-8 sm:my-12 px-4 max-w-2xl mx-auto">
+                <h3 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-gray-900 leading-snug tracking-tight">
+                  {q.question}
+                </h3>
               </div>
+
+              {/* Extended Full-Width Option Boxes */}
+              <div className="flex flex-col gap-4 sm:gap-5 mt-10 w-full">
+                {q.options.map((opt, i) => {
+                  const isSelected = selected === i;
+                  const isCorrect = i === q.correct;
+                  const letter = OPTION_LETTERS[i] || `${i + 1}`;
+
+                  let cardStyles = 'bg-gradient-to-r from-rose-50/70 to-pink-50/70 border-rose-200/90 text-gray-800 hover:border-rose-400 hover:from-rose-100 hover:to-pink-100 hover:shadow-lg';
+                  let letterBadgeStyles = 'bg-white text-rose-600 border-rose-200 shadow-xs';
+
+                  if (selected !== null) {
+                    if (isSelected && isCorrect) {
+                      cardStyles = 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white border-emerald-600 shadow-xl scale-[1.01]';
+                      letterBadgeStyles = 'bg-white text-emerald-600 border-white shadow-md';
+                    } else if (isSelected && !isCorrect) {
+                      cardStyles = 'bg-gradient-to-r from-rose-500 to-pink-600 text-white border-rose-600 shadow-xl scale-[1.01]';
+                      letterBadgeStyles = 'bg-white text-rose-600 border-white shadow-md';
+                    } else if (isCorrect) {
+                      cardStyles = 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white border-emerald-600 shadow-md';
+                      letterBadgeStyles = 'bg-white text-emerald-600 border-white shadow-md';
+                    } else {
+                      cardStyles = 'bg-gray-100 text-gray-400 border-gray-200 opacity-50 pointer-events-none';
+                      letterBadgeStyles = 'bg-gray-200 text-gray-400 border-gray-300';
+                    }
+                  }
+
+                  return (
+                    <motion.button
+                      key={i}
+                      whileHover={selected === null ? { scale: 1.015, x: 4 } : {}}
+                      whileTap={selected === null ? { scale: 0.985 } : {}}
+                      onClick={(e) => handleAnswer(i, e)}
+                      disabled={selected !== null}
+                      className={`w-full min-h-[80px] sm:min-h-[88px] px-7 sm:px-9 py-5 rounded-2xl sm:rounded-3xl flex items-center gap-6 text-left transition-all duration-300 border-2 cursor-pointer select-none shadow-sm relative overflow-hidden ${cardStyles}`}
+                    >
+                      {/* Option Letter Chip */}
+                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-base sm:text-lg flex-shrink-0 border ${letterBadgeStyles}`}>
+                        {selected !== null && isCorrect ? (
+                          <Check size={22} className="stroke-[3]" />
+                        ) : selected !== null && isSelected && !isCorrect ? (
+                          <CloseIcon size={22} className="stroke-[3]" />
+                        ) : (
+                          letter
+                        )}
+                      </div>
+
+                      {/* Extended Option Text */}
+                      <span className="text-base sm:text-xl font-bold leading-snug flex-1">
+                        {opt}
+                      </span>
+                    </motion.button>
+                  );
+                })}
+              </div>
+
+              {/* Feedback Animation */}
               <AnimatePresence>
                 {feedback && (
-                  <motion.p
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
-                    className="mt-4 text-center font-semibold"
-                    style={{ color: feedback === 'correct' ? '#5EAE70' : '#C45555', fontFamily: 'Dancing Script', fontSize: '1.4rem' }}
+                  <motion.div
+                    initial={{ opacity: 0, y: 15, scale: 0.9 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                    className="mt-8 text-center"
                   >
-                    {feedback === 'correct' ? '✓ Yes! 💕' : '✗ Not quite...'}
-                  </motion.p>
+                    <p
+                      className="text-2xl sm:text-3xl font-bold font-script"
+                      style={{ color: feedback === 'correct' ? '#059669' : '#E11D48' }}
+                    >
+                      {feedback === 'correct' ? '✓ Exactly right! You remember! 💕' : '✗ Aww, close! But I still love you 🥰'}
+                    </p>
+                  </motion.div>
                 )}
               </AnimatePresence>
             </motion.div>
@@ -134,27 +217,28 @@ export default function LoveQuiz() {
               key="done"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ type: 'spring', stiffness: 200 }}
-              className="rounded-3xl p-10 text-center"
-              style={{ background: '#FFFDF9', border: '1px solid rgba(201,160,138,0.3)' }}
+              transition={{ type: 'spring', stiffness: 240, damping: 22 }}
+              className="bg-white/95 backdrop-blur-xl rounded-3xl p-8 sm:p-14 text-center shadow-2xl border border-rose-200/90"
             >
-              <div className="text-6xl mb-6">
-                {finalScore === questions.length ? '🎉' : '💕'}
+              <div className="text-6xl sm:text-7xl mb-4 animate-bounce">
+                {finalScore === questions.length ? '👑' : '💝'}
               </div>
-              <h3 className="text-3xl font-semibold mb-4" style={{ fontFamily: 'Playfair Display', color: '#C9A08A' }}>
-                {finalScore}/{questions.length} Correct
+              <span className="text-xs font-extrabold uppercase tracking-widest text-rose-500 mb-2 block">
+                Quiz Results
+              </span>
+              <h3 className="text-3xl sm:text-4xl font-bold font-serif text-gray-900 mb-4">
+                {finalScore} of {questions.length} Correct
               </h3>
-              <p className="text-xl mb-8" style={{ fontFamily: 'Dancing Script', color: '#3D3D3D', fontSize: '1.5rem' }}>
-                {getResult()}
+              <p className="text-xl sm:text-2xl text-rose-600 mb-8 max-w-md mx-auto leading-relaxed font-script" style={{ fontSize: '1.65rem' }}>
+                "{getResult()}"
               </p>
-              <motion.button
-                whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+              <button
+                type="button"
                 onClick={restart}
-                className="px-8 py-3 rounded-full text-white font-medium"
-                style={{ background: 'linear-gradient(135deg, #D4838A, #C9A08A)' }}
+                className="px-10 py-3.5 rounded-full text-white font-bold text-sm bg-gradient-to-r from-rose-500 to-pink-500 shadow-xl hover:shadow-2xl hover:scale-105 transition cursor-pointer"
               >
                 Play Again ↩
-              </motion.button>
+              </button>
             </motion.div>
           )}
         </AnimatePresence>

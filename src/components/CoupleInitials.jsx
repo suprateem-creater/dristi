@@ -1,8 +1,9 @@
 import { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { couple } from '../coupleData';
+import { useCouple } from '../CoupleContext';
 
 export default function CoupleInitials() {
+  const { couple } = useCouple();
   const containerRef = useRef(null);
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
   const [angle, setAngle] = useState(0);
