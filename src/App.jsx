@@ -70,7 +70,9 @@ function Hero() {
           transition={{ duration: 1, delay: 0.25 }}
           className="hero-title"
         >
-          365 Days<br />of Us
+          {couple.heroTitle ? couple.heroTitle.split('\n').map((line, idx) => (
+            <span key={idx} className="block">{line}</span>
+          )) : <>365 Days<br />of Us</>}
         </motion.h1>
 
         <motion.p

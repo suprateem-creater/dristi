@@ -92,11 +92,23 @@ export default function LoveQuiz() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
-          className="section-header mb-10"
+          className="section-header text-center flex flex-col items-center mx-auto"
+          style={{ marginBottom: 'clamp(2rem, 4vw, 3rem)' }}
         >
-          <span className="section-eyebrow">Test Your Memory</span>
-          <h2 className="section-title">How Well Do You Know Us?</h2>
-          <p className="section-subtitle">A mini playful quiz celebrating all the little moments we shared.</p>
+          <span className="section-eyebrow text-center">Test Your Memory</span>
+          <h2 className="section-title text-center">How Well Do You Know Us?</h2>
+          <p 
+            className="section-subtitle text-center max-w-2xl"
+            style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontSize: 'clamp(1.125rem, 2vw, 1.3rem)', // 18px to 21px
+              fontWeight: 450,
+              lineHeight: 1.5,
+              color: '#7C5C5E',
+            }}
+          >
+            A mini playful quiz celebrating all the little moments we shared.
+          </p>
         </motion.div>
 
         <AnimatePresence mode="wait">
@@ -107,73 +119,148 @@ export default function LoveQuiz() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -25, scale: 0.98 }}
               transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-              className="bg-white/95 backdrop-blur-xl rounded-3xl p-8 sm:p-14 md:p-16 shadow-2xl border border-rose-200/90 relative overflow-hidden"
+              className="bg-white/95 backdrop-blur-xl border border-rose-200/50 relative overflow-hidden w-full max-w-[920px] mx-auto"
               style={{
-                boxShadow: '0 25px 60px rgba(212,131,138,0.18), 0 4px 16px rgba(0,0,0,0.04)',
+                borderRadius: '24px',
+                padding: 'clamp(1.75rem, 3.2vw, 2.25rem)',
+                boxShadow: '0 25px 60px rgba(212,131,138,0.14), 0 4px 16px rgba(0,0,0,0.03)',
               }}
             >
               {/* Progress bar and counter */}
-              <div className="flex items-center justify-between gap-4 mb-10">
-                <div className="flex gap-3 flex-1">
+              <div 
+                className="flex items-center justify-between gap-4"
+                style={{ marginBottom: 'clamp(1.125rem, 2.2vw, 1.5rem)' }}
+              >
+                <div 
+                  className="flex flex-1"
+                  style={{ gap: 'clamp(0.875rem, 1.8vw, 1.125rem)' }} // 14px to 18px gap
+                >
                   {questions.map((_, i) => (
                     <div
                       key={i}
-                      className="h-3 flex-1 rounded-full transition-all duration-500 shadow-xs"
+                      className="flex-1 transition-all duration-500 shadow-xs"
                       style={{
-                        background: i <= step ? 'linear-gradient(90deg, #F43F5E, #E11D48)' : '#F3E8E8',
+                        height: '12px', // height around 12px
+                        borderRadius: '6px',
+                        background: i <= step ? 'linear-gradient(90deg, #F43F5E, #E11D48)' : '#FFE4E6',
                       }}
                     />
                   ))}
                 </div>
-                <span className="text-xs font-extrabold uppercase tracking-widest text-rose-500 px-4 py-1.5 bg-rose-50 rounded-full border border-rose-200 flex-shrink-0">
+                <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-rose-500 px-4 py-1.5 bg-rose-50 rounded-full border border-rose-200/60 flex-shrink-0 font-sans">
                   Question {step + 1} of {questions.length}
                 </span>
               </div>
 
               {/* Large Prominent Question with Generous Spacing */}
-              <div className="text-center my-8 sm:my-12 px-4 max-w-2xl mx-auto">
-                <h3 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-gray-900 leading-snug tracking-tight">
+              <div 
+                className="text-center px-2 max-w-2xl mx-auto"
+                style={{ marginBottom: 'clamp(1.5rem, 3vw, 2rem)' }}
+              >
+                <h3 
+                  className="font-bold text-gray-900 leading-snug"
+                  style={{
+                    fontFamily: "'Playfair Display', serif",
+                    fontSize: 'clamp(1.75rem, 4vw, 2.6rem)', // 36px to 42px on desktop
+                    fontWeight: 600,
+                    letterSpacing: '-0.02em',
+                  }}
+                >
                   {q.question}
                 </h3>
               </div>
 
-              {/* Extended Full-Width Option Boxes */}
-              <div className="flex flex-col gap-4 sm:gap-5 mt-10 w-full">
+              {/* 2×2 Answer Grid: CSS Grid with equal-size cards */}
+              <div
+                className="quiz-options-grid w-full"
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(1, minmax(0, 1fr))',
+                  gap: 'clamp(1.25rem, 2.5vw, 1.625rem)', // 20px to 26px gap
+                }}
+              >
                 {q.options.map((opt, i) => {
                   const isSelected = selected === i;
                   const isCorrect = i === q.correct;
                   const letter = OPTION_LETTERS[i] || `${i + 1}`;
 
-                  let cardStyles = 'bg-gradient-to-r from-rose-50/70 to-pink-50/70 border-rose-200/90 text-gray-800 hover:border-rose-400 hover:from-rose-100 hover:to-pink-100 hover:shadow-lg';
-                  let letterBadgeStyles = 'bg-white text-rose-600 border-rose-200 shadow-xs';
+                  // Default State
+                  let cardStyleObj = {
+                    background: 'rgba(255, 255, 255, 0.85)',
+                    borderColor: 'rgba(244, 63, 94, 0.12)',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.01)',
+                    borderRadius: '22px',
+                  };
+                  let letterBadgeStyles = 'bg-rose-50/50 text-rose-600 border-rose-100 font-bold';
+                  let hoverEnabled = selected === null;
 
                   if (selected !== null) {
                     if (isSelected && isCorrect) {
-                      cardStyles = 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white border-emerald-600 shadow-xl scale-[1.01]';
-                      letterBadgeStyles = 'bg-white text-emerald-600 border-white shadow-md';
+                      cardStyleObj = {
+                        background: 'linear-gradient(90deg, #10B981, #14B8A6)',
+                        borderColor: '#059669',
+                        color: '#FFFFFF',
+                        borderRadius: '22px',
+                      };
+                      letterBadgeStyles = 'bg-white text-emerald-600 border-white shadow-md font-bold';
                     } else if (isSelected && !isCorrect) {
-                      cardStyles = 'bg-gradient-to-r from-rose-500 to-pink-600 text-white border-rose-600 shadow-xl scale-[1.01]';
-                      letterBadgeStyles = 'bg-white text-rose-600 border-white shadow-md';
+                      cardStyleObj = {
+                        background: 'linear-gradient(90deg, #EF4444, #F43F5E)',
+                        borderColor: '#DC2626',
+                        color: '#FFFFFF',
+                        borderRadius: '22px',
+                      };
+                      letterBadgeStyles = 'bg-white text-rose-600 border-white shadow-md font-bold';
                     } else if (isCorrect) {
-                      cardStyles = 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white border-emerald-600 shadow-md';
-                      letterBadgeStyles = 'bg-white text-emerald-600 border-white shadow-md';
+                      cardStyleObj = {
+                        background: 'linear-gradient(90deg, #10B981, #14B8A6)',
+                        borderColor: '#059669',
+                        color: '#FFFFFF',
+                        borderRadius: '22px',
+                      };
+                      letterBadgeStyles = 'bg-white text-emerald-600 border-white shadow-md font-bold';
                     } else {
-                      cardStyles = 'bg-gray-100 text-gray-400 border-gray-200 opacity-50 pointer-events-none';
-                      letterBadgeStyles = 'bg-gray-200 text-gray-400 border-gray-300';
+                      cardStyleObj = {
+                        background: 'rgba(243, 244, 246, 0.6)',
+                        borderColor: '#E5E7EB',
+                        color: '#9CA3AF',
+                        borderRadius: '22px',
+                        opacity: 0.5,
+                      };
+                      letterBadgeStyles = 'bg-gray-200 text-gray-400 border-gray-200';
                     }
                   }
 
                   return (
                     <motion.button
                       key={i}
-                      whileHover={selected === null ? { scale: 1.015, x: 4 } : {}}
-                      whileTap={selected === null ? { scale: 0.985 } : {}}
+                      whileHover={hoverEnabled ? { y: -3, boxShadow: '0 8px 24px rgba(212,131,138,0.18)', borderColor: '#FDA4AF', background: '#FFFDFD' } : {}}
+                      whileTap={hoverEnabled ? { scale: 0.98 } : {}}
                       onClick={(e) => handleAnswer(i, e)}
                       disabled={selected !== null}
-                      className={`w-full min-h-[80px] sm:min-h-[88px] px-7 sm:px-9 py-5 rounded-2xl sm:rounded-3xl flex items-center gap-6 text-left transition-all duration-300 border-2 cursor-pointer select-none shadow-sm relative overflow-hidden ${cardStyles}`}
+                      className="flex items-center text-left transition-all duration-300 border cursor-pointer select-none relative overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-400 w-full"
+                      style={{
+                        ...cardStyleObj,
+                        minHeight: 'clamp(6.875rem, 12vw, 7.8rem)', // 110px to 125px card height
+                        paddingTop: 'clamp(1.375rem, 2.2vw, 1.75rem)',
+                        paddingBottom: 'clamp(1.375rem, 2.2vw, 1.75rem)',
+                        paddingLeft: 'clamp(1.375rem, 2.2vw, 1.75rem)',
+                        paddingRight: 'clamp(1.375rem, 2.2vw, 1.75rem)',
+                        gap: 'clamp(1.25rem, 2.2vw, 1.5rem)', // 20px to 24px gap between badge and text
+                      }}
                     >
-                      {/* Option Letter Chip */}
-                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-base sm:text-lg flex-shrink-0 border ${letterBadgeStyles}`}>
+                      {/* Option Letter Chip — 48px to 52px */}
+                      <div
+                        className={`flex-shrink-0 border flex items-center justify-center font-bold`}
+                        style={{
+                          width: 'clamp(3rem, 5vw, 3.25rem)',
+                          height: 'clamp(3rem, 5vw, 3.25rem)',
+                          borderRadius: '14px',
+                          fontSize: 'clamp(1rem, 2vw, 1.15rem)',
+                          ...letterBadgeStyles.includes('bg-white') ? {} : { background: 'rgba(255, 255, 255, 0.9)' },
+                        }}
+                        className={`flex-shrink-0 border flex items-center justify-center font-bold ${letterBadgeStyles}`}
+                      >
                         {selected !== null && isCorrect ? (
                           <Check size={22} className="stroke-[3]" />
                         ) : selected !== null && isSelected && !isCorrect ? (
@@ -183,8 +270,16 @@ export default function LoveQuiz() {
                         )}
                       </div>
 
-                      {/* Extended Option Text */}
-                      <span className="text-base sm:text-xl font-bold leading-snug flex-1">
+                      {/* Option Text — Plus Jakarta Sans */}
+                      <span
+                        className="flex-1 font-sans"
+                        style={{ 
+                          fontSize: 'clamp(1.125rem, 2vw, 1.25rem)', // 18px to 20px
+                          fontWeight: 600,
+                          lineHeight: 1.4,
+                          color: selected !== null && !isCorrect && !isSelected ? '#9CA3AF' : '#1F2937'
+                        }}
+                      >
                         {opt}
                       </span>
                     </motion.button>

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useCouple } from '../CoupleContext';
 import { spawnHearts } from './HeartCanvas';
 
-const HEARTBEAT_MESSAGES = [
+const DEFAULT_HEARTBEAT_MESSAGES = [
   "You make my heart race. ❤️",
   "Still choosing you every single day.",
   "My favorite place is in your arms.",
@@ -18,10 +18,14 @@ export default function HeartbeatSection() {
   const [msgIndex, setMsgIndex] = useState(0);
   const timerRef = useRef(null);
 
+  const heartbeatMessages = (couple.heartbeatMessages && couple.heartbeatMessages.length > 0)
+    ? couple.heartbeatMessages
+    : DEFAULT_HEARTBEAT_MESSAGES;
+
   const handleHeartClick = (e) => {
     const newBeats = Math.min(beats + 1, 5);
     setBeats(newBeats);
-    setMsgIndex(i => (i + 1) % HEARTBEAT_MESSAGES.length);
+    setMsgIndex(i => (i + 1) % heartbeatMessages.length);
     spawnHearts(e.clientX, e.clientY, 8);
     clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => setBeats(1), 3500);
@@ -41,9 +45,9 @@ export default function HeartbeatSection() {
           transition={{ duration: 0.7 }}
           className="section-header mb-12"
         >
-          <span className="section-eyebrow">Feel It</span>
-          <h2 className="section-title">My Heartbeat For You</h2>
-          <p className="section-subtitle">Tap the beating heart to feel how fast you make it beat.</p>
+          <span className="section-eyebrow">{couple.heartbeatEyebrow || "Feel It"}</span>
+          <h2 className="section-title">{couple.heartbeatTitle || "My Heartbeat For You"}</h2>
+          <p className="section-subtitle">{couple.heartbeatSubtitle || "Tap the beating heart to feel how fast you make it beat."}</p>
         </motion.div>
 
         <div className="relative flex justify-center items-center h-48 sm:h-56 mb-6">
@@ -86,7 +90,7 @@ export default function HeartbeatSection() {
               className="text-xl sm:text-2xl font-bold font-script text-rose-600 leading-snug"
               style={{ fontSize: '1.65rem' }}
             >
-              "{HEARTBEAT_MESSAGES[msgIndex]}"
+              "{heartbeatMessages[msgIndex] || ''}"
             </p>
           </motion.div>
         </AnimatePresence>

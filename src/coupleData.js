@@ -69,7 +69,8 @@ export const couple = {
   ],
 
   timeline: [
-    { date: "Aug 9, 2025", event: "First Message", icon: "💌", desc: "A simple 'Hey' that started everything." },
+    { date: "Aug 9, 2025", event: "First Message: Hey", icon: "💌", desc: "A simple 'Hey' that started everything." },
+    { date: "Aug 12, 2025", event: "First Talk", icon: "🩺", desc: "Late-night deep conversations that connected our souls." },
     { date: "Aug 15, 2025", event: "First Call", icon: "📞", desc: "We talked for 4 hours. I didn't want to hang up." },
     { date: "Sep 21, 2025", event: "First Date", icon: "🌅", desc: "Sunset walk in the botanical garden. Pure magic." },
     { date: "Oct 10, 2025", event: "First Photo", icon: "📸", desc: "A blurry, laughing selfie. It's still my favorite." },
@@ -137,10 +138,33 @@ export const couple = {
     "Choosing you. Yesterday, today, and in every tomorrow I have.",
   ],
 
+  loveQuiz: [
+    {
+      question: "Where was our very first date?",
+      options: ["A cozy coffee shop", "The botanical garden", "By the sunset beach", "A quiet bookstore café"],
+      correct: 1,
+    },
+    {
+      question: "What was the first movie we watched together?",
+      options: ["La La Land", "About Time", "Before Sunrise", "The Notebook"],
+      correct: 1,
+    },
+    {
+      question: "Who said 'I love you' first?",
+      options: ["You did 💕", "I did! 🥰", "We said it at the same time!", "It was a secret"],
+      correct: 0,
+    },
+    {
+      question: "What is our favorite thing to do on a lazy Sunday?",
+      options: ["Sleep in & make brunch", "Go on long road trips", "Binge-watch our favorite show", "Cook together"],
+      correct: 0,
+    },
+  ],
+
   quizQuestions: [
     {
-      question: "Where did we first meet?",
-      options: ["At a park", "At a coffee shop", "At a mutual friend's party", "Online"],
+      question: "Where was our very first date?",
+      options: ["A cozy coffee shop", "The botanical garden", "By the sunset beach", "A quiet bookstore café"],
       correct: 1,
     },
     {

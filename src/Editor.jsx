@@ -112,6 +112,7 @@ export default function Editor() {
   const [uploadStatusMsg, setUploadStatusMsg] = useState('');
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [activeStarPreview, setActiveStarPreview] = useState(null);
+  const [activeTab, setActiveTab] = useState('core');
   const linkRef = useRef(null);
   const fileInputRef = useRef(null);
 
@@ -126,6 +127,13 @@ export default function Editor() {
         memories: Array.isArray(data.memories) && data.memories.filter(m => m && m.photo).length > 0 ? data.memories.filter(m => m && m.photo) : prev.memories,
         loveMap: Array.isArray(data.loveMap) ? data.loveMap : prev.loveMap,
         constellationStars: Array.isArray(data.constellationStars) ? data.constellationStars : prev.constellationStars,
+        loveQuiz: Array.isArray(data.loveQuiz) ? data.loveQuiz : prev.loveQuiz,
+        quizQuestions: Array.isArray(data.quizQuestions) ? data.quizQuestions : prev.quizQuestions,
+        loveReasons: Array.isArray(data.loveReasons) ? data.loveReasons : prev.loveReasons,
+        timeline: Array.isArray(data.timeline) ? data.timeline : prev.timeline,
+        openWhenCards: Array.isArray(data.openWhenCards) ? data.openWhenCards : prev.openWhenCards,
+        futureDreams: Array.isArray(data.futureDreams) ? data.futureDreams : prev.futureDreams,
+        randomMessages: Array.isArray(data.randomMessages) ? data.randomMessages : prev.randomMessages,
       }));
     };
 
@@ -251,6 +259,87 @@ export default function Editor() {
     setFormData({ ...formData, photos: [...(formData.photos || []), ''] });
   };
 
+  const addNewQuizQuestion = () => {
+    const currentList = formData.loveQuiz || formData.quizQuestions || [];
+    const newQ = {
+      question: 'New Question?',
+      options: ['Option A', 'Option B', 'Option C', 'Option D'],
+      correct: 0
+    };
+    setFormData({
+      ...formData,
+      loveQuiz: [...currentList, newQ],
+      quizQuestions: [...currentList, newQ],
+    });
+  };
+
+  const handleQuizQuestionChange = (qIndex, field, value) => {
+    const currentList = [...(formData.loveQuiz || formData.quizQuestions || [])];
+    currentList[qIndex] = { ...currentList[qIndex], [field]: value };
+    setFormData({
+      ...formData,
+      loveQuiz: currentList,
+      quizQuestions: currentList,
+    });
+  };
+
+  const handleQuizOptionChange = (qIndex, optIndex, value) => {
+    const currentList = [...(formData.loveQuiz || formData.quizQuestions || [])];
+    const newOpts = [...(currentList[qIndex].options || [])];
+    newOpts[optIndex] = value;
+    currentList[qIndex] = { ...currentList[qIndex], options: newOpts };
+    setFormData({
+      ...formData,
+      loveQuiz: currentList,
+      quizQuestions: currentList,
+    });
+  };
+
+  const handleRemoveQuizQuestion = (qIndex) => {
+    const currentList = (formData.loveQuiz || formData.quizQuestions || []).filter((_, i) => i !== qIndex);
+    setFormData({
+      ...formData,
+      loveQuiz: currentList,
+      quizQuestions: currentList,
+    });
+  };
+
+  const addNewLoveReason = () => {
+    const newReason = { front: 'New Reason Title', back: 'Describe this reason in detail...' };
+    setFormData({ ...formData, loveReasons: [...(formData.loveReasons || []), newReason] });
+  };
+
+  const addNewTimelineItem = () => {
+    const newItem = { date: 'Aug 9, 2026', event: 'First Event', icon: '💌', desc: 'Describe the milestone...' };
+    setFormData({ ...formData, timeline: [...(formData.timeline || []), newItem] });
+  };
+
+  const addNewOpenWhenCard = () => {
+    const newCard = { label: 'Open when you need me', icon: '✉️', message: 'Write your heartfelt message here...' };
+    setFormData({ ...formData, openWhenCards: [...(formData.openWhenCards || []), newCard] });
+  };
+
+  const addNewFutureDream = () => {
+    const newDream = { title: 'New Dream', desc: 'Describe this bucket list item...' };
+    setFormData({ ...formData, futureDreams: [...(formData.futureDreams || []), newDream] });
+  };
+
+  const addNewRandomMessage = () => {
+    setFormData({ ...formData, randomMessages: [...(formData.randomMessages || []), 'A sweet little love note...'] });
+  };
+
+  const addNewHeartbeatMessage = () => {
+    const current = formData.heartbeatMessages || [
+      "You make my heart race. ❤️",
+      "Still choosing you every single day.",
+      "My favorite place is in your arms.",
+      "365 days and I'm still falling for you.",
+      "Every single beat belongs to you.",
+      "You are my whole universe. ✨"
+    ];
+    setFormData({ ...formData, heartbeatMessages: [...current, 'A new heartbeat message...'] });
+  };
+
   // Instant Local Base64 Image Compression
   const handleSinglePhotoUpload = async (e, arrayName, index, field) => {
     const file = e.target.files?.[0];
@@ -324,6 +413,8 @@ export default function Editor() {
         memories: validMemories.length > 0 ? validMemories : (couple?.memories || []),
         loveMap: formData.loveMap || (couple?.loveMap || []),
         constellationStars: formData.constellationStars || (couple?.constellationStars || []),
+        loveQuiz: formData.loveQuiz || formData.quizQuestions || (couple?.loveQuiz || []),
+        quizQuestions: formData.loveQuiz || formData.quizQuestions || (couple?.quizQuestions || []),
         anniversaryDateObj: null,
         timeCapsuleDate: formData.timeCapsuleDate ? new Date(formData.timeCapsuleDate) : null,
       };
@@ -399,17 +490,17 @@ export default function Editor() {
   );
 
   return (
-    <div className="min-h-screen p-4 md:p-8 pb-32" style={{ background: '#FDFBF7', color: '#3D3D3D' }}>
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen p-4 md:p-8 pb-32" style={{ background: '#FFFBFB', color: '#3D3D3D' }}>
+      <div className="max-w-6xl mx-auto">
         
         {/* Header */}
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8 pb-6 border-b bg-white p-6 md:p-8 rounded-3xl shadow-md border border-rose-100">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8 pb-6 border-b bg-white p-6 md:p-8 rounded-3xl shadow-md border border-rose-100/60">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold" style={{ fontFamily: 'Playfair Display', color: '#C9A08A' }}>
-              Site Customizer ✨
+            <h1 className="text-3xl md:text-4xl font-bold flex items-center gap-2" style={{ fontFamily: 'Playfair Display', color: '#C9A08A' }}>
+              Site Customizer <Sparkles className="text-pink-400 animate-pulse" size={24} />
             </h1>
             <p className="text-sm text-gray-500 mt-1">
-              Personalize every date, map location, constellation star, memory, and message.
+              Personalize every single date, map location, constellation star, memory, and message.
             </p>
           </div>
           
@@ -417,14 +508,14 @@ export default function Editor() {
             <button
               onClick={exportConfigJson}
               title="Download backup file of your customized site"
-              className="px-3 py-2 rounded-xl border border-gray-300 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition flex items-center gap-1.5 cursor-pointer shadow-sm"
+              className="px-3.5 py-2 rounded-xl border border-gray-300 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition flex items-center gap-1.5 cursor-pointer shadow-sm bg-white"
             >
               <Download size={14} /> Export Backup
             </button>
             <button
               onClick={() => fileInputRef.current?.click()}
               title="Load a previously saved backup file"
-              className="px-3 py-2 rounded-xl border border-gray-300 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition flex items-center gap-1.5 cursor-pointer shadow-sm"
+              className="px-3.5 py-2 rounded-xl border border-gray-300 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition flex items-center gap-1.5 cursor-pointer shadow-sm bg-white"
             >
               <Upload size={14} /> Import Backup
             </button>
@@ -437,7 +528,7 @@ export default function Editor() {
             />
             <Link
               to="/"
-              className="px-4 py-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold hover:bg-rose-100 transition"
+              className="px-4 py-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold hover:bg-rose-100 transition shadow-sm"
             >
               ← View Live Site
             </Link>
@@ -481,774 +572,1439 @@ export default function Editor() {
           </div>
         )}
 
-        <div className="space-y-8">
+        {/* Main Grid Layout: Sidebar Tab Selector (sticky on large screens) + Active Editor Panel */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* 1. Basic Names & Initials */}
-          <Section title="Couple Names & Initials" icon={<Heart size={20} />} subtitle="Personalize the names across the entire site">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Partner 1</label>
-                <input type="text" name="partner1" value={formData.partner1 || ''} onChange={handleChange} className="w-full p-2.5 bg-gray-50 border rounded-xl font-medium" placeholder="Dristi" />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Partner 2</label>
-                <input type="text" name="partner2" value={formData.partner2 || ''} onChange={handleChange} className="w-full p-2.5 bg-gray-50 border rounded-xl font-medium" placeholder="Vedant" />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Initials Animation</label>
-                <input type="text" name="initials" value={formData.initials || ''} onChange={handleChange} className="w-full p-2.5 bg-gray-50 border rounded-xl font-medium" placeholder="D ♡ V" />
-              </div>
+          {/* Tabs Sidebar */}
+          <div className="lg:col-span-4 lg:sticky lg:top-8 bg-white p-5 rounded-3xl border border-rose-100/60 shadow-md space-y-4">
+            <div>
+              <h3 className="text-[11px] font-bold uppercase tracking-wider text-gray-400 px-1">Navigation</h3>
+              <p className="text-[10px] text-gray-400 px-1 mt-0.5">Customize your anniversary site page by page</p>
             </div>
-          </Section>
-
-          {/* 2. Custom Date & Countdown Timers */}
-          <Section title="Important Dates & Milestones" icon={<Calendar size={20} />} subtitle="Set your Anniversary date and relationship milestones">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              
-              {/* Anniversary Date */}
-              <div className="p-5 bg-rose-50/60 rounded-2xl border border-rose-200/80 space-y-3 md:col-span-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-bold text-rose-900">🎉 Anniversary Date</span>
-                  <span className="text-xs text-rose-600 font-medium">Controls the live countdown timer</span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-gray-600 mb-1">📅 Pick from Calendar:</label>
-                    <input
-                      type="date"
-                      value={toInputDateFormat(formData.anniversaryDate)}
-                      onChange={(e) => {
-                        const iso = e.target.value;
-                        const formatted = toDisplayDateFormat(iso);
-                        setFormData({
-                          ...formData,
-                          anniversaryDate: formatted,
-                          anniversaryDateObj: iso ? new Date(`${iso}T00:00:00`) : null,
-                        });
-                      }}
-                      className="w-full p-2.5 bg-white border border-rose-300 rounded-xl text-sm font-bold text-gray-800 shadow-sm cursor-pointer"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-gray-600 mb-1">✍️ Or Edit Formatted Date Text:</label>
-                    <input
-                      type="text"
-                      name="anniversaryDate"
-                      value={formData.anniversaryDate || ''}
-                      onChange={handleChange}
-                      className="w-full p-2.5 bg-white border border-rose-300 rounded-xl text-sm font-medium text-gray-800"
-                      placeholder="e.g. September 15, 2026"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* First Meeting & First Date */}
-              <div>
-                <label className="block text-xs font-bold text-gray-600 uppercase mb-1">First Meeting Place & Date</label>
-                <input
-                  type="text"
-                  name="firstMeeting"
-                  value={formData.firstMeeting || ''}
-                  onChange={handleChange}
-                  className="w-full p-2.5 bg-gray-50 border rounded-xl font-medium text-sm"
-                  placeholder="e.g. A coffee shop on a rainy afternoon"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-gray-600 uppercase mb-1">First Date Memory</label>
-                <input
-                  type="text"
-                  name="firstDate"
-                  value={formData.firstDate || ''}
-                  onChange={handleChange}
-                  className="w-full p-2.5 bg-gray-50 border rounded-xl font-medium text-sm"
-                  placeholder="e.g. A sunset walk at the botanical garden"
-                />
-              </div>
-
-            </div>
-          </Section>
-
-          {/* 3. Time Capsule Customizer */}
-          <Section title="Our Secret Time Capsule" icon={<Sparkles size={20} />} subtitle="Customize the sealed capsule lock date, teaser, and the secret message inside">
-            <div className="space-y-5">
-              
-              {/* Unlock Date */}
-              <div className="p-5 bg-purple-50/60 rounded-2xl border border-purple-200 space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-bold text-purple-900">🔒 Capsule Unlock Date & Time</span>
-                  <span className="text-xs text-purple-700 font-semibold bg-purple-100 px-2 py-0.5 rounded-full">Sealed Countdown</span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-gray-600 mb-1">📅 Select Unlock Date:</label>
-                    <input
-                      type="date"
-                      value={toInputDateFormat(formData.timeCapsuleDate)}
-                      onChange={(e) => {
-                        const iso = e.target.value;
-                        const formatted = toDisplayDateFormat(iso);
-                        setFormData({
-                          ...formData,
-                          timeCapsuleDate: formatted,
-                        });
-                      }}
-                      className="w-full p-2.5 bg-white border border-purple-300 rounded-xl text-sm font-bold text-gray-800 shadow-sm cursor-pointer"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-gray-600 mb-1">✍️ Or Edit Unlock Date Text:</label>
-                    <input
-                      type="text"
-                      value={typeof formData.timeCapsuleDate === 'string' ? formData.timeCapsuleDate : (formData.timeCapsuleDate ? new Date(formData.timeCapsuleDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'September 15, 2026')}
-                      onChange={(e) => setFormData({ ...formData, timeCapsuleDate: e.target.value })}
-                      className="w-full p-2.5 bg-white border border-purple-300 rounded-xl text-sm font-medium text-gray-800"
-                      placeholder="e.g. September 15, 2026"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Headings */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Capsule Title</label>
-                  <input
-                    type="text"
-                    name="timeCapsuleTitle"
-                    value={formData.timeCapsuleTitle || 'Our Time Capsule'}
-                    onChange={handleChange}
-                    className="w-full p-2.5 bg-gray-50 border rounded-xl text-sm font-bold"
-                    placeholder="Our Time Capsule"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Capsule Subtitle / Tagline</label>
-                  <input
-                    type="text"
-                    name="timeCapsuleSubtitle"
-                    value={formData.timeCapsuleSubtitle || 'Sealed with Love'}
-                    onChange={handleChange}
-                    className="w-full p-2.5 bg-gray-50 border rounded-xl text-sm"
-                    placeholder="Sealed with Love"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Locked Teaser Note (While Countdown is Running)</label>
-                <input
-                  type="text"
-                  name="timeCapsuleTeaser"
-                  value={formData.timeCapsuleTeaser || 'Something beautiful is waiting inside...'}
-                  onChange={handleChange}
-                  className="w-full p-2.5 bg-gray-50 border rounded-xl text-sm text-gray-700"
-                  placeholder="Something beautiful is waiting inside..."
-                />
-              </div>
-
-              {/* Opened Secret Note */}
-              <div className="p-4 bg-amber-50/50 rounded-2xl border border-amber-200/70 space-y-3">
-                <div className="flex items-center gap-2 text-amber-900 font-bold text-sm">
-                  <span>💌 Secret Message Sealed Inside the Capsule</span>
-                </div>
-                <p className="text-xs text-gray-500">
-                  This message will automatically reveal and celebrate once the unlock countdown reaches zero!
-                </p>
-
-                <div>
-                  <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Unlocked Headline</label>
-                  <input
-                    type="text"
-                    name="timeCapsuleOpenedTitle"
-                    value={formData.timeCapsuleOpenedTitle || 'The Capsule Has Opened! 🥂'}
-                    onChange={handleChange}
-                    className="w-full p-2 bg-white border border-amber-300 rounded-xl text-sm font-bold"
-                    placeholder="The Capsule Has Opened! 🥂"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Secret Letter Content</label>
-                  <textarea
-                    name="timeCapsuleMessage"
-                    value={formData.timeCapsuleMessage || "Two years ago, we sealed this moment in time — a promise to keep growing, keep choosing, and keep loving. If you're reading this, we did it. Here's to us. 🥂"}
-                    onChange={handleChange}
-                    className="w-full p-3 bg-white border border-amber-300 rounded-xl text-sm h-28 font-serif leading-relaxed"
-                    placeholder="Write a secret message to open on your anniversary..."
-                  />
-                </div>
-              </div>
-
-            </div>
-          </Section>
-
-          {/* 3. Our Love Map Customizer */}
-          <Section title="Our Love Map (Interactive Map)" icon={<MapPin size={20} />} subtitle="Add all the cities, vacation spots, and meaningful places where your love lived">
-            <div className="space-y-5">
-              {(formData.loveMap || []).map((loc, i) => (
-                <div key={i} className="p-5 bg-gray-50 rounded-2xl border border-gray-200 space-y-3">
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-2xl">{loc.emoji || '💖'}</span>
-                      <h4 className="font-bold text-gray-800">Location #{i + 1}: {loc.name || 'Unnamed Place'}</h4>
+            
+            {/* Scrollable list on mobile, stack on desktop */}
+            <div className="flex flex-row lg:flex-col overflow-x-auto lg:overflow-visible gap-2 pb-2 lg:pb-0 scrollbar-none">
+              {[
+                { id: 'core', label: '💕 Core Info', desc: 'Names, dates & songs' },
+                { id: 'capsule', label: '🔒 Capsule & Quiz', desc: 'Sealed notes & quizzes' },
+                { id: 'photos', label: '📸 Photos & Memories', desc: 'Carousel & pinboard' },
+                { id: 'mapsky', label: '🗺️ Map & Sky', desc: 'Love map & constellation' },
+                { id: 'stories', label: '✨ Lists & Stories', desc: 'Timeline, reasons & dreams' },
+              ].map(tab => {
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex-shrink-0 flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-bold transition-all text-left w-auto lg:w-full cursor-pointer ${
+                      isActive 
+                        ? 'bg-rose-500 text-white shadow-lg shadow-rose-500/20 scale-[1.02]' 
+                        : 'text-gray-600 hover:bg-rose-50/50 hover:text-[#D4838A] bg-gray-50 lg:bg-transparent'
+                    }`}
+                  >
+                    <span className="text-base">{tab.label.split(' ')[0]}</span>
+                    <div className="hidden lg:block text-left">
+                      <div className="font-bold leading-tight">{tab.label.split(' ').slice(1).join(' ')}</div>
+                      <div className={`text-[10px] font-normal leading-tight mt-0.5 ${isActive ? 'text-rose-100' : 'text-gray-400'}`}>{tab.desc}</div>
                     </div>
+                    {/* Fallback label for smaller screens */}
+                    <span className="lg:hidden font-bold">{tab.label.split(' ').slice(1).join(' ')}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Tab Content Panel */}
+          <div className="lg:col-span-8 space-y-6">
+            
+            {activeTab === 'core' && (
+              <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                
+                {/* 1. Basic Names & Initials */}
+                <Section title="Couple Names & Initials" icon={<Heart size={20} />} subtitle="Personalize the names across the entire site">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Partner 1</label>
+                      <input type="text" name="partner1" value={formData.partner1 || ''} onChange={handleChange} className="w-full p-2.5 bg-gray-50 border rounded-xl font-medium text-gray-800 text-sm focus:ring-2 focus:ring-rose-200 focus:bg-white transition shadow-sm" placeholder="Dristi" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Partner 2</label>
+                      <input type="text" name="partner2" value={formData.partner2 || ''} onChange={handleChange} className="w-full p-2.5 bg-gray-50 border rounded-xl font-medium text-gray-800 text-sm focus:ring-2 focus:ring-rose-200 focus:bg-white transition shadow-sm" placeholder="Vedant" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Initials Animation</label>
+                      <input type="text" name="initials" value={formData.initials || ''} onChange={handleChange} className="w-full p-2.5 bg-gray-50 border rounded-xl font-medium text-gray-800 text-sm focus:ring-2 focus:ring-rose-200 focus:bg-white transition shadow-sm" placeholder="D ♡ V" />
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4 pt-4 border-t border-gray-100">
+                    <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Hero Display Title (Use newlines for multiple lines)</label>
+                    <textarea 
+                      name="heroTitle" 
+                      value={formData.heroTitle || '365 Days\nof Us'} 
+                      onChange={handleChange} 
+                      className="w-full p-2.5 bg-gray-50 border rounded-xl font-medium text-gray-800 text-sm focus:ring-2 focus:ring-rose-200 focus:bg-white transition shadow-sm h-16" 
+                      placeholder="e.g. 365 Days&#10;of Us" 
+                    />
+                  </div>
+                </Section>
+
+                {/* 2. Custom Date & Countdown Timers */}
+                <Section title="Important Dates & Milestones" icon={<Calendar size={20} />} subtitle="Set your Anniversary date and relationship milestones">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    {/* Anniversary Date */}
+                    <div className="p-5 bg-rose-50/60 rounded-2xl border border-rose-200/80 space-y-3 md:col-span-2 shadow-xs">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-bold text-rose-900">🎉 Anniversary Date</span>
+                        <span className="text-xs text-rose-600 font-medium">Controls the live countdown timer</span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-bold text-gray-600 mb-1">📅 Pick from Calendar:</label>
+                          <input
+                            type="date"
+                            value={toInputDateFormat(formData.anniversaryDate)}
+                            onChange={(e) => {
+                              const iso = e.target.value;
+                              const formatted = toDisplayDateFormat(iso);
+                              setFormData({
+                                ...formData,
+                                anniversaryDate: formatted,
+                                anniversaryDateObj: iso ? new Date(`${iso}T00:00:00`) : null,
+                              });
+                            }}
+                            className="w-full p-2.5 bg-white border border-rose-300 rounded-xl text-sm font-bold text-gray-800 shadow-sm cursor-pointer focus:ring-2 focus:ring-rose-300 transition"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-bold text-gray-600 mb-1">✍️ Or Edit Formatted Date Text:</label>
+                          <input
+                            type="text"
+                            name="anniversaryDate"
+                            value={formData.anniversaryDate || ''}
+                            onChange={handleChange}
+                            className="w-full p-2.5 bg-white border border-rose-300 rounded-xl text-sm font-medium text-gray-800 focus:ring-2 focus:ring-rose-300 transition"
+                            placeholder="e.g. September 15, 2026"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* First Meeting & First Date */}
+                    <div>
+                      <label className="block text-xs font-bold text-gray-600 uppercase mb-1">First Meeting Place & Date</label>
+                      <input
+                        type="text"
+                        name="firstMeeting"
+                        value={formData.firstMeeting || ''}
+                        onChange={handleChange}
+                        className="w-full p-2.5 bg-gray-50 border rounded-xl font-medium text-sm text-gray-800 focus:ring-2 focus:ring-rose-200 focus:bg-white transition"
+                        placeholder="e.g. A coffee shop on a rainy afternoon"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-600 uppercase mb-1">First Date Memory</label>
+                      <input
+                        type="text"
+                        name="firstDate"
+                        value={formData.firstDate || ''}
+                        onChange={handleChange}
+                        className="w-full p-2.5 bg-gray-50 border rounded-xl font-medium text-sm text-gray-800 focus:ring-2 focus:ring-rose-200 focus:bg-white transition"
+                        placeholder="e.g. A sunset walk at the botanical garden"
+                      />
+                    </div>
+                  </div>
+                </Section>
+
+                {/* 3. The Love Letter & Song */}
+                <Section title="Love Letter & Our Song" icon={<Heart size={20} />} subtitle="The heartfelt letter and special song">
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Our Song Name</label>
+                        <input type="text" name="song" value={formData.song || ''} onChange={handleChange} className="w-full p-2.5 bg-gray-50 border rounded-xl font-medium text-gray-800 text-sm focus:ring-2 focus:ring-rose-200 focus:bg-white transition" placeholder="Perfect" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Artist Name</label>
+                        <input type="text" name="songArtist" value={formData.songArtist || ''} onChange={handleChange} className="w-full p-2.5 bg-gray-50 border rounded-xl font-medium text-gray-800 text-sm focus:ring-2 focus:ring-rose-200 focus:bg-white transition" placeholder="Ed Sheeran" />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-600 uppercase mb-1">The Love Letter</label>
+                      <textarea name="loveLetterText" value={formData.loveLetterText || ''} onChange={handleChange} className="w-full p-3 bg-gray-50 border rounded-2xl h-44 font-serif text-sm text-gray-800 leading-relaxed focus:ring-2 focus:ring-rose-200 focus:bg-white transition" />
+                    </div>
+                  </div>
+                </Section>
+
+                {/* 4. Random Love Notes Generator */}
+                <Section title="Love Notes Generator" icon={<Sparkles size={20} />} subtitle="Personalize the sweet random love notes generated on button clicks">
+                  <div className="space-y-4">
+                    <p className="text-xs text-gray-500">Add cute, short reminder text messages that your partner can generate with a button click.</p>
+                    {(formData.randomMessages || []).map((msg, rmIdx) => (
+                      <div key={rmIdx} className="flex items-center gap-3">
+                        <span className="text-xs text-gray-400 font-bold w-6">#{rmIdx + 1}</span>
+                        <input
+                          type="text"
+                          value={msg || ''}
+                          onChange={e => handleArrayChange('randomMessages', rmIdx, null, e.target.value)}
+                          className="flex-1 p-2 bg-white border rounded-xl text-sm font-medium text-gray-800 focus:ring-2 focus:ring-rose-200 transition"
+                          placeholder="Write a sweet short love note..."
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveItem('randomMessages', rmIdx)}
+                          className="text-red-500 hover:text-red-700 cursor-pointer p-2 bg-white border rounded-xl shadow-sm hover:bg-rose-50 transition"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    ))}
+
                     <button
-                      onClick={() => handleRemoveItem('loveMap', i)}
-                      className="text-red-500 hover:text-red-700 text-xs font-bold flex items-center gap-1 cursor-pointer bg-white px-3 py-1.5 rounded-lg border shadow-sm"
+                      type="button"
+                      onClick={addNewRandomMessage}
+                      className="w-full p-3 border-2 border-dashed border-rose-300 rounded-2xl flex items-center justify-center gap-2 text-[#D4838A] font-bold hover:bg-rose-50 transition cursor-pointer text-xs"
                     >
-                      <Trash2 size={14} /> Remove Place
+                      <Plus size={16} /> Add New Love Note
                     </button>
                   </div>
-
-                  {/* Quick City Presets Dropdown */}
-                  <div className="p-3 bg-white border rounded-xl">
-                    <label className="block text-xs font-semibold text-gray-500 mb-1">🚀 Quick City Auto-Fill:</label>
-                    <select
-                      onChange={(e) => {
-                        const selected = POPULAR_CITIES.find(c => c.name === e.target.value);
-                        if (selected && selected.coords) {
-                          setMapPreset(i, selected);
-                        }
-                      }}
-                      className="w-full p-2 text-xs border rounded-lg bg-gray-50 font-medium text-gray-700 cursor-pointer"
-                    >
-                      {POPULAR_CITIES.map((c, cIdx) => (
-                        <option key={cIdx} value={c.name}>{c.name}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div>
-                      <label className="block text-xs font-bold text-gray-600 mb-1">Place Name</label>
-                      <input
-                        type="text"
-                        value={loc.name || ''}
-                        onChange={e => handleArrayChange('loveMap', i, 'name', e.target.value)}
-                        className="w-full p-2 bg-white border rounded-lg text-sm font-medium"
-                        placeholder="e.g. Rishra, Kolkata, Paris"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold text-gray-600 mb-1">Emoji Icon</label>
-                      <input
-                        type="text"
-                        value={loc.emoji || '💖'}
-                        onChange={e => handleArrayChange('loveMap', i, 'emoji', e.target.value)}
-                        className="w-full p-2 bg-white border rounded-lg text-sm"
-                        placeholder="e.g. 🌸, 💖, ☕, 🌅, ✈️, 💍"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold text-gray-600 mb-1">Date / Tag</label>
-                      <input
-                        type="text"
-                        value={loc.date || ''}
-                        onChange={e => handleArrayChange('loveMap', i, 'date', e.target.value)}
-                        className="w-full p-2 bg-white border rounded-lg text-sm"
-                        placeholder="e.g. Our Beginning / Sep 21, 2025"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs text-gray-500 mb-1">Latitude (e.g. 22.7233)</label>
-                      <input
-                        type="number"
-                        step="any"
-                        value={loc.coords?.[0] ?? ''}
-                        onChange={e => {
-                          const newCoords = [Number(e.target.value), loc.coords?.[1] ?? 0];
-                          handleArrayChange('loveMap', i, 'coords', newCoords);
-                        }}
-                        className="w-full p-2 bg-white border rounded-lg text-sm font-mono"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs text-gray-500 mb-1">Longitude (e.g. 88.3494)</label>
-                      <input
-                        type="number"
-                        step="any"
-                        value={loc.coords?.[1] ?? ''}
-                        onChange={e => {
-                          const newCoords = [loc.coords?.[0] ?? 0, Number(e.target.value)];
-                          handleArrayChange('loveMap', i, 'coords', newCoords);
-                        }}
-                        className="w-full p-2 bg-white border rounded-lg text-sm font-mono"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-gray-600 mb-1">Story &amp; Memory</label>
-                    <textarea
-                      value={loc.story || ''}
-                      onChange={e => handleArrayChange('loveMap', i, 'story', e.target.value)}
-                      className="w-full p-2 bg-white border rounded-lg text-sm h-18"
-                      placeholder="What made this place unforgettable..."
-                    />
-                  </div>
-                </div>
-              ))}
-
-              <button
-                onClick={addNewLoveMapLocation}
-                className="w-full p-4 border-2 border-dashed border-rose-300 rounded-2xl flex items-center justify-center gap-2 text-[#D4838A] font-bold hover:bg-rose-50 transition cursor-pointer"
-              >
-                <Plus size={20} /> Add New Map Location
-              </button>
-            </div>
-          </Section>
-
-          {/* 4. Our Love Constellation Customizer */}
-          <Section title="Our Love Constellation" icon={<Star size={20} />} subtitle="Arrange the stars in your love sky with interactive layout presets and position controls">
-            
-            {/* Quick Layout Presets */}
-            <div className="mb-6 p-4 bg-gray-900 rounded-2xl text-white border border-purple-500/30">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-3">
-                <span className="text-xs font-bold uppercase tracking-wider text-purple-300">✨ One-Click Constellation Shapes:</span>
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    onClick={() => applyConstellationPreset('heart')}
-                    className="px-3 py-1.5 rounded-lg bg-pink-600 hover:bg-pink-500 text-xs font-bold transition flex items-center gap-1 cursor-pointer"
-                  >
-                    ❤️ Romantic Heart
-                  </button>
-                  <button
-                    onClick={() => applyConstellationPreset('cosmos')}
-                    className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-xs font-bold transition flex items-center gap-1 cursor-pointer"
-                  >
-                    🌌 Stellar Galaxy
-                  </button>
-                  <button
-                    onClick={() => applyConstellationPreset('infinity')}
-                    className="px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-xs font-bold transition flex items-center gap-1 cursor-pointer"
-                  >
-                    ♾️ Infinite Love
-                  </button>
-                </div>
+                </Section>
               </div>
+            )}
 
-              {/* Interactive Mini Sky Preview */}
-              <div
-                onClick={(e) => {
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  const clickX = Math.round(((e.clientX - rect.left) / rect.width) * 100);
-                  const clickY = Math.round(((e.clientY - rect.top) / rect.height) * 100);
-                  const targetIdx = activeStarPreview !== null ? activeStarPreview : 0;
-                  if (formData.constellationStars && formData.constellationStars[targetIdx]) {
-                    const newStars = [...formData.constellationStars];
-                    newStars[targetIdx] = { ...newStars[targetIdx], x: clickX, y: clickY };
-                    setFormData({ ...formData, constellationStars: newStars });
-                  }
-                }}
-                className="relative w-full h-48 bg-gradient-to-b from-black via-[#14081E] to-black rounded-2xl overflow-hidden border border-purple-400/30 cursor-crosshair select-none"
-              >
-                <svg className="absolute inset-0 w-full h-full pointer-events-none">
-                  {(formData.constellationStars || []).map((star, sIdx) => {
-                    if (sIdx === 0) return null;
-                    const prevStar = formData.constellationStars[sIdx - 1];
-                    return (
-                      <line
-                        key={`preview-line-${sIdx}`}
-                        x1={`${prevStar.x ?? 50}%`}
-                        y1={`${prevStar.y ?? 50}%`}
-                        x2={`${star.x ?? 50}%`}
-                        y2={`${star.y ?? 50}%`}
-                        stroke="#E8B4B8"
-                        strokeWidth="1.5"
-                        opacity="0.5"
-                      />
-                    );
-                  })}
-                </svg>
-
-                {(formData.constellationStars || []).map((star, sIdx) => {
-                  const isSelected = activeStarPreview === sIdx;
-                  return (
-                    <div
-                      key={star.id || sIdx}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setActiveStarPreview(sIdx);
-                      }}
-                      className="absolute w-6 h-6 -translate-x-1/2 -translate-y-1/2 cursor-pointer group flex items-center justify-center z-10"
-                      style={{ left: `${star.x ?? 50}%`, top: `${star.y ?? 50}%` }}
-                      title={`Star #${sIdx + 1}: ${star.label || 'Star'} (${star.x ?? 50}%, ${star.y ?? 50}%)`}
-                    >
-                      <div
-                        className={`rounded-full transition-transform ${isSelected ? 'w-4 h-4 bg-pink-300 ring-4 ring-pink-500/50 scale-125' : 'w-2.5 h-2.5 bg-white shadow-[0_0_8px_#E8B4B8] group-hover:scale-150'}`}
-                      />
-                      <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[10px] font-bold whitespace-nowrap bg-black/90 px-1.5 py-0.5 rounded text-pink-200 pointer-events-none shadow-md">
-                        #{sIdx + 1} {star.label || 'Star'}
-                      </span>
-                    </div>
-                  );
-                })}
-
-                <span className="absolute bottom-2 right-2 text-[11px] text-purple-300/80 bg-black/60 px-2 py-0.5 rounded pointer-events-none">
-                  💡 Click anywhere on sky to position Star #{activeStarPreview !== null ? activeStarPreview + 1 : 1}
-                </span>
-              </div>
-            </div>
-
-            {/* Stars List */}
-            <div className="space-y-5">
-              {(formData.constellationStars || []).map((star, i) => {
-                const isSelected = activeStarPreview === i;
-                return (
-                  <div
-                    key={star.id || i}
-                    onClick={() => setActiveStarPreview(i)}
-                    className={`p-5 bg-gray-50 rounded-2xl border transition space-y-4 ${isSelected ? 'border-purple-400 ring-2 ring-purple-200/60 bg-purple-50/20' : 'border-gray-200'}`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="text-base">⭐</span>
-                        <span className="text-sm font-bold text-gray-800">Star #{i + 1}: {star.label || 'Unnamed Star'}</span>
-                        {isSelected && <span className="text-[10px] bg-purple-100 text-purple-700 font-bold px-2 py-0.5 rounded-full">Active in Sky Preview</span>}
+            {activeTab === 'capsule' && (
+              <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                
+                {/* 5. Time Capsule Customizer */}
+                <Section title="Our Secret Time Capsule" icon={<Sparkles size={20} />} subtitle="Customize the sealed capsule lock date, teaser, and the secret message inside">
+                  <div className="space-y-5">
+                    
+                    {/* Unlock Date */}
+                    <div className="p-5 bg-purple-50/60 rounded-2xl border border-purple-200 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-bold text-purple-900">🔒 Capsule Unlock Date & Time</span>
+                        <span className="text-xs text-purple-700 font-semibold bg-purple-100 px-2 py-0.5 rounded-full">Sealed Countdown</span>
                       </div>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleRemoveItem('constellationStars', i);
-                        }}
-                        className="text-red-500 hover:text-red-700 text-xs font-bold flex items-center gap-1 cursor-pointer bg-white px-2.5 py-1 rounded-lg border shadow-sm"
-                      >
-                        <Trash2 size={14} /> Remove Star
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-bold text-gray-600 mb-1">📅 Select Unlock Date:</label>
+                          <input
+                            type="date"
+                            value={toInputDateFormat(formData.timeCapsuleDate)}
+                            onChange={(e) => {
+                              const iso = e.target.value;
+                              const formatted = toDisplayDateFormat(iso);
+                              setFormData({
+                                ...formData,
+                                timeCapsuleDate: formatted,
+                              });
+                            }}
+                            className="w-full p-2.5 bg-white border border-purple-300 rounded-xl text-sm font-bold text-gray-800 shadow-sm cursor-pointer focus:ring-2 focus:ring-purple-300 transition"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-bold text-gray-600 mb-1">✍️ Or Edit Unlock Date Text:</label>
+                          <input
+                            type="text"
+                            value={typeof formData.timeCapsuleDate === 'string' ? formData.timeCapsuleDate : (formData.timeCapsuleDate ? new Date(formData.timeCapsuleDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'September 15, 2026')}
+                            onChange={(e) => setFormData({ ...formData, timeCapsuleDate: e.target.value })}
+                            className="w-full p-2.5 bg-white border border-purple-300 rounded-xl text-sm font-medium text-gray-800 focus:ring-2 focus:ring-purple-300 transition"
+                            placeholder="e.g. September 15, 2026"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Headings */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Capsule Title</label>
+                        <input
+                          type="text"
+                          name="timeCapsuleTitle"
+                          value={formData.timeCapsuleTitle || 'Our Time Capsule'}
+                          onChange={handleChange}
+                          className="w-full p-2.5 bg-gray-50 border rounded-xl text-sm font-bold text-gray-800 focus:ring-2 focus:ring-purple-200 transition"
+                          placeholder="Our Time Capsule"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Capsule Subtitle / Tagline</label>
+                        <input
+                          type="text"
+                          name="timeCapsuleSubtitle"
+                          value={formData.timeCapsuleSubtitle || 'Sealed with Love'}
+                          onChange={handleChange}
+                          className="w-full p-2.5 bg-gray-50 border rounded-xl text-sm text-gray-800 focus:ring-2 focus:ring-purple-200 transition"
+                          placeholder="Sealed with Love"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Locked Teaser Note (While Countdown is Running)</label>
+                      <input
+                        type="text"
+                        name="timeCapsuleTeaser"
+                        value={formData.timeCapsuleTeaser || 'Something beautiful is waiting inside...'}
+                        onChange={handleChange}
+                        className="w-full p-2.5 bg-gray-50 border rounded-xl text-sm text-gray-700 focus:ring-2 focus:ring-purple-200 transition"
+                        placeholder="Something beautiful is waiting inside..."
+                      />
+                    </div>
+
+                    {/* Opened Secret Note */}
+                    <div className="p-4 bg-amber-50/50 rounded-2xl border border-amber-200/70 space-y-3">
+                      <div className="flex items-center gap-2 text-amber-900 font-bold text-sm">
+                        <span>💌 Secret Message Sealed Inside the Capsule</span>
+                      </div>
+                      <p className="text-xs text-gray-500">
+                        This message will automatically reveal and celebrate once the unlock countdown reaches zero!
+                      </p>
+
+                      <div>
+                        <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Unlocked Headline</label>
+                        <input
+                          type="text"
+                          name="timeCapsuleOpenedTitle"
+                          value={formData.timeCapsuleOpenedTitle || 'The Capsule Has Opened! 🥂'}
+                          onChange={handleChange}
+                          className="w-full p-2 bg-white border border-amber-300 rounded-xl text-sm font-bold text-gray-800 focus:ring-2 focus:ring-amber-200 transition"
+                          placeholder="Headline"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Capsule Unlocked Message Content</label>
+                        <textarea
+                          name="timeCapsuleMessage"
+                          value={formData.timeCapsuleMessage || ''}
+                          onChange={handleChange}
+                          className="w-full p-3 bg-white border border-amber-300 rounded-2xl text-sm text-gray-800 h-28 leading-relaxed focus:ring-2 focus:ring-amber-200 transition"
+                          placeholder="Your anniversary note..."
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </Section>
+
+                {/* 6. Interactive Quiz Customizer */}
+                <Section title="Anniversary Memory Quiz" icon={<Sparkles size={20} />} subtitle="Personalize the questions, multiple-choice options, and correct answers for your quiz">
+                  <div className="space-y-6">
+                    <p className="text-xs text-gray-500">Create a quiz to test your partner on special dates, trivia, or memories. They will see it embedded on the timeline!</p>
+                    {(formData.loveQuiz || formData.quizQuestions || []).map((q, qIdx) => (
+                      <div key={qIdx} className="p-5 bg-white rounded-2xl border border-rose-100 shadow-sm space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs bg-rose-50 text-rose-600 px-3 py-1 rounded-full font-bold">Question #{qIdx + 1}</span>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveQuizQuestion(qIdx)}
+                            className="text-red-500 hover:text-red-700 text-xs font-bold flex items-center gap-1 cursor-pointer bg-white px-2.5 py-1 rounded-lg border shadow-sm"
+                          >
+                            <Trash2 size={14} /> Remove Question
+                          </button>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-bold text-gray-600 mb-1">Question Prompt</label>
+                          <input
+                            type="text"
+                            value={q.question || ''}
+                            onChange={e => handleQuizQuestionChange(qIdx, 'question', e.target.value)}
+                            className="w-full p-2 bg-gray-50 border rounded-lg text-sm font-medium text-gray-800 focus:ring-2 focus:ring-rose-200 focus:bg-white transition"
+                            placeholder="e.g. Where was our very first date?"
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          {(q.options || []).map((opt, optIdx) => (
+                            <div key={optIdx}>
+                              <label className="block text-xs font-bold text-gray-500 mb-0.5">Option {['A', 'B', 'C', 'D'][optIdx] || optIdx + 1}</label>
+                              <input
+                                type="text"
+                                value={opt || ''}
+                                onChange={e => handleQuizOptionChange(qIdx, optIdx, e.target.value)}
+                                className="w-full p-2 bg-gray-50 border rounded-lg text-sm text-gray-800 focus:ring-2 focus:ring-rose-200 focus:bg-white transition"
+                                placeholder={`Option ${['A', 'B', 'C', 'D'][optIdx] || optIdx + 1}`}
+                              />
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="pt-2">
+                          <label className="block text-xs font-bold text-gray-600 mb-1">⭐ Correct Option / Answer:</label>
+                          <select
+                            value={q.correct ?? 0}
+                            onChange={e => handleQuizQuestionChange(qIdx, 'correct', Number(e.target.value))}
+                            className="w-full sm:w-64 p-2.5 text-xs border rounded-xl bg-white font-medium text-gray-700 cursor-pointer shadow-sm focus:ring-2 focus:ring-rose-200"
+                          >
+                            {(q.options || []).map((_, optIdx) => (
+                              <option key={optIdx} value={optIdx}>Option {['A', 'B', 'C', 'D'][optIdx] || optIdx + 1}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                    ))}
+
+                    <button
+                      type="button"
+                      onClick={addNewQuizQuestion}
+                      className="w-full p-4 border-2 border-dashed border-rose-300 rounded-2xl flex items-center justify-center gap-2 text-[#D4838A] font-bold hover:bg-rose-50 transition cursor-pointer text-xs"
+                    >
+                      <Plus size={16} /> Add New Quiz Question
+                    </button>
+                  </div>
+                </Section>
+              </div>
+            )}
+
+            {activeTab === 'photos' && (
+              <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                
+                {/* 7. Memory Carousel */}
+                <Section title="Memory Carousel (Featured Moments)" icon={<Sparkles size={20} />} subtitle="Your featured swipeable memories with photo, location, date, and caption">
+                  <div className="space-y-6">
+                    <p className="text-xs text-gray-500">Upload key story moments that will be shown in the high-fidelity sliding memory deck.</p>
+                    {(formData.memories || []).map((mem, i) => {
+                      const isUploading = uploadingSlot === `memories-${i}`;
+                      return (
+                        <div key={mem.id || i} className="p-5 bg-white rounded-2xl border border-rose-100 shadow-sm flex flex-col md:flex-row gap-6">
+                          <div className="w-full md:w-1/3">
+                            {mem.photo ? (
+                              <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-gray-100 mb-2 shadow-inner border">
+                                <img src={mem.photo} alt="Memory" className="w-full h-full object-cover" />
+                              </div>
+                            ) : (
+                              <div className="w-full aspect-square rounded-xl bg-gray-100 border border-dashed flex items-center justify-center mb-2">
+                                <span className="text-gray-400 text-xs">No Image</span>
+                              </div>
+                            )}
+                            <label className={`cursor-pointer block w-full text-center p-2 bg-rose-50 hover:bg-rose-100/85 text-[#D4838A] border border-rose-150 rounded-xl shadow-xs text-xs font-bold transition flex items-center justify-center gap-2 ${isUploading ? 'opacity-70 pointer-events-none bg-amber-50' : ''}`}>
+                              {isUploading ? (
+                                <>
+                                  <Loader2 className="animate-spin text-[#D4838A]" size={14} />
+                                  <span className="text-xs font-semibold text-[#D4838A]">{uploadStatusMsg || 'Uploading...'}</span>
+                                </>
+                              ) : (
+                                <>
+                                  <ImagePlus size={14} />
+                                  <span>Upload Photo</span>
+                                </>
+                              )}
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                disabled={isUploading}
+                                onChange={e => handleSinglePhotoUpload(e, 'memories', i, 'photo')}
+                              />
+                            </label>
+                            <input
+                              type="text"
+                              value={mem.photo && !mem.photo.startsWith('data:') ? mem.photo : ''}
+                              onChange={e => handleArrayChange('memories', i, 'photo', e.target.value)}
+                              className="w-full p-2 border rounded-lg text-xs mt-2 text-gray-500 bg-gray-50 focus:bg-white transition"
+                              placeholder="Or paste image URL"
+                            />
+                          </div>
+                          
+                          <div className="w-full md:w-2/3 space-y-3">
+                            <div className="flex justify-between items-center">
+                              <h4 className="font-bold text-gray-800 text-sm">Memory #{i + 1}</h4>
+                              <button onClick={() => handleRemoveItem('memories', i)} className="text-red-500 hover:text-red-700 hover:bg-rose-50 p-1.5 rounded-lg border cursor-pointer"><Trash2 size={16}/></button>
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-gray-400 uppercase mb-0.5">Date text</label>
+                              <input type="text" value={mem.date || ''} onChange={e => handleArrayChange('memories', i, 'date', e.target.value)} className="w-full p-2 bg-gray-50 border rounded-lg text-xs" placeholder="e.g. August 9, 2025" />
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-gray-400 uppercase mb-0.5">Location</label>
+                              <input type="text" value={mem.location || ''} onChange={e => handleArrayChange('memories', i, 'location', e.target.value)} className="w-full p-2 bg-gray-50 border rounded-lg text-xs" placeholder="Location Name" />
+                            </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-gray-400 uppercase mb-0.5">Caption text</label>
+                              <textarea value={mem.caption || ''} onChange={e => handleArrayChange('memories', i, 'caption', e.target.value)} className="w-full p-2 bg-gray-50 border rounded-lg text-xs h-20" placeholder="Describe the memory..." />
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                    <button onClick={addNewMemory} className="w-full p-4 border-2 border-dashed border-rose-300 rounded-2xl flex items-center justify-center gap-2 text-[#D4838A] font-bold hover:bg-rose-50 cursor-pointer text-xs">
+                      <Plus size={16} /> Add New Memory
+                    </button>
+                  </div>
+                </Section>
+
+                {/* 8. Polaroid Wall */}
+                <Section title="Polaroid Wall" icon={<ImagePlus size={20} />} subtitle="Aesthetic pinboard of rotating polaroid snapshots">
+                  <div className="space-y-4">
+                    <p className="text-xs text-gray-500">Configure polaroid snapshot style cards with custom hand-written style titles.</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {(formData.polaroidPhotos || []).map((pol, i) => {
+                        const isUploading = uploadingSlot === `polaroidPhotos-${i}`;
+                        return (
+                          <div key={i} className="p-4 bg-white rounded-2xl border border-rose-100 shadow-sm flex flex-col gap-3">
+                            <div className="flex justify-between items-center">
+                              <h4 className="font-bold text-xs text-gray-700">Polaroid Card #{i + 1}</h4>
+                              <button onClick={() => handleRemoveItem('polaroidPhotos', i)} className="text-red-500 hover:text-red-700 cursor-pointer p-1 hover:bg-rose-50 rounded"><Trash2 size={15}/></button>
+                            </div>
+                            {pol.src ? (
+                              <img src={pol.src} alt="Polaroid" className="w-full h-40 object-cover rounded-xl shadow-sm border" />
+                            ) : (
+                              <div className="w-full h-40 bg-gray-50 border border-dashed rounded-xl flex items-center justify-center text-xs text-gray-400">No Image</div>
+                            )}
+                            <label className={`cursor-pointer block w-full text-center p-2 bg-rose-50 hover:bg-rose-100/80 border border-rose-100 rounded-xl shadow-xs text-xs font-bold transition flex items-center justify-center gap-1.5 ${isUploading ? 'opacity-70 pointer-events-none bg-amber-50' : ''}`}>
+                              {isUploading ? (
+                                <>
+                                  <Loader2 className="animate-spin text-[#D4838A]" size={14} />
+                                  <span className="text-xs font-semibold text-[#D4838A]">{uploadStatusMsg || 'Uploading...'}</span>
+                                </>
+                              ) : (
+                                <>
+                                  <ImagePlus size={14} />
+                                  <span>Upload Photo</span>
+                                </>
+                              )}
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                disabled={isUploading}
+                                onChange={e => handleSinglePhotoUpload(e, 'polaroidPhotos', i, 'src')}
+                              />
+                            </label>
+                            <input
+                              type="text"
+                              value={pol.src && !pol.src.startsWith('data:') ? pol.src : ''}
+                              onChange={e => handleArrayChange('polaroidPhotos', i, 'src', e.target.value)}
+                              className="w-full p-1.5 border rounded-lg text-xs text-gray-500 bg-gray-50"
+                              placeholder="Or paste image URL"
+                            />
+                            <input type="text" value={pol.caption || ''} onChange={e => handleArrayChange('polaroidPhotos', i, 'caption', e.target.value)} className="w-full p-2 bg-gray-50 border rounded-lg text-xs font-bold" placeholder="Caption (e.g. Rome 2025)" />
+                          </div>
+                        );
+                      })}
+                      <button onClick={addNewPolaroid} className="h-full min-h-[220px] border-2 border-dashed border-rose-300 rounded-2xl flex items-center justify-center gap-2 text-[#D4838A] font-bold hover:bg-rose-50 cursor-pointer text-xs">
+                        <Plus size={20} /> Add Polaroid
                       </button>
                     </div>
+                  </div>
+                </Section>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* 9. Vault Gallery */}
+                <Section title="Photo Vault Gallery" icon={<ImagePlus size={20} />} subtitle="Full photo grid celebrating your adventures">
+                  <div className="space-y-4">
+                    <p className="text-xs text-gray-500">Configure the complete gallery grid of your favorite photo collection.</p>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {(formData.photos || []).map((photoUrl, i) => {
+                        const isUploading = uploadingSlot === `photos-${i}`;
+                        return (
+                          <div key={i} className="relative group p-2 bg-white rounded-2xl border border-rose-100 shadow-xs flex flex-col gap-2">
+                            <button onClick={() => handleRemoveItem('photos', i)} className="absolute top-3 right-3 bg-white/90 hover:bg-white p-1 rounded-full text-red-500 shadow border hover:text-red-700 z-10 cursor-pointer"><Trash2 size={12}/></button>
+                            {photoUrl ? (
+                              <img src={photoUrl} alt="Vault" className="w-full h-24 object-cover rounded-xl border" />
+                            ) : (
+                              <div className="w-full h-24 bg-gray-50 border border-dashed rounded-xl flex items-center justify-center text-[10px] text-gray-400">No Image</div>
+                            )}
+                            <label className={`cursor-pointer block w-full text-center p-1 bg-rose-50 hover:bg-rose-100 border border-rose-100 rounded-lg text-[10px] font-bold transition flex items-center justify-center gap-1 ${isUploading ? 'opacity-70 pointer-events-none' : ''}`}>
+                              {isUploading ? '...' : 'Upload'}
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                disabled={isUploading}
+                                onChange={e => handleSinglePhotoUpload(e, 'photos', i, null)}
+                              />
+                            </label>
+                            <input
+                              type="text"
+                              value={photoUrl && !photoUrl.startsWith('data:') ? photoUrl : ''}
+                              onChange={e => handleArrayChange('photos', i, null, e.target.value)}
+                              className="w-full p-1 border rounded text-[9px] text-gray-500 bg-gray-50"
+                              placeholder="URL"
+                            />
+                          </div>
+                        );
+                      })}
+                      <button onClick={addNewVaultPhoto} className="h-full min-h-[120px] border-2 border-dashed border-rose-300 rounded-2xl flex items-center justify-center gap-1 text-[#D4838A] hover:bg-rose-50 text-xs font-bold cursor-pointer">
+                        <Plus size={16} /> Add Photo
+                      </button>
+                    </div>
+                  </div>
+                </Section>
+              </div>
+            )}
+
+            {activeTab === 'mapsky' && (
+              <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                
+                {/* 10. Our Love Map */}
+                <Section title="Our Love Map" icon={<MapPin size={20} />} subtitle="Map special coordinates where your love stories occurred">
+                  <div className="space-y-6">
+                    <p className="text-xs text-gray-500">Pick city presets to auto-fill latitude and longitude coordinates automatically, or input custom ones.</p>
+                    
+                    {(formData.loveMap || []).map((loc, i) => (
+                      <div key={i} className="p-5 bg-white rounded-2xl border border-rose-100 shadow-sm space-y-4">
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg">{loc.emoji || '💖'}</span>
+                            <span className="text-sm font-bold text-gray-800">{loc.name || 'Special Location'}</span>
+                          </div>
+                          <button onClick={() => handleRemoveItem('loveMap', i)} className="text-red-500 hover:text-red-700 border p-1.5 rounded-lg cursor-pointer bg-white"><Trash2 size={16}/></button>
+                        </div>
+
+                        {/* Quick Presets Dropdown */}
+                        <div className="p-3 bg-rose-50/50 rounded-xl border border-rose-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                          <span className="text-xs font-bold text-rose-800">⚡ Auto-fill Preset City:</span>
+                          <select
+                            onChange={e => {
+                              const cityIndex = Number(e.target.value);
+                              if (cityIndex > 0) {
+                                setMapPreset(i, POPULAR_CITIES[cityIndex]);
+                              }
+                            }}
+                            className="p-1.5 text-xs border rounded-lg bg-white font-medium text-gray-700 cursor-pointer"
+                          >
+                            {POPULAR_CITIES.map((city, cIdx) => (
+                              <option key={cIdx} value={cIdx}>{city.emoji} {city.name}</option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                          <div>
+                            <label className="block text-[10px] font-bold text-gray-400 uppercase">Place Name</label>
+                            <input type="text" value={loc.name || ''} onChange={e => handleArrayChange('loveMap', i, 'name', e.target.value)} className="w-full p-2 bg-gray-50 border rounded-lg text-xs" placeholder="Rome, Italy" />
+                          </div>
+                          <div>
+                            <label className="block text-[10px] font-bold text-gray-400 uppercase">Emoji Icon</label>
+                            <input type="text" value={loc.emoji || ''} onChange={e => handleArrayChange('loveMap', i, 'emoji', e.target.value)} className="w-full p-2 bg-gray-50 border rounded-lg text-xs" placeholder="🌸" />
+                          </div>
+                          <div>
+                            <label className="block text-[10px] font-bold text-gray-400 uppercase">Latitude</label>
+                            <input type="number" step="0.0001" value={loc.coords?.[0] || 0} onChange={e => handleArrayChange('loveMap', i, 'coords', [Number(e.target.value), loc.coords?.[1] || 0])} className="w-full p-2 bg-gray-50 border rounded-lg text-xs" />
+                          </div>
+                          <div>
+                            <label className="block text-[10px] font-bold text-gray-400 uppercase">Longitude</label>
+                            <input type="number" step="0.0001" value={loc.coords?.[1] || 0} onChange={e => handleArrayChange('loveMap', i, 'coords', [loc.coords?.[0] || 0, Number(e.target.value)])} className="w-full p-2 bg-gray-50 border rounded-lg text-xs" />
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-[10px] font-bold text-gray-400 uppercase">Milestone Date</label>
+                            <input type="text" value={loc.date || ''} onChange={e => handleArrayChange('loveMap', i, 'date', e.target.value)} className="w-full p-2 bg-gray-50 border rounded-lg text-xs" placeholder="e.g. Aug 9, 2025" />
+                          </div>
+                          <div>
+                            <label className="block text-[10px] font-bold text-gray-400 uppercase">The Place Story</label>
+                            <input type="text" value={loc.story || ''} onChange={e => handleArrayChange('loveMap', i, 'story', e.target.value)} className="w-full p-2 bg-gray-50 border rounded-lg text-xs" placeholder="e.g. Where it started" />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+
+                    <button onClick={addNewLoveMapLocation} className="w-full p-4 border-2 border-dashed border-rose-300 rounded-2xl flex items-center justify-center gap-2 text-[#D4838A] font-bold hover:bg-rose-50 transition cursor-pointer text-xs">
+                      <Plus size={16} /> Add New Map Location
+                    </button>
+                  </div>
+                </Section>
+
+                {/* 11. Our Love Constellation */}
+                <Section title="Our Love Constellation" icon={<Star size={20} />} subtitle="Arrange the stars in your love sky with interactive layout presets and position controls">
+                  <div className="space-y-6">
+                    
+                    {/* Quick Layout Presets */}
+                    <div className="p-4 bg-gray-900 rounded-2xl text-white border border-purple-500/30 shadow-sm">
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
+                        <span className="text-xs font-bold uppercase tracking-wider text-purple-300">✨ One-Click Constellation Shapes:</span>
+                        <div className="flex flex-wrap gap-2">
+                          <button
+                            type="button"
+                            onClick={() => applyConstellationPreset('heart')}
+                            className="px-3 py-1.5 rounded-lg bg-pink-600 hover:bg-pink-500 text-xs font-bold transition flex items-center gap-1 cursor-pointer"
+                          >
+                            ❤️ Romantic Heart
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => applyConstellationPreset('cosmos')}
+                            className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-xs font-bold transition flex items-center gap-1 cursor-pointer"
+                          >
+                            🌌 Stellar Galaxy
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => applyConstellationPreset('infinity')}
+                            className="px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-xs font-bold transition flex items-center gap-1 cursor-pointer"
+                          >
+                            ♾️ Infinite Love
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Interactive Mini Sky Sky */}
+                      <div
+                        onClick={(e) => {
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          const clickX = Math.round(((e.clientX - rect.left) / rect.width) * 100);
+                          const clickY = Math.round(((e.clientY - rect.top) / rect.height) * 100);
+                          const targetIdx = activeStarPreview !== null ? activeStarPreview : 0;
+                          if (formData.constellationStars && formData.constellationStars[targetIdx]) {
+                            const newStars = [...formData.constellationStars];
+                            newStars[targetIdx] = { ...newStars[targetIdx], x: clickX, y: clickY };
+                            setFormData({ ...formData, constellationStars: newStars });
+                          }
+                        }}
+                        className="relative w-full h-48 bg-gradient-to-b from-black via-[#14081E] to-black rounded-2xl overflow-hidden border border-purple-400/30 cursor-crosshair select-none"
+                      >
+                        <svg className="absolute inset-0 w-full h-full pointer-events-none">
+                          {(formData.constellationStars || []).map((star, sIdx) => {
+                            if (sIdx === 0) return null;
+                            const prevStar = formData.constellationStars[sIdx - 1];
+                            return (
+                              <line
+                                key={`preview-line-${sIdx}`}
+                                x1={`${prevStar.x ?? 50}%`}
+                                y1={`${prevStar.y ?? 50}%`}
+                                x2={`${star.x ?? 50}%`}
+                                y2={`${star.y ?? 50}%`}
+                                stroke="#E8B4B8"
+                                strokeWidth="1.5"
+                                opacity="0.5"
+                              />
+                            );
+                          })}
+                        </svg>
+
+                        {(formData.constellationStars || []).map((star, sIdx) => {
+                          const isSelected = activeStarPreview === sIdx;
+                          return (
+                            <div
+                              key={star.id || sIdx}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setActiveStarPreview(sIdx);
+                              }}
+                              className="absolute w-6 h-6 -translate-x-1/2 -translate-y-1/2 cursor-pointer group flex items-center justify-center z-10"
+                              style={{ left: `${star.x ?? 50}%`, top: `${star.y ?? 50}%` }}
+                              title={`Star #${sIdx + 1}: ${star.label || 'Star'} (${star.x ?? 50}%, ${star.y ?? 50}%)`}
+                            >
+                              <div
+                                className={`rounded-full transition-transform ${isSelected ? 'w-4 h-4 bg-pink-300 ring-4 ring-pink-500/50 scale-125' : 'w-2.5 h-2.5 bg-white shadow-[0_0_8px_#E8B4B8] group-hover:scale-150'}`}
+                              />
+                              <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[10px] font-bold whitespace-nowrap bg-black/90 px-1.5 py-0.5 rounded text-pink-200 pointer-events-none shadow-md">
+                                #{sIdx + 1} {star.label || 'Star'}
+                              </span>
+                            </div>
+                          );
+                        })}
+
+                        <span className="absolute bottom-2 right-2 text-[10px] text-purple-300/80 bg-black/60 px-2 py-0.5 rounded pointer-events-none">
+                          💡 Click anywhere on sky to position Star #{activeStarPreview !== null ? activeStarPreview + 1 : 1}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Stars List */}
+                    <div className="space-y-4">
+                      {(formData.constellationStars || []).map((star, i) => {
+                        const isSelected = activeStarPreview === i;
+                        return (
+                          <div
+                            key={star.id || i}
+                            onClick={() => setActiveStarPreview(i)}
+                            className={`p-5 bg-white rounded-2xl border transition space-y-3 cursor-pointer ${isSelected ? 'border-purple-400 ring-2 ring-purple-100 bg-purple-50/10' : 'border-rose-100 shadow-sm'}`}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <span className="text-base">⭐</span>
+                                <span className="text-xs font-bold text-gray-800">Star #{i + 1}: {star.label || 'Unnamed Star'}</span>
+                                {isSelected && <span className="text-[9px] bg-purple-100 text-purple-700 font-bold px-2 py-0.5 rounded-full animate-pulse">Active Star</span>}
+                              </div>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleRemoveItem('constellationStars', i);
+                                }}
+                                className="text-red-500 hover:text-red-700 text-[11px] font-bold flex items-center gap-1 cursor-pointer bg-white px-2 py-1 rounded-lg border shadow-xs hover:bg-rose-50 transition"
+                              >
+                                <Trash2 size={12} /> Remove Star
+                              </button>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                              <div>
+                                <label className="block text-[10px] font-bold text-gray-400 uppercase mb-0.5">Star Label</label>
+                                <input
+                                  type="text"
+                                  value={star.label || ''}
+                                  onChange={e => handleArrayChange('constellationStars', i, 'label', e.target.value)}
+                                  className="w-full p-2 bg-gray-50 border rounded-lg text-xs font-bold text-gray-800"
+                                  placeholder="e.g. First Hello"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-[10px] font-bold text-gray-400 uppercase mb-0.5">Date / Time</label>
+                                <input
+                                  type="text"
+                                  value={star.date || ''}
+                                  onChange={e => handleArrayChange('constellationStars', i, 'date', e.target.value)}
+                                  className="w-full p-2 bg-gray-50 border rounded-lg text-xs text-gray-800"
+                                  placeholder="e.g. Aug 9, 2025"
+                                />
+                              </div>
+                            </div>
+
+                            {/* Position Sliders */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-3 bg-gray-50 rounded-xl border border-gray-100 shadow-inner">
+                              <div className="space-y-1">
+                                <div className="flex items-center justify-between text-[10px] font-bold text-gray-500">
+                                  <span>X Position (Horizontal)</span>
+                                  <span>{star.x ?? 50}%</span>
+                                </div>
+                                <input
+                                  type="range"
+                                  min="0"
+                                  max="100"
+                                  value={star.x ?? 50}
+                                  onChange={e => handleArrayChange('constellationStars', i, 'x', Number(e.target.value))}
+                                  className="w-full h-1 bg-gray-200 rounded-lg accent-rose-500 cursor-pointer"
+                                />
+                              </div>
+                              <div className="space-y-1">
+                                <div className="flex items-center justify-between text-[10px] font-bold text-gray-500">
+                                  <span>Y Position (Vertical)</span>
+                                  <span>{star.y ?? 50}%</span>
+                                </div>
+                                <input
+                                  type="range"
+                                  min="0"
+                                  max="100"
+                                  value={star.y ?? 50}
+                                  onChange={e => handleArrayChange('constellationStars', i, 'y', Number(e.target.value))}
+                                  className="w-full h-1 bg-gray-200 rounded-lg accent-rose-500 cursor-pointer"
+                                />
+                              </div>
+                            </div>
+
+                            <div>
+                              <label className="block text-[10px] font-bold text-gray-400 uppercase mb-0.5">Star Memory Story</label>
+                              <textarea
+                                value={star.story || ''}
+                                onChange={e => handleArrayChange('constellationStars', i, 'story', e.target.value)}
+                                className="w-full p-2 bg-gray-50 border rounded-lg text-xs h-14 text-gray-700"
+                                placeholder="Describe this star's story..."
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
+
+                      <button
+                        type="button"
+                        onClick={addNewConstellationStar}
+                        className="w-full p-4 border-2 border-dashed border-purple-300 rounded-2xl flex items-center justify-center gap-2 text-purple-700 font-bold hover:bg-purple-50 transition cursor-pointer text-xs"
+                      >
+                        <Plus size={16} /> Add New Constellation Star
+                      </button>
+                    </div>
+                  </div>
+                </Section>
+              </div>
+            )}
+
+            {activeTab === 'stories' && (
+              <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                {/* 12. Reasons I Love You Cards */}
+                <Section title="Reasons I Love You Cards" icon={<Heart size={20} />} subtitle="Personalize the flipping cards containing things you love about them">
+                  <div className="space-y-5">
+                    <p className="text-xs text-gray-500">Add beautiful cards that flip to reveal secret reasons why you love your partner.</p>
+                    {(formData.loveReasons || []).map((reason, rIdx) => (
+                      <div key={rIdx} className="p-5 bg-white rounded-2xl border border-rose-100 shadow-sm space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs bg-rose-50 text-rose-600 px-3 py-1 rounded-full font-bold">Reason Card #{rIdx + 1}</span>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveItem('loveReasons', rIdx)}
+                            className="text-red-500 hover:text-red-700 text-xs font-bold flex items-center gap-1 cursor-pointer bg-white px-2.5 py-1.5 rounded-lg border shadow-sm"
+                          >
+                            <Trash2 size={14} /> Remove Card
+                          </button>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-3">
+                          <div>
+                            <label className="block text-xs font-bold text-gray-650 mb-1">Card Front (Short title, e.g. Your Kindness)</label>
+                            <input
+                              type="text"
+                              value={reason.front || ''}
+                              onChange={e => handleArrayChange('loveReasons', rIdx, 'front', e.target.value)}
+                              className="w-full p-2 bg-gray-50 border rounded-lg text-sm text-gray-800 font-bold focus:ring-2 focus:ring-rose-200 focus:bg-white transition"
+                              placeholder="e.g. Your Laugh"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold text-gray-655 mb-1">Card Back (Memory details)</label>
+                            <textarea
+                              value={reason.back || ''}
+                              onChange={e => handleArrayChange('loveReasons', rIdx, 'back', e.target.value)}
+                              className="w-full p-2.5 bg-gray-50 border rounded-lg text-sm text-gray-800 h-20 focus:ring-2 focus:ring-rose-200 focus:bg-white transition"
+                              placeholder="Why is this one of the reasons you love them..."
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+
+                    <button
+                      type="button"
+                      onClick={addNewLoveReason}
+                      className="w-full p-4 border-2 border-dashed border-rose-300 rounded-2xl flex items-center justify-center gap-2 text-[#D4838A] font-bold hover:bg-rose-50 transition cursor-pointer text-xs"
+                    >
+                      <Plus size={16} /> Add New Reason Card
+                    </button>
+                  </div>
+                </Section>
+
+                {/* 13. Chapters & Milestones Timeline */}
+                <Section title="Chapters & Milestones Timeline" icon={<Calendar size={20} />} subtitle="Personalize your relationship history timeline events, dates, and icons">
+                  <div className="space-y-5">
+                    <p className="text-xs text-gray-500">Define the core relationship milestones that populate the main vertical timeline.</p>
+                    {(formData.timeline || []).map((item, tIdx) => (
+                      <div key={tIdx} className="p-5 bg-white rounded-2xl border border-rose-100 shadow-sm space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs bg-rose-50 text-rose-600 px-3 py-1 rounded-full font-bold">Milestone #{tIdx + 1}</span>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveItem('timeline', tIdx)}
+                            className="text-red-500 hover:text-red-700 text-xs font-bold flex items-center gap-1 cursor-pointer bg-white px-2.5 py-1.5 rounded-lg border shadow-sm"
+                          >
+                            <Trash2 size={14} /> Remove Event
+                          </button>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                          <div>
+                            <label className="block text-xs font-bold text-gray-650 mb-1">Date string</label>
+                            <input
+                              type="text"
+                              value={item.date || ''}
+                              onChange={e => handleArrayChange('timeline', tIdx, 'date', e.target.value)}
+                              className="w-full p-2 bg-gray-55 border rounded-lg text-sm text-gray-800 focus:ring-2 focus:ring-rose-200 focus:bg-white transition"
+                              placeholder="e.g. Aug 9, 2025"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold text-gray-650 mb-1">Event title</label>
+                            <input
+                              type="text"
+                              value={item.event || ''}
+                              onChange={e => handleArrayChange('timeline', tIdx, 'event', e.target.value)}
+                              className="w-full p-2 bg-gray-55 border rounded-lg text-sm text-gray-800 font-bold focus:ring-2 focus:ring-rose-200 focus:bg-white transition"
+                              placeholder="e.g. First Meeting"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold text-gray-650 mb-1">Emoji badge</label>
+                            <input
+                              type="text"
+                              value={item.icon || '💌'}
+                              onChange={e => handleArrayChange('timeline', tIdx, 'icon', e.target.value)}
+                              className="w-full p-2 bg-gray-55 border rounded-lg text-sm text-gray-800 focus:ring-2 focus:ring-rose-200 focus:bg-white transition"
+                              placeholder="e.g. 💌, 🩺, 📞"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-bold text-gray-650 mb-1">Milestone description</label>
+                          <textarea
+                            value={item.desc || ''}
+                            onChange={e => handleArrayChange('timeline', tIdx, 'desc', e.target.value)}
+                            className="w-full p-2 bg-gray-55 border rounded-lg text-sm text-gray-800 h-16 focus:ring-2 focus:ring-rose-200 focus:bg-white transition"
+                            placeholder="Describe this milestone..."
+                          />
+                        </div>
+                      </div>
+                    ))}
+
+                    <button
+                      type="button"
+                      onClick={addNewTimelineItem}
+                      className="w-full p-4 border-2 border-dashed border-rose-300 rounded-2xl flex items-center justify-center gap-2 text-[#D4838A] font-bold hover:bg-rose-50 transition cursor-pointer text-xs"
+                    >
+                      <Plus size={16} /> Add New Timeline Event
+                    </button>
+                  </div>
+                </Section>
+
+                {/* 14. Open When Letters */}
+                <Section title="Open When Letters" icon={<Sparkles size={20} />} subtitle="Personalize the 'Open When' letter notes and envelope labels">
+                  <div className="space-y-5">
+                    <p className="text-xs text-gray-500">Configure special envelopes that contain warm letters for different emotions or occasions.</p>
+                    
+                    {(formData.openWhenCards || []).map((card, owIdx) => (
+                      <div key={owIdx} className="p-5 bg-white rounded-2xl border border-rose-100 shadow-sm space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs bg-rose-50 text-rose-600 px-3 py-1 rounded-full font-bold">Open When Letter #{owIdx + 1}</span>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveItem('openWhenCards', owIdx)}
+                            className="text-red-500 hover:text-red-700 text-xs font-bold flex items-center gap-1 cursor-pointer bg-white px-2.5 py-1.5 rounded-lg border shadow-sm"
+                          >
+                            <Trash2 size={14} /> Remove Letter
+                          </button>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-xs font-bold text-gray-650 mb-1">Envelope Label (e.g. Open when you miss me)</label>
+                            <input
+                              type="text"
+                              value={card.label || ''}
+                              onChange={e => handleArrayChange('openWhenCards', owIdx, 'label', e.target.value)}
+                              className="w-full p-2 bg-gray-50 border rounded-lg text-sm text-gray-800 font-bold focus:ring-2 focus:ring-rose-200 focus:bg-white transition"
+                              placeholder="Open when you miss me"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold text-gray-655 mb-1">Emoji Icon</label>
+                            <input
+                              type="text"
+                              value={card.icon || '✉️'}
+                              onChange={e => handleArrayChange('openWhenCards', owIdx, 'icon', e.target.value)}
+                              className="w-full p-2 bg-gray-50 border rounded-lg text-sm text-gray-800 focus:ring-2 focus:ring-rose-200 focus:bg-white transition"
+                              placeholder="e.g. 🌙, 🌧️, 🌞"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-bold text-gray-650 mb-1">Letter message content</label>
+                          <textarea
+                            value={card.message || ''}
+                            onChange={e => handleArrayChange('openWhenCards', owIdx, 'message', e.target.value)}
+                            className="w-full p-2.5 bg-gray-50 border rounded-lg text-sm text-gray-800 h-24 font-serif leading-relaxed focus:ring-2 focus:ring-rose-200 focus:bg-white transition"
+                            placeholder="Write your sweet note to read..."
+                          />
+                        </div>
+                      </div>
+                    ))}
+
+                    <button
+                      type="button"
+                      onClick={addNewOpenWhenCard}
+                      className="w-full p-4 border-2 border-dashed border-rose-300 rounded-2xl flex items-center justify-center gap-2 text-[#D4838A] font-bold hover:bg-rose-50 transition cursor-pointer text-xs"
+                    >
+                      <Plus size={16} /> Add New Open When Letter
+                    </button>
+                  </div>
+                </Section>
+
+                {/* 15. Future Bucket List */}
+                <Section title="Our Future Bucket List" icon={<Compass size={20} />} subtitle="Personalize the dreams and adventures waiting in your future together">
+                  <div className="space-y-5">
+                    <p className="text-xs text-gray-500">Define shared future plans or milestones that flip open dynamically.</p>
+                    
+                    {(formData.futureDreams || []).map((dream, fdIdx) => (
+                      <div key={fdIdx} className="p-5 bg-white rounded-2xl border border-rose-100 shadow-sm space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs bg-rose-50 text-rose-600 px-3 py-1 rounded-full font-bold">Dream Item #{fdIdx + 1}</span>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveItem('futureDreams', fdIdx)}
+                            className="text-red-500 hover:text-red-700 text-xs font-bold flex items-center gap-1 cursor-pointer bg-white px-2.5 py-1.5 rounded-lg border shadow-sm"
+                          >
+                            <Trash2 size={14} /> Remove Item
+                          </button>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-bold text-gray-650 mb-1">Dream Title</label>
+                          <input
+                            type="text"
+                            value={dream.title || ''}
+                            onChange={e => handleArrayChange('futureDreams', fdIdx, 'title', e.target.value)}
+                            className="w-full p-2 bg-gray-50 border rounded-lg text-sm text-gray-800 font-bold focus:ring-2 focus:ring-rose-200 focus:bg-white transition"
+                            placeholder="e.g. Travel the World"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-650 mb-1">Dream description / details</label>
+                          <textarea
+                            value={dream.desc || ''}
+                            onChange={e => handleArrayChange('futureDreams', fdIdx, 'desc', e.target.value)}
+                            className="w-full p-2 bg-gray-50 border rounded-lg text-sm text-gray-800 h-16 focus:ring-2 focus:ring-rose-200 focus:bg-white transition"
+                            placeholder="Write details about this dream..."
+                          />
+                        </div>
+                      </div>
+                    ))}
+
+                    <button
+                      type="button"
+                      onClick={addNewFutureDream}
+                      className="w-full p-4 border-2 border-dashed border-rose-300 rounded-2xl flex items-center justify-center gap-2 text-[#D4838A] font-bold hover:bg-rose-50 transition cursor-pointer text-xs"
+                    >
+                      <Plus size={16} /> Add New Bucket List Dream
+                    </button>
+                  </div>
+                </Section>
+
+                {/* 16. Beating Heart Section */}
+                <Section title="Heartbeat Customizer" icon={<Heart className="animate-pulse" size={20} />} subtitle="Configure the heartbeat section titles and custom messages">
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div>
-                        <label className="block text-xs font-bold text-gray-600 mb-1">Star Title / Label</label>
+                        <label className="block text-xs font-bold text-gray-605 mb-1">Eyebrow Tag</label>
                         <input
                           type="text"
-                          value={star.label || ''}
-                          onChange={e => handleArrayChange('constellationStars', i, 'label', e.target.value)}
-                          className="w-full p-2 bg-white border rounded-lg text-sm font-bold text-gray-800"
-                          placeholder="e.g. First Hello, Under the Stars"
+                          name="heartbeatEyebrow"
+                          value={formData.heartbeatEyebrow || ''}
+                          onChange={handleChange}
+                          className="w-full p-2 bg-gray-50 border rounded-lg text-sm"
+                          placeholder="Feel It"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-gray-600 mb-1">Date / Milestone</label>
+                        <label className="block text-xs font-bold text-gray-605 mb-1">Section Title</label>
                         <input
                           type="text"
-                          value={star.date || ''}
-                          onChange={e => handleArrayChange('constellationStars', i, 'date', e.target.value)}
-                          className="w-full p-2 bg-white border rounded-lg text-sm font-medium"
-                          placeholder="e.g. Aug 9, 2025"
+                          name="heartbeatTitle"
+                          value={formData.heartbeatTitle || ''}
+                          onChange={handleChange}
+                          className="w-full p-2 bg-gray-50 border rounded-lg text-sm"
+                          placeholder="My Heartbeat For You"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-605 mb-1">Section Subtitle</label>
+                        <input
+                          type="text"
+                          name="heartbeatSubtitle"
+                          value={formData.heartbeatSubtitle || ''}
+                          onChange={handleChange}
+                          className="w-full p-2 bg-gray-50 border rounded-lg text-sm"
+                          placeholder="Tap the beating heart..."
                         />
                       </div>
                     </div>
 
-                    {/* Position Controls: Slider + Direct Number + Buttons */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
-                      {/* Horizontal X */}
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between text-xs font-bold text-gray-700">
-                          <span>↔ Horizontal Position (X)</span>
-                          <div className="flex items-center gap-1">
-                            <input
-                              type="number"
-                              min="0"
-                              max="100"
-                              value={Number(star.x ?? 50)}
-                              onChange={e => handleArrayChange('constellationStars', i, 'x', Math.min(100, Math.max(0, Number(e.target.value) || 0)))}
-                              className="w-14 p-1 border rounded text-center text-xs font-bold bg-gray-50"
-                            />
-                            <span className="text-gray-500">%</span>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => handleArrayChange('constellationStars', i, 'x', Math.max(0, (Number(star.x ?? 50)) - 5))}
-                            className="px-2.5 py-1 bg-gray-100 hover:bg-gray-200 rounded text-xs font-bold text-gray-600 cursor-pointer"
-                          >
-                            -5%
-                          </button>
+                    <div className="pt-4 border-t space-y-3">
+                      <label className="block text-xs font-bold text-gray-700">Heartbeat Messages List</label>
+                      {(formData.heartbeatMessages || [
+                        "You make my heart race. ❤️",
+                        "Still choosing you every single day.",
+                        "My favorite place is in your arms.",
+                        "365 days and I'm still falling for you.",
+                        "Every single beat belongs to you.",
+                        "You are my whole universe. ✨"
+                      ]).map((msg, hIdx) => (
+                        <div key={hIdx} className="flex items-center gap-3">
                           <input
-                            type="range"
-                            min="0"
-                            max="100"
-                            step="1"
-                            value={Number(star.x ?? 50)}
-                            onChange={e => handleArrayChange('constellationStars', i, 'x', Number(e.target.value))}
-                            className="flex-1 h-2 bg-gray-200 rounded-lg accent-rose-500 cursor-pointer"
+                            type="text"
+                            value={msg || ''}
+                            onChange={e => handleArrayChange('heartbeatMessages', hIdx, null, e.target.value)}
+                            className="flex-1 p-2 bg-white border rounded-xl text-sm"
+                            placeholder="Write heartbeat note..."
                           />
                           <button
                             type="button"
-                            onClick={() => handleArrayChange('constellationStars', i, 'x', Math.min(100, (Number(star.x ?? 50)) + 5))}
-                            className="px-2.5 py-1 bg-gray-100 hover:bg-gray-200 rounded text-xs font-bold text-gray-600 cursor-pointer"
+                            onClick={() => handleRemoveItem('heartbeatMessages', hIdx)}
+                            className="text-red-500 hover:text-red-700 cursor-pointer p-2 bg-white border rounded-xl"
                           >
-                            +5%
+                            <Trash2 size={16} />
                           </button>
                         </div>
-                      </div>
+                      ))}
+                      <button
+                        type="button"
+                        onClick={addNewHeartbeatMessage}
+                        className="w-full p-3 border-2 border-dashed border-rose-300 rounded-xl flex items-center justify-center gap-2 text-[#D4838A] font-bold text-xs"
+                      >
+                        <Plus size={16} /> Add Heartbeat Message
+                      </button>
+                    </div>
+                  </div>
+                </Section>
 
-                      {/* Vertical Y */}
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between text-xs font-bold text-gray-700">
-                          <span>↕ Vertical Position (Y)</span>
-                          <div className="flex items-center gap-1">
-                            <input
-                              type="number"
-                              min="0"
-                              max="100"
-                              value={Number(star.y ?? 50)}
-                              onChange={e => handleArrayChange('constellationStars', i, 'y', Math.min(100, Math.max(0, Number(e.target.value) || 0)))}
-                              className="w-14 p-1 border rounded text-center text-xs font-bold bg-gray-50"
-                            />
-                            <span className="text-gray-500">%</span>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => handleArrayChange('constellationStars', i, 'y', Math.max(0, (Number(star.y ?? 50)) - 5))}
-                            className="px-2.5 py-1 bg-gray-100 hover:bg-gray-200 rounded text-xs font-bold text-gray-600 cursor-pointer"
-                          >
-                            -5%
-                          </button>
-                          <input
-                            type="range"
-                            min="0"
-                            max="100"
-                            step="1"
-                            value={Number(star.y ?? 50)}
-                            onChange={e => handleArrayChange('constellationStars', i, 'y', Number(e.target.value))}
-                            className="flex-1 h-2 bg-gray-200 rounded-lg accent-rose-500 cursor-pointer"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => handleArrayChange('constellationStars', i, 'y', Math.min(100, (Number(star.y ?? 50)) + 5))}
-                            className="px-2.5 py-1 bg-gray-100 hover:bg-gray-200 rounded text-xs font-bold text-gray-600 cursor-pointer"
-                          >
-                            +5%
-                          </button>
-                        </div>
+                {/* 17. Love Meter Customizer */}
+                <Section title="Love Meter Customizer" icon={<Sparkles size={20} />} subtitle="Configure labels, headings, and messages for the love meter slider">
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-605 mb-1">Eyebrow Tag</label>
+                        <input
+                          type="text"
+                          name="lovemeterEyebrow"
+                          value={formData.lovemeterEyebrow || ''}
+                          onChange={handleChange}
+                          className="w-full p-2 bg-gray-50 border rounded-lg text-sm"
+                          placeholder="An Important Question"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-605 mb-1">Section Title</label>
+                        <input
+                          type="text"
+                          name="lovemeterTitle"
+                          value={formData.lovemeterTitle || ''}
+                          onChange={handleChange}
+                          className="w-full p-2 bg-gray-50 border rounded-lg text-sm"
+                          placeholder="How Much Do We Love Each Other?"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-605 mb-1">Section Subtitle</label>
+                        <input
+                          type="text"
+                          name="lovemeterSubtitle"
+                          value={formData.lovemeterSubtitle || ''}
+                          onChange={handleChange}
+                          className="w-full p-2 bg-gray-50 border rounded-lg text-sm"
+                          placeholder="Drag the slider to test..."
+                        />
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-gray-600 mb-1">Memory / Star Story</label>
-                      <textarea
-                        value={star.story || ''}
-                        onChange={e => handleArrayChange('constellationStars', i, 'story', e.target.value)}
-                        className="w-full p-2.5 bg-white border rounded-lg text-sm h-18"
-                        placeholder="What moment does this star represent..."
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-
-              <button
-                onClick={addNewConstellationStar}
-                className="w-full p-4 border-2 border-dashed border-purple-300 rounded-2xl flex items-center justify-center gap-2 text-purple-700 font-bold hover:bg-purple-50 transition cursor-pointer"
-              >
-                <Plus size={20} /> Add New Constellation Star
-              </button>
-            </div>
-          </Section>
-
-          {/* 5. Memory Carousel */}
-          <Section title="Memory Carousel (Featured Moments)" icon={<Sparkles size={20} />} subtitle="Your featured swipeable memories with photo, location, date, and caption">
-            <div className="space-y-6">
-              {(formData.memories || []).map((mem, i) => {
-                const isUploading = uploadingSlot === `memories-${i}`;
-                return (
-                  <div key={mem.id || i} className="p-4 bg-gray-50 rounded-2xl border flex flex-col md:flex-row gap-6">
-                    <div className="w-full md:w-1/3">
-                      {mem.photo ? (
-                        <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-gray-200 mb-2 shadow-inner">
-                          <img src={mem.photo} alt="Memory" className="w-full h-full object-cover" />
-                        </div>
-                      ) : (
-                        <div className="w-full aspect-square rounded-xl bg-gray-200 flex items-center justify-center mb-2">
-                          <span className="text-gray-400 text-xs">No Image</span>
-                        </div>
-                      )}
-                      <label className={`cursor-pointer block w-full text-center p-2.5 bg-white border rounded-xl shadow-sm text-xs font-bold hover:bg-gray-50 transition flex items-center justify-center gap-2 ${isUploading ? 'opacity-70 pointer-events-none bg-amber-50' : ''}`}>
-                        {isUploading ? (
-                          <>
-                            <Loader2 className="animate-spin text-[#D4838A]" size={16} />
-                            <span className="text-xs font-semibold text-[#D4838A]">{uploadStatusMsg || 'Uploading...'}</span>
-                          </>
-                        ) : (
-                          <>
-                            <ImagePlus size={16} className="text-gray-500" />
-                            <span>Upload Photo <span className="text-[10px] text-green-600">(Fast)</span></span>
-                          </>
-                        )}
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          disabled={isUploading}
-                          onChange={e => handleSinglePhotoUpload(e, 'memories', i, 'photo')}
-                        />
-                      </label>
+                      <label className="block text-xs font-bold text-gray-605 mb-1">100% Overflow Success Message</label>
                       <input
                         type="text"
-                        value={mem.photo && !mem.photo.startsWith('data:') ? mem.photo : ''}
-                        onChange={e => handleArrayChange('memories', i, 'photo', e.target.value)}
-                        className="w-full p-1.5 border rounded-lg text-xs mt-2 text-gray-600 bg-white"
-                        placeholder="Or paste image URL"
+                        name="lovemeterSuccessMessage"
+                        value={formData.lovemeterSuccessMessage || ''}
+                        onChange={handleChange}
+                        className="w-full p-2.5 bg-gray-50 border rounded-lg text-sm"
+                        placeholder="Overflowing with Love! 🌹✨"
                       />
                     </div>
-                    <div className="w-full md:w-2/3 space-y-3">
-                      <div className="flex justify-between items-center">
-                        <h4 className="font-bold text-gray-800">Memory #{i + 1}</h4>
-                        <button onClick={() => handleRemoveItem('memories', i)} className="text-red-500 hover:text-red-700 cursor-pointer p-1"><Trash2 size={18}/></button>
+
+                    <div className="pt-4 border-t space-y-3">
+                      <label className="block text-xs font-bold text-gray-700">Love Meter Slider Labels (From 0% to 100%)</label>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        {[0, 1, 2, 3, 4, 5].map(idx => (
+                          <div key={idx}>
+                            <label className="block text-[10px] font-bold text-gray-405 uppercase mb-0.5">Label {idx + 1}</label>
+                            <input
+                              type="text"
+                              value={
+                                formData.lovemeterLabels?.[idx] ?? 
+                                ['A Little', 'Pretty Much', 'A Lot', 'So Much', 'To the Moon & Back', 'Still Not Enough ∞'][idx]
+                              }
+                              onChange={e => {
+                                const current = [...(formData.lovemeterLabels || ['A Little', 'Pretty Much', 'A Lot', 'So Much', 'To the Moon & Back', 'Still Not Enough ∞'])];
+                                current[idx] = e.target.value;
+                                setFormData({ ...formData, lovemeterLabels: current });
+                              }}
+                              className="w-full p-2 bg-white border rounded-lg text-xs"
+                            />
+                          </div>
+                        ))}
                       </div>
-                      <input type="text" value={mem.date || ''} onChange={e => handleArrayChange('memories', i, 'date', e.target.value)} className="w-full p-2 bg-white border rounded-lg text-sm" placeholder="Date (e.g. August 9, 2025)" />
-                      <input type="text" value={mem.location || ''} onChange={e => handleArrayChange('memories', i, 'location', e.target.value)} className="w-full p-2 bg-white border rounded-lg text-sm" placeholder="Location" />
-                      <textarea value={mem.caption || ''} onChange={e => handleArrayChange('memories', i, 'caption', e.target.value)} className="w-full p-2 bg-white border rounded-lg text-sm h-24" placeholder="Caption" />
                     </div>
                   </div>
-                );
-              })}
-              <button onClick={addNewMemory} className="w-full p-4 border-2 border-dashed border-rose-300 rounded-2xl flex items-center justify-center gap-2 text-[#D4838A] font-bold hover:bg-rose-50 cursor-pointer">
-                <Plus size={20} /> Add New Memory
-              </button>
-            </div>
-          </Section>
+                </Section>
 
-          {/* 6. Polaroid Wall */}
-          <Section title="Polaroid Wall" icon={<ImagePlus size={20} />} subtitle="Aesthetic pinboard of rotating polaroid snapshots">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {(formData.polaroidPhotos || []).map((pol, i) => {
-                const isUploading = uploadingSlot === `polaroidPhotos-${i}`;
-                return (
-                  <div key={i} className="p-4 bg-gray-50 rounded-2xl border flex flex-col gap-3">
-                    <div className="flex justify-between items-center">
-                      <h4 className="font-bold text-sm text-gray-700">Polaroid #{i + 1}</h4>
-                      <button onClick={() => handleRemoveItem('polaroidPhotos', i)} className="text-red-500 hover:text-red-700 cursor-pointer"><Trash2 size={16}/></button>
+                {/* 18. Virtual Kiss Customizer */}
+                <Section title="Virtual Kiss Customizer" icon={<Sparkles size={20} />} subtitle="Configure text elements of the virtual kiss shower button">
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-605 mb-1">Eyebrow Tag</label>
+                        <input
+                          type="text"
+                          name="kissEyebrow"
+                          value={formData.kissEyebrow || ''}
+                          onChange={handleChange}
+                          className="w-full p-2 bg-gray-50 border rounded-lg text-sm"
+                          placeholder="Just Because"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-605 mb-1">Section Title</label>
+                        <input
+                          type="text"
+                          name="kissTitle"
+                          value={formData.kissTitle || ''}
+                          onChange={handleChange}
+                          className="w-full p-2 bg-gray-50 border rounded-lg text-sm"
+                          placeholder="Send a Kiss"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-605 mb-1">Section Subtitle</label>
+                        <input
+                          type="text"
+                          name="kissSubtitle"
+                          value={formData.kissSubtitle || ''}
+                          onChange={handleChange}
+                          className="w-full p-2 bg-gray-50 border rounded-lg text-sm"
+                          placeholder="Tap the giant kiss..."
+                        />
+                      </div>
                     </div>
-                    {pol.src ? (
-                      <img src={pol.src} alt="Polaroid" className="w-full h-40 object-cover rounded-xl shadow-sm" />
-                    ) : (
-                      <div className="w-full h-40 bg-gray-200 rounded-xl flex items-center justify-center text-sm text-gray-400">No Image</div>
-                    )}
-                    <label className={`cursor-pointer block w-full text-center p-2 bg-white border rounded-xl shadow-sm text-xs font-bold hover:bg-gray-50 transition flex items-center justify-center gap-1.5 ${isUploading ? 'opacity-70 pointer-events-none bg-amber-50' : ''}`}>
-                      {isUploading ? (
-                        <>
-                          <Loader2 className="animate-spin text-[#D4838A]" size={14} />
-                          <span className="text-xs font-semibold text-[#D4838A]">{uploadStatusMsg || 'Uploading...'}</span>
-                        </>
-                      ) : (
-                        <>
-                          <ImagePlus size={14} className="text-gray-500" />
-                          <span>Upload Photo <span className="text-[10px] text-green-600 font-medium">(Fast)</span></span>
-                        </>
-                      )}
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        disabled={isUploading}
-                        onChange={e => handleSinglePhotoUpload(e, 'polaroidPhotos', i, 'src')}
-                      />
-                    </label>
-                    <input
-                      type="text"
-                      value={pol.src && !pol.src.startsWith('data:') ? pol.src : ''}
-                      onChange={e => handleArrayChange('polaroidPhotos', i, 'src', e.target.value)}
-                      className="w-full p-1.5 border rounded-lg text-xs text-gray-600 bg-white"
-                      placeholder="Or paste image URL"
-                    />
-                    <input type="text" value={pol.caption || ''} onChange={e => handleArrayChange('polaroidPhotos', i, 'caption', e.target.value)} className="w-full p-2 bg-white border rounded-lg text-sm" placeholder="Caption" />
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-605 mb-1">Button text label</label>
+                        <input
+                          type="text"
+                          name="kissButtonText"
+                          value={formData.kissButtonText || ''}
+                          onChange={handleChange}
+                          className="w-full p-2.5 bg-gray-50 border rounded-lg text-sm"
+                          placeholder="Send A Kiss 💋"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-605 mb-1">Success message content</label>
+                        <input
+                          type="text"
+                          name="kissSuccessMessage"
+                          value={formData.kissSuccessMessage || ''}
+                          onChange={handleChange}
+                          className="w-full p-2.5 bg-gray-50 border rounded-lg text-sm"
+                          placeholder="A kiss has been delivered 💋"
+                        />
+                      </div>
+                    </div>
                   </div>
-                );
-              })}
-              <button onClick={addNewPolaroid} className="h-full min-h-[200px] border-2 border-dashed border-rose-300 rounded-2xl flex items-center justify-center gap-2 text-[#D4838A] font-bold hover:bg-rose-50 cursor-pointer">
-                <Plus size={20} /> Add Polaroid
-              </button>
-            </div>
-          </Section>
+                </Section>
 
-          {/* 7. Vault Gallery */}
-          <Section title="Photo Vault Gallery" icon={<ImagePlus size={20} />} subtitle="Full photo grid celebrating your adventures">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {(formData.photos || []).map((photoUrl, i) => {
-                const isUploading = uploadingSlot === `photos-${i}`;
-                return (
-                  <div key={i} className="relative group p-2 bg-gray-50 rounded-2xl border flex flex-col gap-2">
-                    <button onClick={() => handleRemoveItem('photos', i)} className="absolute top-4 right-4 bg-white p-1 rounded-full text-red-500 shadow hover:text-red-700 z-10 cursor-pointer"><Trash2 size={14}/></button>
-                    {photoUrl ? (
-                      <img src={photoUrl} alt="Vault" className="w-full h-24 object-cover rounded-xl shadow-inner" />
-                    ) : (
-                      <div className="w-full h-24 bg-gray-200 rounded-xl flex items-center justify-center text-xs text-gray-400">No Image</div>
-                    )}
-                    <label className={`cursor-pointer block w-full text-center p-1 bg-white border rounded-xl shadow-sm text-xs font-bold hover:bg-gray-50 transition flex items-center justify-center gap-1 ${isUploading ? 'opacity-70 pointer-events-none bg-amber-50' : ''}`}>
-                      {isUploading ? (
-                        <>
-                          <Loader2 className="animate-spin text-[#D4838A]" size={12} />
-                          <span className="text-[10px] text-[#D4838A]">Uploading...</span>
-                        </>
-                      ) : (
-                        <>
-                          <ImagePlus size={12} className="text-gray-500" />
-                          <span>Upload</span>
-                        </>
-                      )}
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        disabled={isUploading}
-                        onChange={e => handleSinglePhotoUpload(e, 'photos', i, null)}
-                      />
-                    </label>
-                    <input
-                      type="text"
-                      value={photoUrl && !photoUrl.startsWith('data:') ? photoUrl : ''}
-                      onChange={e => handleArrayChange('photos', i, null, e.target.value)}
-                      className="w-full p-1 border rounded text-[11px] text-gray-600 bg-white"
-                      placeholder="Or URL"
-                    />
+                {/* 19. Anniversary Cake Wish Customizer */}
+                <Section title="Wish Cake Customizer" icon={<Sparkles size={20} />} subtitle="Configure the wish cake, number of years, candles, and unlocked wishes">
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                      <div className="sm:col-span-2">
+                        <label className="block text-xs font-bold text-gray-605 mb-1">Eyebrow Tag</label>
+                        <input
+                          type="text"
+                          name="cakeEyebrow"
+                          value={formData.cakeEyebrow || ''}
+                          onChange={handleChange}
+                          className="w-full p-2 bg-gray-50 border rounded-lg text-sm"
+                          placeholder="One Year of Magic"
+                        />
+                      </div>
+                      <div className="sm:col-span-1">
+                        <label className="block text-xs font-bold text-gray-605 mb-1">Cake Title</label>
+                        <input
+                          type="text"
+                          name="cakeTitle"
+                          value={formData.cakeTitle || ''}
+                          onChange={handleChange}
+                          className="w-full p-2 bg-gray-50 border rounded-lg text-sm"
+                          placeholder="Make a Wish"
+                        />
+                      </div>
+                      <div className="sm:col-span-1">
+                        <label className="block text-xs font-bold text-gray-605 mb-1">Cake Year Number</label>
+                        <input
+                          type="number"
+                          name="cakeYears"
+                          value={formData.cakeYears ?? 1}
+                          onChange={e => setFormData({ ...formData, cakeYears: Number(e.target.value) })}
+                          className="w-full p-2 bg-gray-50 border rounded-lg text-sm"
+                          placeholder="1"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-605 mb-1">Blow Candle instructions message</label>
+                        <input
+                          type="text"
+                          name="cakeBlowMessage"
+                          value={formData.cakeBlowMessage || ''}
+                          onChange={handleChange}
+                          className="w-full p-2.5 bg-gray-50 border rounded-lg text-sm"
+                          placeholder="Tap each glowing candle to blow it out together 🎂"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-605 mb-1">Cake Success Message</label>
+                        <input
+                          type="text"
+                          name="cakeSuccessMessage"
+                          value={formData.cakeSuccessMessage || ''}
+                          onChange={handleChange}
+                          className="w-full p-2.5 bg-gray-50 border rounded-lg text-sm"
+                          placeholder="Your wish is sealed in our hearts! ✨"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="p-4 bg-rose-50/40 border border-rose-100 rounded-2xl grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="sm:col-span-2">
+                        <h4 className="text-xs font-bold text-rose-800">🎁 Wish Revealed Details</h4>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-605 mb-1">Wish Title Headline</label>
+                        <input
+                          type="text"
+                          name="cakeRevealedMessage"
+                          value={formData.cakeRevealedMessage || ''}
+                          onChange={handleChange}
+                          className="w-full p-2.5 bg-white border rounded-lg text-sm"
+                          placeholder="Here's to another year of us."
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-605 mb-1">Wish Subtitle Headline</label>
+                        <input
+                          type="text"
+                          name="cakeRevealedSubtitle"
+                          value={formData.cakeRevealedSubtitle || ''}
+                          onChange={handleChange}
+                          className="w-full p-2.5 bg-white border rounded-lg text-sm"
+                          placeholder="May every year be sweeter than the last. 🎂✨"
+                        />
+                      </div>
+                    </div>
                   </div>
-                );
-              })}
-              <button onClick={addNewVaultPhoto} className="h-full min-h-[100px] border-2 border-dashed border-rose-300 rounded-2xl flex items-center justify-center gap-1 text-[#D4838A] hover:bg-rose-50 text-sm font-bold cursor-pointer">
-                <Plus size={16} /> Add Photo
-              </button>
-            </div>
-          </Section>
+                </Section>
 
-          {/* 8. The Love Letter & Song */}
-          <Section title="Love Letter & Song" icon={<Heart size={20} />} subtitle="The heartfelt letter and special song">
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Our Song Name</label>
-                  <input type="text" name="song" value={formData.song || ''} onChange={handleChange} className="w-full p-2.5 bg-gray-50 border rounded-xl font-medium" placeholder="Perfect" />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Artist Name</label>
-                  <input type="text" name="songArtist" value={formData.songArtist || ''} onChange={handleChange} className="w-full p-2.5 bg-gray-50 border rounded-xl font-medium" placeholder="Ed Sheeran" />
-                </div>
+                {/* 20. Forever Section Customizer */}
+                <Section title="Forever Section Customizer" icon={<Sparkles size={20} />} subtitle="Configure the final concluding section lines">
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-605 mb-1">Forever Section Line 1</label>
+                        <input
+                          type="text"
+                          name="foreverLine1"
+                          value={formData.foreverLine1 || ''}
+                          onChange={handleChange}
+                          className="w-full p-2.5 bg-gray-50 border rounded-lg text-sm"
+                          placeholder="365 days down."
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-605 mb-1">Forever Section Line 2</label>
+                        <input
+                          type="text"
+                          name="foreverLine2"
+                          value={formData.foreverLine2 || ''}
+                          onChange={handleChange}
+                          className="w-full p-2.5 bg-gray-50 border rounded-lg text-sm"
+                          placeholder="Forever to go."
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </Section>
               </div>
-
-              <div>
-                <label className="block text-xs font-bold text-gray-600 uppercase mb-1">The Love Letter</label>
-                <textarea name="loveLetterText" value={formData.loveLetterText || ''} onChange={handleChange} className="w-full p-3 bg-gray-50 border rounded-2xl h-44 font-serif text-sm leading-relaxed" />
-              </div>
-            </div>
-          </Section>
+            )}
 
           {/* Bottom Save Button */}
           <div className="mt-12 pt-8 border-t">
@@ -1279,6 +2035,7 @@ export default function Editor() {
 
         </div>
       </div>
+    </div>
 
       {/* Floating Sticky Save Bar at the Bottom */}
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-2xl z-40 flex items-center justify-between max-w-4xl mx-auto rounded-t-3xl">

@@ -1,12 +1,18 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { spawnHearts } from './HeartCanvas';
+import { useCouple } from '../CoupleContext';
 
-const LABELS = ['A Little', 'Pretty Much', 'A Lot', 'So Much', 'To the Moon & Back', 'Still Not Enough ∞'];
+const DEFAULT_LABELS = ['A Little', 'Pretty Much', 'A Lot', 'So Much', 'To the Moon & Back', 'Still Not Enough ∞'];
 
 export default function LoveMeter() {
+  const { couple } = useCouple();
   const [value, setValue] = useState(0);
   const [burst, setBurst] = useState(false);
+
+  const labels = (couple.lovemeterLabels && couple.lovemeterLabels.length > 0)
+    ? couple.lovemeterLabels
+    : DEFAULT_LABELS;
 
   const handleChange = (e) => {
     const v = Number(e.target.value);
@@ -26,8 +32,8 @@ export default function LoveMeter() {
     }
   };
 
-  const labelIndex = Math.floor((value / 100) * (LABELS.length - 1));
-  const label = LABELS[Math.min(labelIndex, LABELS.length - 1)];
+  const labelIndex = Math.floor((value / 100) * (labels.length - 1));
+  const label = labels[Math.min(labelIndex, labels.length - 1)];
 
   return (
     <section id="lovemeter" className="section-wrapper text-center" style={{ background: 'linear-gradient(180deg, #F8EFEA 0%, #FFF5F0 50%, #FAF0EA 100%)' }}>
@@ -39,9 +45,9 @@ export default function LoveMeter() {
           transition={{ duration: 0.7 }}
           className="section-header mb-10"
         >
-          <span className="section-eyebrow">An Important Question</span>
-          <h2 className="section-title">How Much Do We Love Each Other?</h2>
-          <p className="section-subtitle">Drag the slider to test our official love meter.</p>
+          <span className="section-eyebrow">{couple.lovemeterEyebrow || "An Important Question"}</span>
+          <h2 className="section-title">{couple.lovemeterTitle || "How Much Do We Love Each Other?"}</h2>
+          <p className="section-subtitle">{couple.lovemeterSubtitle || "Drag the slider to test our official love meter."}</p>
         </motion.div>
 
         {/* Heart graphic meter */}
@@ -115,7 +121,7 @@ export default function LoveMeter() {
           <div className="flex justify-between text-xs font-semibold text-gray-400 mt-2">
             <span>0%</span>
             <span>50%</span>
-            <span>100% ∞</span>
+            <span>{labels.length > 5 ? labels[5] : '100% ∞'}</span>
           </div>
         </div>
 
@@ -125,7 +131,7 @@ export default function LoveMeter() {
             animate={{ opacity: 1, scale: 1 }}
             className="mt-6 text-2xl font-bold font-script text-rose-600"
           >
-            Overflowing with Love! 🌹✨
+            {couple.lovemeterSuccessMessage || "Overflowing with Love! 🌹✨"}
           </motion.p>
         )}
       </div>

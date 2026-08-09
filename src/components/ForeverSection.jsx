@@ -74,7 +74,7 @@ export default function ForeverSection({ topRef }) {
           className="text-5xl md:text-7xl font-light mb-4"
           style={{ fontFamily: 'Playfair Display', color: 'white', lineHeight: 1.2 }}
         >
-          365 days down.
+          {couple.foreverLine1 || "365 days down."}
         </motion.p>
 
         <motion.p
@@ -85,7 +85,7 @@ export default function ForeverSection({ topRef }) {
           className="text-5xl md:text-7xl font-light mb-14"
           style={{ fontFamily: 'Playfair Display', color: '#E8B4B8', lineHeight: 1.2 }}
         >
-          Forever to go.
+          {couple.foreverLine2 || "Forever to go."}
         </motion.p>
 
         <motion.div

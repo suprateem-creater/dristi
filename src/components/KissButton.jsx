@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useCouple } from '../CoupleContext';
 
 class KissParticle {
   constructor(x, y) {
@@ -25,6 +26,7 @@ class KissParticle {
 }
 
 export default function KissButton() {
+  const { couple } = useCouple();
   const canvasRef = useRef(null);
   const particlesRef = useRef([]);
   const rafRef = useRef(null);
@@ -73,7 +75,7 @@ export default function KissButton() {
         particlesRef.current.push(new KissParticle(x + (Math.random() - 0.5) * 100, y + (Math.random() - 0.5) * 80));
       }, i * 40);
     }
-    setMessage('A kiss has been delivered 💋');
+    setMessage(couple.kissSuccessMessage || 'A kiss has been delivered 💋');
     setMsgKey(k => k + 1);
     setTimeout(() => setMessage(null), 3000);
   };
@@ -90,9 +92,9 @@ export default function KissButton() {
           transition={{ duration: 0.7 }}
           className="section-header mb-8"
         >
-          <span className="section-eyebrow">Just Because</span>
-          <h2 className="section-title">Send a Kiss</h2>
-          <p className="section-subtitle">Tap the giant kiss to send a virtual shower of love!</p>
+          <span className="section-eyebrow">{couple.kissEyebrow || "Just Because"}</span>
+          <h2 className="section-title">{couple.kissTitle || "Send a Kiss"}</h2>
+          <p className="section-subtitle">{couple.kissSubtitle || "Tap the giant kiss to send a virtual shower of love!"}</p>
         </motion.div>
 
         <motion.button
@@ -112,7 +114,7 @@ export default function KissButton() {
           className="px-8 py-3 rounded-full text-white font-medium"
           style={{ background: 'linear-gradient(135deg, #D4838A, #C9A08A)', fontFamily: 'Inter' }}
         >
-          Send A Kiss 💋
+          {couple.kissButtonText || "Send A Kiss 💋"}
         </motion.button>
 
         <div className="h-12 mt-4 flex items-center justify-center">

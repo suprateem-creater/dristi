@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { spawnHearts } from './HeartCanvas';
+import { useCouple } from '../CoupleContext';
 
 function Confetti({ active }) {
   if (!active) return null;
@@ -21,6 +22,7 @@ function Confetti({ active }) {
 }
 
 export default function AnniversaryCake() {
+  const { couple } = useCouple();
   const [blown, setBlown] = useState([false, false]);
   const [revealed, setRevealed] = useState(false);
   const [confetti, setConfetti] = useState(false);
@@ -56,10 +58,12 @@ export default function AnniversaryCake() {
           transition={{ duration: 0.7 }}
           className="section-header mb-12"
         >
-          <span className="section-eyebrow">One Year of Magic</span>
-          <h2 className="section-title">Make a Wish</h2>
+          <span className="section-eyebrow">{couple.cakeEyebrow || "One Year of Magic"}</span>
+          <h2 className="section-title">{couple.cakeTitle || "Make a Wish"}</h2>
           <p className="section-subtitle">
-            {!blown.every(Boolean) ? 'Tap each glowing candle to blow it out together 🎂' : 'Your wish is sealed in our hearts! ✨'}
+            {!blown.every(Boolean) 
+              ? (couple.cakeBlowMessage || 'Tap each glowing candle to blow it out together 🎂') 
+              : (couple.cakeSuccessMessage || 'Your wish is sealed in our hearts! ✨')}
           </p>
         </motion.div>
 
@@ -74,7 +78,7 @@ export default function AnniversaryCake() {
             <rect x="55" y="80" width="150" height="16" rx="10" fill="#E8C4A0" />
             {[80, 115, 150, 185].map(x => <circle key={x} cx={x} cy="110" r="4" fill="white" opacity="0.5" />)}
             {[70, 100, 140, 170].map((x, i) => <path key={i} d={`M${x},80 Q${x + 8},95 ${x + 5},105`} stroke="white" strokeWidth="6" fill="none" opacity="0.4" strokeLinecap="round" />)}
-            <text x="130" y="108" textAnchor="middle" fontSize="18" fontFamily="Playfair Display, serif" fill="white" opacity="0.8">1</text>
+            <text x="130" y="108" textAnchor="middle" fontSize="18" fontFamily="Playfair Display, serif" fill="white" opacity="0.8">{couple.cakeYears ?? 1}</text>
             {[95, 155].map((cx, i) => (
               <g key={i} onClick={(e) => blowCandle(i, e)} style={{ cursor: blown[i] ? 'default' : 'pointer' }}>
                 <rect x={cx - 6} y="48" width="12" height="32" rx="4" fill={blown[i] ? '#C9A08A' : '#F0C060'} />
@@ -109,8 +113,8 @@ export default function AnniversaryCake() {
           {revealed && (
             <motion.div initial={{ opacity: 0, y: 30, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ type: 'spring', stiffness: 200, damping: 20 }} className="rounded-3xl p-8" style={{ background: 'linear-gradient(135deg, #FFE4E8, #FFF0E8)', border: '1px solid rgba(201,160,138,0.3)' }}>
               <div className="text-4xl mb-4">🎉</div>
-              <p className="text-2xl font-semibold mb-3" style={{ fontFamily: 'Playfair Display', color: '#C9A08A' }}>Here's to another year of us.</p>
-              <p className="text-base" style={{ fontFamily: 'Dancing Script', color: '#5A5A5A', fontSize: '1.2rem' }}>May every year be sweeter than the last. 🎂✨</p>
+              <p className="text-2xl font-semibold mb-3" style={{ fontFamily: 'Playfair Display', color: '#C9A08A' }}>{couple.cakeRevealedMessage || "Here's to another year of us."}</p>
+              <p className="text-base" style={{ fontFamily: 'Dancing Script', color: '#5A5A5A', fontSize: '1.2rem' }}>{couple.cakeRevealedSubtitle || "May every year be sweeter than the last. 🎂✨"}</p>
               <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={reset} className="mt-6 px-6 py-2 rounded-full text-sm" style={{ background: 'rgba(201,160,138,0.2)', color: '#C9A08A', border: '1px solid rgba(201,160,138,0.3)', fontFamily: 'Inter' }}>
                 Light Again ↺
               </motion.button>

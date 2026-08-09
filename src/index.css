@@ -383,3 +383,10 @@ section > div:not(.absolute):not(.fixed):not(.hero-orb):not(.petal):not(canvas),
     transform: none !important;
   }
 }
+
+/* Quiz 2×2 answer grid — 2 columns on sm+, 1 column on mobile */
+@media (min-width: 640px) {
+  .quiz-options-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
