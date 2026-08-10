@@ -22,6 +22,7 @@ import KissButton      from './components/KissButton';
 import AnniversaryCake from './components/AnniversaryCake';
 import ForeverSection  from './components/ForeverSection';
 import FloatingNav     from './components/FloatingNav';
+import AtmosphericBackground from './components/AtmosphericBackground';
 import { couple }      from './coupleData';
 import { motion }      from 'framer-motion';
 
@@ -244,6 +245,7 @@ function MainApp() {
 
   return (
     <>
+      <AtmosphericBackground />
       <HeartCanvas />
       <FloatingNav />
       <Hero />

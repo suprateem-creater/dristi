@@ -44,7 +44,7 @@ export default function LoveLetter() {
     <section
       id="letter"
       className="section-wrapper text-center relative overflow-hidden"
-      style={{ background: 'linear-gradient(160deg, #FFF8F3 0%, #FDE8E4 30%, #FFF0F0 60%, #FEF5EE 100%)' }}
+      style={{ background: 'transparent' }}
     >
       {/* Ambient Floating Decorations */}
       {petals.map((p, i) => (
@@ -63,11 +63,15 @@ export default function LoveLetter() {
         </motion.span>
       ))}
 
-      {/* Soft ambient radial glow */}
-      <div
-        className="absolute inset-0 pointer-events-none"
+      {/* Soft spotlight behind the letter */}
+      <div 
+        className="absolute w-[80vw] h-[80vw] max-w-[800px] rounded-full pointer-events-none z-0 opacity-20"
         style={{
-          background: 'radial-gradient(ellipse 70% 60% at 50% 40%, rgba(232,180,184,0.15), transparent 70%)',
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%, -50%)',
+          background: 'radial-gradient(circle, rgba(234, 214, 195, 0.15) 0%, transparent 60%)',
+          filter: 'blur(50px)'
         }}
       />
 
@@ -169,78 +173,82 @@ export default function LoveLetter() {
           ) : (
             <motion.div
               key="letter"
-              initial={{ opacity: 0, y: 40, scale: 0.92, rotateX: 10 }}
-              animate={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
-              transition={{ duration: 0.7, type: 'spring', stiffness: 180, damping: 18 }}
-              className="rounded-3xl p-8 md:p-12 text-left shadow-2xl relative overflow-hidden"
+              initial={{ opacity: 0, y: 40, scale: 0.94 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+              className="w-full max-w-xl mx-auto rounded-2xl text-left relative overflow-hidden select-text"
               style={{
-                background: 'linear-gradient(170deg, #FFFDF9 0%, #FFF8F2 40%, #FFFDF9 100%)',
-                border: '1px solid rgba(201,160,138,0.3)',
-                fontFamily: 'Dancing Script',
-                boxShadow: '0 25px 60px rgba(0,0,0,0.12), 0 0 0 1px rgba(201,160,138,0.1)',
+                background: 'linear-gradient(to bottom, #FCFAF5 0%, #F5F1E8 100%)',
+                boxShadow: 'inset 0 0 16px rgba(201,160,138,0.12), 0 20px 45px rgba(0,0,0,0.3)',
+                padding: 'clamp(2rem, 5vw, 3.5rem)',
+                minHeight: '400px',
               }}
             >
-              {/* Corner decorations */}
-              <div className="absolute top-3 left-4 text-xl opacity-30 pointer-events-none">🌿</div>
-              <div className="absolute top-3 right-4 text-xl opacity-30 pointer-events-none">🌿</div>
-              <div className="absolute bottom-3 left-4 text-xl opacity-30 pointer-events-none rotate-180">🌿</div>
-              <div className="absolute bottom-3 right-4 text-xl opacity-30 pointer-events-none rotate-180">🌿</div>
+              {/* Elegant botanical prints */}
+              <div className="absolute top-4 left-6 text-base opacity-25 pointer-events-none select-none">🌸</div>
+              <div className="absolute bottom-4 right-6 text-base opacity-25 pointer-events-none select-none">🌿</div>
 
               {/* Faint paper texture lines */}
-              <div className="absolute inset-0 pointer-events-none opacity-[0.04]"
+              <div className="absolute inset-0 pointer-events-none opacity-[0.035]"
                 style={{
                   backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 28px, #C9A08A 28px, #C9A08A 29px)',
                 }}
               />
 
               {/* Date */}
-              <p className="text-xs uppercase tracking-widest mb-4 text-right font-bold" style={{ color: '#C9A08A' }}>
+              <p className="text-[10px] uppercase tracking-[0.2em] mb-8 text-right font-sans font-bold text-[#A89D90]">
                 {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
               </p>
 
               {/* Greeting */}
-              <p className="text-2xl mb-4 font-bold font-serif" style={{ color: '#D4838A' }}>
+              <p className="text-xl sm:text-2xl mb-6 font-serif font-light tracking-wide text-[#A84E59]">
                 My dearest {couple.partner2 || 'love'},
               </p>
 
               {/* Letter body with typewriter */}
-              <pre
-                className="text-xl sm:text-2xl leading-relaxed whitespace-pre-wrap relative z-10 font-script font-medium"
-                style={{ color: '#3A2E2B', fontSize: '1.45rem', lineHeight: 1.85 }}
+              <p
+                className="text-base sm:text-lg leading-relaxed whitespace-pre-line relative z-10 font-serif text-[#3A2E2B] text-left"
+                style={{ lineHeight: 1.85, wordBreak: 'break-word' }}
               >
                 {typed}
                 {typed.length < text.length && (
-                  <span className="inline-block w-0.5 h-6 bg-rose-400 animate-pulse ml-0.5" />
+                  <span className="inline-block w-0.5 h-5 bg-[#D4838A] animate-pulse ml-0.5 align-middle" />
                 )}
-              </pre>
+              </p>
 
               {/* Sign-off */}
               {typed.length >= text.length && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="mt-8 text-right font-script"
+                  transition={{ duration: 0.6 }}
+                  className="mt-10 text-right"
                 >
-                  <p className="text-xl" style={{ color: '#D4838A', fontSize: '1.5rem' }}>
+                  <p className="text-sm font-sans tracking-wide text-[#A84E59]">
                     Forever yours,
                   </p>
-                  <p className="text-2xl font-bold mt-1" style={{ color: '#A84E59', fontSize: '1.75rem' }}>
-                    {couple.partner1 || 'Me'} 💕
+                  <p className="text-lg font-serif font-light mt-1 text-[#8C3A44]">
+                    {couple.partner1 || 'Me'}
                   </p>
                 </motion.div>
               )}
 
               {/* Close button */}
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setOpen(false)}
-                className="mt-8 text-xs font-bold px-6 py-2.5 rounded-full cursor-pointer shadow-sm transition-colors"
-                style={{ background: 'rgba(212,131,138,0.15)', color: '#D4838A', border: '1px solid rgba(212,131,138,0.3)' }}
-              >
-                Seal the letter again 💌
-              </motion.button>
+              <div className="flex justify-start mt-8">
+                <motion.button
+                  whileHover={{ scale: 1.02, y: -1 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setOpen(false)}
+                  className="px-6 py-2 rounded-full cursor-pointer text-xs font-sans tracking-widest uppercase transition border shadow-xs"
+                  style={{
+                    background: 'rgba(212, 131, 138, 0.08)',
+                    color: '#A84E59',
+                    borderColor: 'rgba(212, 131, 138, 0.25)',
+                  }}
+                >
+                  Seal the letter 💌
+                </motion.button>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

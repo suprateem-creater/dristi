@@ -411,3 +411,207 @@ section > div:not(.absolute):not(.fixed):not(.hero-orb):not(.petal):not(canvas),
   -moz-user-select: text !important;
   -ms-user-select: text !important;
 }
+
+/* ── Dark Romantic Nighttime Overrides ── */
+
+body {
+  background: #06020a !important;
+  color: #FAF6F0 !important;
+}
+
+/* Make all section containers transparent so the background glows shine through */
+section,
+.section-wrapper,
+.hero-section {
+  background: transparent !important;
+}
+
+/* Title and Subtitle styling */
+.section-title {
+  color: #EAD6C3 !important;
+  text-shadow: 0 0 15px rgba(234, 214, 195, 0.12) !important;
+}
+
+.section-subtitle {
+  color: rgba(255, 255, 255, 0.55) !important;
+}
+
+.section-eyebrow {
+  color: #FF758F !important;
+  letter-spacing: 0.22em !important;
+}
+
+/* General text elements */
+.text-gray-500,
+.text-gray-600,
+.text-slate-500,
+.text-slate-600,
+.text-gray-700 {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.text-gray-800,
+.text-gray-900,
+.text-slate-800,
+.text-slate-900 {
+  color: #FAF6F0 !important;
+}
+
+/* Polaroid Card Text Override (Must be dark gray to read on white polaroids!) */
+#polaroids .bg-white p,
+#polaroids .rounded-xl p,
+#polaroids p {
+  color: #2D2D2D !important;
+}
+
+/* Translucent Glass Cards instead of hardcoded white backgrounds */
+.bg-white,
+.bg-rose-50,
+.bg-purple-50,
+.bg-amber-50,
+.bg-gray-50,
+.bg-slate-50,
+.bg-white\/95,
+.card-front {
+  background: rgba(15, 7, 23, 0.3) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Event cards inside the Timeline - robust override */
+#timeline .rounded-3xl {
+  background: rgba(15, 7, 23, 0.35) !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+}
+
+/* Timeline Quiz Card wrapper */
+#timeline div.relative.w-full.rounded-\[40px\],
+#timeline div.relative.w-full.rounded-\[48px\] {
+  background: rgba(15, 7, 23, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+}
+
+
+/* Open When Cards unread cards override to dark glass */
+#openwhen .rounded-3xl {
+  background: rgba(15, 7, 23, 0.3) !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+#openwhen .rounded-3xl h3 {
+  color: #EAD6C3 !important;
+}
+
+/* Modals & Dialogs (Open When Card Modal, Memory Zoom Modal, Polaroid Lightbox Modal) */
+.fixed.inset-0.z-50 .rounded-3xl,
+.fixed.inset-0.z-50 .bg-white,
+.fixed.inset-0.z-50 .bg-\[\#FFFDF9\],
+.fixed.inset-0.z-50 div[style*="background: #FFFDF9"],
+.fixed.inset-0.z-50 div[style*="background: rgb(255, 253, 249)"] {
+  background: rgba(15, 7, 23, 0.95) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+.fixed.inset-0.z-50 .rounded-2xl,
+.fixed.inset-0.z-50 .rounded-xl,
+.fixed.inset-0.z-50 div[class*="bg-rose-50"] {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+.fixed.inset-0.z-50 h3 {
+  color: #EAD6C3 !important;
+}
+
+.fixed.inset-0.z-50 p,
+.fixed.inset-0.z-50 span,
+.fixed.inset-0.z-50 p[style*="color: #3D3D3D"] {
+  color: #FAF6F0 !important;
+}
+
+.fixed.inset-0.z-50 button {
+  color: #FFFFFF !important;
+}
+
+/* Override borders */
+.border,
+.border-rose-100,
+.border-rose-200,
+.border-rose-200\/90,
+.border-rose-200\/50,
+.border-rose-100\/50,
+.border-slate-200,
+.border-purple-200,
+.border-amber-200,
+.border-gray-200 {
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Card titles inside Love Card grids */
+.card-front h3.text-gray-800 {
+  color: #EAD6C3 !important;
+}
+
+/* Tap to flip prompt badges */
+.bg-rose-50.border-rose-200\/80.text-rose-500 {
+  background: rgba(255, 117, 143, 0.1) !important;
+  border-color: rgba(255, 117, 143, 0.2) !important;
+  color: #FF758F !important;
+}
+
+/* Customizer Live View button link */
+.bg-rose-50.border-rose-200.text-rose-700 {
+  background: rgba(255, 117, 143, 0.1) !important;
+  border-color: rgba(255, 117, 143, 0.2) !important;
+  color: #FF758F !important;
+}
+
+/* Hero Section override for luxury gold gradient title */
+.hero-title {
+  background: linear-gradient(135deg, #FAF6F0 0%, #EAD6C3 60%, #CDB39B 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+/* Countdown component styling */
+.countdown-card {
+  background: rgba(15, 7, 23, 0.3) !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.08) !important;
+}
+
+.countdown-number span {
+  color: #EAD6C3 !important;
+  text-shadow: 0 0 10px rgba(234, 214, 195, 0.2) !important;
+}
+
+.countdown-label {
+  color: rgba(234, 214, 195, 0.7) !important;
+}
+
+/* Open When Cards envelope overlay */
+.bg-rose-450 {
+  background: rgba(168, 78, 89, 0.3) !important;
+}
+
+/* Reduced Motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-delay: 0s !important;
+    animation-duration: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0s !important;
+    scroll-behavior: auto !important;
+  }
+}
