@@ -5,6 +5,7 @@ import { useCouple } from '../CoupleContext';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { Sparkles, MapPin, X, Heart } from 'lucide-react';
+import { useSound } from '../SoundContext';
 
 // Fix leaflet default icon paths broken by bundlers
 delete L.Icon.Default.prototype._getIconUrl;
@@ -68,12 +69,16 @@ function RecenterMap({ center, zoom }) {
 }
 
 function Markers({ locations, onSelect }) {
+  const { playSound } = useSound();
   return locations.map((loc, i) => (
     <Marker
       key={i}
       position={loc.coords}
       icon={heartIcon(loc.emoji)}
-      eventHandlers={{ click: () => onSelect(loc) }}
+      eventHandlers={{ click: () => {
+        playSound('open');
+        onSelect(loc);
+      } }}
     />
   ));
 }
@@ -105,6 +110,12 @@ const DEFAULT_MAP_LOCATIONS = [
 export default function LoveMap() {
   const { couple } = useCouple();
   const [active, setActive] = useState(null);
+  const { playSound } = useSound();
+
+  const handleClose = () => {
+    playSound('close');
+    setActive(null);
+  };
 
   const rawLocations = Array.isArray(couple?.loveMap) && couple.loveMap.length > 0
     ? couple.loveMap
@@ -186,11 +197,15 @@ export default function LoveMap() {
                 key={i}
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.96 }}
-                onClick={() => setActive(loc)}
+                onMouseEnter={() => playSound('hover')}
+                onClick={() => {
+                  playSound('open');
+                  setActive(loc);
+                }}
                 className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer border flex items-center gap-2 ${
                   active?.name === loc.name
-                    ? 'bg-gradient-to-r from-rose-500 to-pink-500 text-white border-rose-400 shadow-md'
-                    : 'bg-white/90 hover:bg-white text-gray-800 border-rose-200'
+                    ? 'bg-gradient-to-r from-rose-500 to-pink-500 text-white border-rose-450 shadow-md'
+                    : 'bg-white/5 hover:bg-white/10 text-rose-200 border-white/10 hover:border-rose-300/30 hover:text-white'
                 }`}
               >
                 <span>{loc.emoji || '💖'}</span>
@@ -209,7 +224,7 @@ export default function LoveMap() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/65 backdrop-blur-xs"
-            onClick={() => setActive(null)}
+            onClick={handleClose}
           >
             <motion.div
               initial={{ scale: 0.85, y: 25 }}
@@ -221,7 +236,7 @@ export default function LoveMap() {
             >
               <button
                 type="button"
-                onClick={() => setActive(null)}
+                onClick={handleClose}
                 className="absolute top-4 right-4 p-2 rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition cursor-pointer"
               >
                 <X size={18} />
@@ -249,7 +264,7 @@ export default function LoveMap() {
 
               <button
                 type="button"
-                onClick={() => setActive(null)}
+                onClick={handleClose}
                 className="px-8 py-2.5 rounded-full text-xs font-bold text-white bg-gradient-to-r from-rose-400 to-rose-500 shadow-md hover:shadow-lg transition cursor-pointer"
               >
                 Close ♡

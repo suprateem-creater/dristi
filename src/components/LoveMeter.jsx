@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { spawnHearts } from './HeartCanvas';
 import { useCouple } from '../CoupleContext';
+import { useSound } from '../SoundContext';
 
 const DEFAULT_LABELS = ['A Little', 'Pretty Much', 'A Lot', 'So Much', 'To the Moon & Back', 'Still Not Enough ∞'];
 
@@ -10,6 +11,11 @@ export default function LoveMeter() {
   const [value, setValue] = useState(0);
   const [burst, setBurst] = useState(false);
 
+  // Track whether slider was already at max to prevent repeated love-max sound
+  const wasAtMaxRef = useRef(false);
+
+  const { playSound, playLoveMeterSlider } = useSound();
+
   const labels = (couple.lovemeterLabels && couple.lovemeterLabels.length > 0)
     ? couple.lovemeterLabels
     : DEFAULT_LABELS;
@@ -17,18 +23,35 @@ export default function LoveMeter() {
   const handleChange = (e) => {
     const v = Number(e.target.value);
     setValue(v);
-    if (v === 100 && !burst) {
-      setBurst(true);
-      for (let i = 0; i < 18; i++) {
-        setTimeout(() => {
-          spawnHearts(
-            Math.random() * window.innerWidth,
-            Math.random() * window.innerHeight,
-            4
-          );
-        }, i * 70);
+
+    // Play shimmer for normal movement (not when staying at max)
+    if (v < 100) {
+      wasAtMaxRef.current = false;
+      // normalizedValue from 0 → 1
+      playLoveMeterSlider(v / 100);
+    }
+
+    // Trigger max celebration only when CROSSING INTO 100 (not repeatedly at 100)
+    if (v === 100 && !wasAtMaxRef.current) {
+      wasAtMaxRef.current = true;
+
+      // Play romantic max sound — slight delay so heart animation starts first
+      setTimeout(() => playSound('love-max'), 40);
+
+      // Spawn heart burst
+      if (!burst) {
+        setBurst(true);
+        for (let i = 0; i < 18; i++) {
+          setTimeout(() => {
+            spawnHearts(
+              Math.random() * window.innerWidth,
+              Math.random() * window.innerHeight,
+              4
+            );
+          }, i * 70);
+        }
+        setTimeout(() => setBurst(false), 2200);
       }
-      setTimeout(() => setBurst(false), 2200);
     }
   };
 

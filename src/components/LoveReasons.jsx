@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useCouple } from '../CoupleContext';
 import { Sparkles, Heart } from 'lucide-react';
+import { useSound } from '../SoundContext';
 
 function LoveCard({ item, index }) {
   const [flipped, setFlipped] = useState(false);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const { playSound } = useSound();
 
   const handleMouseMove = (e) => {
     if (flipped) return;
@@ -27,7 +29,12 @@ function LoveCard({ item, index }) {
       style={{ perspective: '1000px' }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      onClick={() => { setFlipped(!flipped); setTilt({ x: 0, y: 0 }); }}
+      onMouseEnter={() => playSound('hover')}
+      onClick={() => { 
+        playSound(flipped ? 'close' : 'open'); 
+        setFlipped(!flipped); 
+        setTilt({ x: 0, y: 0 }); 
+      }}
     >
       <motion.div
         className="card-inner w-full h-full rounded-3xl shadow-sm hover:shadow-2xl transition-all duration-500"

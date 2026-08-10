@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCouple } from '../CoupleContext';
 import { spawnHearts } from './HeartCanvas';
+import { useSound } from '../SoundContext';
 
 const DEFAULT_HEARTBEAT_MESSAGES = [
   "You make my heart race. ❤️",
@@ -14,6 +15,7 @@ const DEFAULT_HEARTBEAT_MESSAGES = [
 
 export default function HeartbeatSection() {
   const { couple } = useCouple();
+  const { playSound } = useSound();
   const [beats, setBeats] = useState(1);
   const [msgIndex, setMsgIndex] = useState(0);
   const timerRef = useRef(null);
@@ -23,6 +25,7 @@ export default function HeartbeatSection() {
     : DEFAULT_HEARTBEAT_MESSAGES;
 
   const handleHeartClick = (e) => {
+    playSound('heart');
     const newBeats = Math.min(beats + 1, 5);
     setBeats(newBeats);
     setMsgIndex(i => (i + 1) % heartbeatMessages.length);
@@ -68,6 +71,7 @@ export default function HeartbeatSection() {
             onClick={handleHeartClick}
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.9 }}
+            onMouseEnter={() => playSound('hover')}
             animate={{ scale: [1, 1.15, 1] }}
             transition={{ duration, repeat: Infinity, ease: 'easeInOut' }}
             className="relative z-10 text-8xl sm:text-9xl cursor-pointer border-none bg-transparent select-none drop-shadow-[0_0_30px_rgba(244,63,94,0.5)]"

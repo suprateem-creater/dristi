@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCouple } from '../CoupleContext';
 import { spawnHearts } from './HeartCanvas';
-import { Check, X as CloseIcon, Sparkles, Award } from 'lucide-react';
+import { Check, X as CloseIcon, Sparkles } from 'lucide-react';
+import { useSound } from '../SoundContext';
 
 const DEFAULT_QUESTIONS = [
   {
@@ -29,82 +30,254 @@ const DEFAULT_QUESTIONS = [
 
 const OPTION_LETTERS = ['A', 'B', 'C', 'D'];
 
+/* ─── Static background sparkles ───────────────────────────── */
+const BG_SPARKLES = [
+  { x: '10%', y: '15%', size: 1.5, opacity: 0.2 },
+  { x: '85%', y: '12%', size: 2,   opacity: 0.18 },
+  { x: '6%',  y: '75%', size: 2,   opacity: 0.22 },
+  { x: '92%', y: '80%', size: 1.5, opacity: 0.15 },
+  { x: '20%', y: '90%', size: 1,   opacity: 0.12 },
+  { x: '78%', y: '88%', size: 2,   opacity: 0.18 },
+];
+
 export default function LoveQuiz() {
   const { couple } = useCouple();
+  const { playSound } = useSound();
   const questions = (couple.loveQuiz && couple.loveQuiz.length > 0) ? couple.loveQuiz : DEFAULT_QUESTIONS;
 
   const [step, setStep] = useState(0);
   const [score, setScore] = useState(0);
   const [selected, setSelected] = useState(null);
   const [feedback, setFeedback] = useState(null);
-  const [done, setDone] = useState(false);
+  
+  // Quiz states: "playing" | "transitioning" | "result"
+  const [quizState, setQuizState] = useState("playing");
   const [finalScore, setFinalScore] = useState(0);
+  const [displayScore, setDisplayScore] = useState(0);
+  const [scoreSettled, setScoreSettled] = useState(false);
+  const [particles, setParticles] = useState([]);
+  const [reducedMotion, setReducedMotion] = useState(false);
 
   const q = questions[step] || questions[0];
+
+  // Detect prefers-reduced-motion
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReducedMotion(mq.matches);
+    const handler = (e) => setReducedMotion(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
+  // Ensure selected and feedback are reset when step changes to prevent faded options on new question load
+  useEffect(() => {
+    setSelected(null);
+    setFeedback(null);
+  }, [step]);
 
   const handleAnswer = (index, e) => {
     if (selected !== null) return;
     setSelected(index);
     const correct = index === q.correct;
+    
     if (correct) {
+      playSound('timeline-today');
       setScore(s => s + 1);
       setFeedback('correct');
       const x = e?.clientX ?? window.innerWidth / 2;
       const y = e?.clientY ?? window.innerHeight / 2;
       spawnHearts(x, y, 8);
     } else {
+      playSound('close');
       setFeedback('wrong');
     }
 
     setTimeout(() => {
       setSelected(null);
       setFeedback(null);
+      
       if (step + 1 < questions.length) {
         setStep(s => s + 1);
       } else {
-        setFinalScore(score + (correct ? 1 : 0));
-        setDone(true);
+        const finalVal = score + (correct ? 1 : 0);
+        setFinalScore(finalVal);
+        
+        // Orchestrate smooth transition from final question to results
+        setQuizState("transitioning");
+        setTimeout(() => {
+          setQuizState("result");
+        }, 550);
       }
     }, 1300);
   };
 
+  // Score Count-Up Animation
+  useEffect(() => {
+    if (quizState !== 'result') return;
+
+    if (reducedMotion) {
+      setDisplayScore(finalScore);
+      triggerCelebration();
+      return;
+    }
+
+    let current = 0;
+    const totalDuration = 700; // Count-up over 700ms
+    const stepTime = Math.max(120, totalDuration / Math.max(1, finalScore));
+
+    const timer = setInterval(() => {
+      if (current < finalScore) {
+        current += 1;
+        setDisplayScore(current);
+        playSound('hover');
+      } else {
+        clearInterval(timer);
+        triggerCelebration();
+      }
+    }, stepTime);
+
+    return () => clearInterval(timer);
+  }, [quizState, finalScore, reducedMotion]);
+
+  // Play soft chime when results screen mounts
+  useEffect(() => {
+    if (quizState === 'result') {
+      playSound('timeline-today');
+    }
+  }, [quizState]);
+
+  const triggerCelebration = () => {
+    setScoreSettled(true);
+    
+    // Play celebratory romantic sound once count finishes
+    playSound('celebration');
+
+    if (reducedMotion) return;
+
+    // Generate 10 romantic floating particle coordinates (hearts & dots)
+    const newParticles = Array.from({ length: 10 }).map((_, i) => ({
+      id: i,
+      angle: (i * 360) / 10 + (Math.random() - 0.5) * 15,
+      distance: 80 + Math.random() * 80,
+      size: i % 3 === 0 ? 8 : 4 + Math.random() * 3, // some tiny hearts, some dots
+      delay: i * 0.05,
+      type: i % 3 === 0 ? 'heart' : 'dot',
+    }));
+    setParticles(newParticles);
+  };
+
   const restart = () => {
+    playSound('click');
     setStep(0);
     setScore(0);
     setSelected(null);
     setFeedback(null);
-    setDone(false);
     setFinalScore(0);
+    setDisplayScore(0);
+    setScoreSettled(false);
+    setParticles([]);
+    setQuizState("playing");
   };
 
   const getResult = () => {
     const total = questions.length;
-    if (finalScore === total) return `Perfect score! You know us better than anyone in the universe 💕`;
+    if (finalScore === total) return `You know us better than anyone in the universe 💕`;
     if (finalScore >= total * 0.75) return `So close to perfection! You truly know my heart 🌸`;
     return `Every moment with you is a memory worth celebrating 🥂`;
   };
 
+  const getResultHeader = () => {
+    const total = questions.length;
+    if (finalScore === total) return "YOU KNOW US PERFECTLY";
+    if (finalScore >= total * 0.75) return "YOU KNOW US PRETTY WELL";
+    return "QUIZ COMPLETE";
+  };
+
   return (
-    <section id="quiz" className="section-wrapper" style={{ background: 'linear-gradient(180deg, #F8EFEA 0%, #FFF5F0 50%, #FAF0EA 100%)' }}>
-      <div className="section-container max-w-4xl">
+    <section 
+      id="quiz" 
+      className="section-wrapper" 
+      style={{ 
+        background: 'radial-gradient(ellipse 85% 70% at 50% 50%, #150a29 0%, #0e051e 45%, #06020f 100%)',
+        minHeight: '100vh',
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+        overflow: 'hidden',
+        padding: '6rem 1rem',
+      }}
+    >
+      {/* ── Background stars (cohesive atmosphere) ── */}
+      {BG_SPARKLES.map((s, i) => (
+        <span
+          key={i}
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            left: s.x,
+            top: s.y,
+            width: s.size,
+            height: s.size,
+            borderRadius: '50%',
+            background: '#e8c4d4',
+            opacity: s.opacity,
+            pointerEvents: 'none',
+            animation: reducedMotion ? 'none' : `twinkle ${3 + i * 0.5}s ease-in-out infinite alternate`,
+            animationDelay: `${i * 0.3}s`,
+            '--op-from': s.opacity * 0.5,
+            '--op-to': s.opacity * 1.5,
+          }}
+        />
+      ))}
+
+      <div className="section-container w-full max-w-4xl" style={{ position: 'relative', zIndex: 2 }}>
+        {/* ── Header ─────────────────────────────────────────────── */}
         <motion.div
-          initial={{ opacity: 0, y: 25 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
           className="section-header text-center flex flex-col items-center mx-auto"
-          style={{ marginBottom: 'clamp(2rem, 4vw, 3rem)' }}
+          style={{ marginBottom: 'clamp(2.5rem, 4.5vw, 3.5rem)' }}
         >
-          <span className="section-eyebrow text-center">Test Your Memory</span>
-          <h2 className="section-title text-center">How Well Do You Know Us?</h2>
+          <span 
+            style={{
+              display: 'block',
+              fontSize: '0.72rem',
+              fontWeight: 800,
+              letterSpacing: '0.24em',
+              textTransform: 'uppercase',
+              color: 'rgba(232,180,184,0.65)',
+              marginBottom: '0.6rem',
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+            }}
+          >
+            Test Your Memory
+          </span>
+          <h2 
+            className="section-title text-center"
+            style={{
+              fontFamily: "'Cormorant Garamond', 'Playfair Display', serif",
+              fontSize: 'clamp(2rem, 4.5vw, 2.8rem)',
+              color: '#FAF5F0',
+              fontWeight: 600,
+              letterSpacing: '-0.02em',
+              marginBottom: '0.7rem',
+            }}
+          >
+            How Well Do You Know Us?
+          </h2>
           <p 
             className="section-subtitle text-center max-w-2xl"
             style={{
               fontFamily: "'Plus Jakarta Sans', sans-serif",
-              fontSize: 'clamp(1.125rem, 2vw, 1.3rem)', // 18px to 21px
-              fontWeight: 450,
+              fontSize: 'clamp(0.85rem, 1.8vw, 0.95rem)',
+              fontWeight: 400,
+              color: 'rgba(232,180,184,0.5)',
               lineHeight: 1.5,
-              color: '#7C5C5E',
             }}
           >
             A mini playful quiz celebrating all the little moments we shared.
@@ -112,71 +285,82 @@ export default function LoveQuiz() {
         </motion.div>
 
         <AnimatePresence mode="wait">
-          {!done ? (
+          {quizState === "playing" && (
             <motion.div
               key={step}
-              initial={{ opacity: 0, y: 25, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -25, scale: 0.98 }}
-              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-              className="bg-white/95 backdrop-blur-xl border border-rose-200/50 relative overflow-hidden w-full max-w-[920px] mx-auto"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
+              className="relative w-full max-w-[780px] mx-auto"
               style={{
-                borderRadius: '24px',
-                padding: 'clamp(1.75rem, 3.2vw, 2.25rem)',
-                boxShadow: '0 25px 60px rgba(212,131,138,0.14), 0 4px 16px rgba(0,0,0,0.03)',
+                padding: '1rem 0',
               }}
             >
-              {/* Progress bar and counter */}
+              {/* Progress Tracker */}
               <div 
                 className="flex items-center justify-between gap-4"
-                style={{ marginBottom: 'clamp(1.125rem, 2.2vw, 1.5rem)' }}
+                style={{ marginBottom: 'clamp(1.2rem, 2.4vw, 1.8rem)' }}
               >
                 <div 
                   className="flex flex-1"
-                  style={{ gap: 'clamp(0.875rem, 1.8vw, 1.125rem)' }} // 14px to 18px gap
+                  style={{ gap: 'clamp(0.75rem, 1.5vw, 1rem)' }}
                 >
                   {questions.map((_, i) => (
                     <div
                       key={i}
                       className="flex-1 transition-all duration-500 shadow-xs"
                       style={{
-                        height: '12px', // height around 12px
-                        borderRadius: '6px',
-                        background: i <= step ? 'linear-gradient(90deg, #F43F5E, #E11D48)' : '#FFE4E6',
+                        height: '6px',
+                        borderRadius: '3px',
+                        background: i <= step ? 'linear-gradient(90deg, #E86C82, #C44866)' : 'rgba(232, 180, 184, 0.15)',
                       }}
                     />
                   ))}
                 </div>
-                <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-rose-500 px-4 py-1.5 bg-rose-50 rounded-full border border-rose-200/60 flex-shrink-0 font-sans">
-                  Question {step + 1} of {questions.length}
+                <span 
+                  style={{
+                    fontSize: '0.65rem',
+                    fontWeight: 700,
+                    letterSpacing: '0.15em',
+                    textTransform: 'uppercase',
+                    color: '#E8B4B8',
+                    padding: '5px 12px',
+                    background: 'rgba(232, 180, 184, 0.08)',
+                    borderRadius: '20px',
+                    border: '1px solid rgba(232, 180, 184, 0.15)',
+                    fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  }}
+                >
+                  {step + 1} / {questions.length}
                 </span>
               </div>
 
-              {/* Large Prominent Question with Generous Spacing */}
+              {/* Question Text */}
               <div 
                 className="text-center px-2 max-w-2xl mx-auto"
-                style={{ marginBottom: 'clamp(1.5rem, 3vw, 2rem)' }}
+                style={{ marginBottom: 'clamp(1.8rem, 3vw, 2.4rem)' }}
               >
                 <h3 
-                  className="font-bold text-gray-900 leading-snug"
+                  className="leading-snug"
                   style={{
-                    fontFamily: "'Playfair Display', serif",
-                    fontSize: 'clamp(1.75rem, 4vw, 2.6rem)', // 36px to 42px on desktop
-                    fontWeight: 600,
-                    letterSpacing: '-0.02em',
+                    fontFamily: "'Cormorant Garamond', 'Playfair Display', serif",
+                    fontSize: 'clamp(1.5rem, 3.5vw, 2.15rem)',
+                    fontWeight: 500,
+                    color: '#FAF5F0',
                   }}
                 >
                   {q.question}
                 </h3>
               </div>
 
-              {/* 2×2 Answer Grid: CSS Grid with equal-size cards */}
+              {/* 2x2 Grid Options */}
               <div
                 className="quiz-options-grid w-full"
                 style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(1, minmax(0, 1fr))',
-                  gap: 'clamp(1.25rem, 2.5vw, 1.625rem)', // 20px to 26px gap
+                  gap: 'clamp(1rem, 2vw, 1.25rem)',
                 }}
               >
                 {q.options.map((opt, i) => {
@@ -184,100 +368,100 @@ export default function LoveQuiz() {
                   const isCorrect = i === q.correct;
                   const letter = OPTION_LETTERS[i] || `${i + 1}`;
 
-                  // Default State
                   let cardStyleObj = {
-                    background: 'rgba(255, 255, 255, 0.85)',
-                    borderColor: 'rgba(244, 63, 94, 0.12)',
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.01)',
-                    borderRadius: '22px',
+                    background: 'rgba(232, 180, 184, 0.04)',
+                    borderColor: 'rgba(232, 180, 184, 0.12)',
+                    color: '#FAF5F0',
+                    borderRadius: '20px',
+                    backdropFilter: 'blur(8px)',
+                    WebkitBackdropFilter: 'blur(8px)',
                   };
-                  let letterBadgeStyles = 'bg-rose-50/50 text-rose-600 border-rose-100 font-bold';
+                  let letterBadgeStyles = 'bg-white/5 text-rose-300 border-white/10 font-bold';
                   let hoverEnabled = selected === null;
 
                   if (selected !== null) {
                     if (isSelected && isCorrect) {
                       cardStyleObj = {
                         background: 'linear-gradient(90deg, #10B981, #14B8A6)',
-                        borderColor: '#059669',
+                        borderColor: '#10B981',
                         color: '#FFFFFF',
-                        borderRadius: '22px',
+                        borderRadius: '20px',
                       };
                       letterBadgeStyles = 'bg-white text-emerald-600 border-white shadow-md font-bold';
                     } else if (isSelected && !isCorrect) {
                       cardStyleObj = {
                         background: 'linear-gradient(90deg, #EF4444, #F43F5E)',
-                        borderColor: '#DC2626',
+                        borderColor: '#EF4444',
                         color: '#FFFFFF',
-                        borderRadius: '22px',
+                        borderRadius: '20px',
                       };
                       letterBadgeStyles = 'bg-white text-rose-600 border-white shadow-md font-bold';
                     } else if (isCorrect) {
                       cardStyleObj = {
                         background: 'linear-gradient(90deg, #10B981, #14B8A6)',
-                        borderColor: '#059669',
+                        borderColor: '#10B981',
                         color: '#FFFFFF',
-                        borderRadius: '22px',
+                        borderRadius: '20px',
                       };
                       letterBadgeStyles = 'bg-white text-emerald-600 border-white shadow-md font-bold';
                     } else {
                       cardStyleObj = {
-                        background: 'rgba(243, 244, 246, 0.6)',
-                        borderColor: '#E5E7EB',
-                        color: '#9CA3AF',
-                        borderRadius: '22px',
-                        opacity: 0.5,
+                        background: 'rgba(255, 255, 255, 0.01)',
+                        borderColor: 'rgba(255, 255, 255, 0.03)',
+                        color: 'rgba(255, 255, 255, 0.25)',
+                        borderRadius: '20px',
+                        opacity: 0.4,
                       };
-                      letterBadgeStyles = 'bg-gray-200 text-gray-400 border-gray-200';
+                      letterBadgeStyles = 'bg-transparent text-gray-500 border-white/5';
                     }
                   }
 
                   return (
                     <motion.button
                       key={i}
-                      whileHover={hoverEnabled ? { y: -3, boxShadow: '0 8px 24px rgba(212,131,138,0.18)', borderColor: '#FDA4AF', background: '#FFFDFD' } : {}}
-                      whileTap={hoverEnabled ? { scale: 0.98 } : {}}
+                      whileHover={hoverEnabled ? { y: -3, borderColor: 'rgba(232, 180, 184, 0.35)', background: 'rgba(232, 180, 184, 0.08)' } : {}}
+                      whileTap={hoverEnabled ? { scale: 0.99 } : {}}
+                      onMouseEnter={() => hoverEnabled && playSound('hover')}
                       onClick={(e) => handleAnswer(i, e)}
                       disabled={selected !== null}
                       className="flex items-center text-left transition-all duration-300 border cursor-pointer select-none relative overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-400 w-full"
                       style={{
                         ...cardStyleObj,
-                        minHeight: 'clamp(6.875rem, 12vw, 7.8rem)', // 110px to 125px card height
-                        paddingTop: 'clamp(1.375rem, 2.2vw, 1.75rem)',
-                        paddingBottom: 'clamp(1.375rem, 2.2vw, 1.75rem)',
-                        paddingLeft: 'clamp(1.375rem, 2.2vw, 1.75rem)',
-                        paddingRight: 'clamp(1.375rem, 2.2vw, 1.75rem)',
-                        gap: 'clamp(1.25rem, 2.2vw, 1.5rem)', // 20px to 24px gap between badge and text
+                        minHeight: 'clamp(5rem, 10vw, 6rem)',
+                        paddingTop: 'clamp(0.8rem, 1.8vw, 1.2rem)',
+                        paddingBottom: 'clamp(0.8rem, 1.8vw, 1.2rem)',
+                        paddingLeft: 'clamp(1rem, 2vw, 1.5rem)',
+                        paddingRight: 'clamp(1rem, 2vw, 1.5rem)',
+                        gap: 'clamp(1rem, 2vw, 1.25rem)',
                       }}
                     >
-                      {/* Option Letter Chip — 48px to 52px */}
+                      {/* Option Letter Chip */}
                       <div
-                        className={`flex-shrink-0 border flex items-center justify-center font-bold`}
                         style={{
-                          width: 'clamp(3rem, 5vw, 3.25rem)',
-                          height: 'clamp(3rem, 5vw, 3.25rem)',
-                          borderRadius: '14px',
-                          fontSize: 'clamp(1rem, 2vw, 1.15rem)',
-                          ...letterBadgeStyles.includes('bg-white') ? {} : { background: 'rgba(255, 255, 255, 0.9)' },
+                          width: 'clamp(2.4rem, 4vw, 2.8rem)',
+                          height: 'clamp(2.4rem, 4vw, 2.8rem)',
+                          borderRadius: '12px',
+                          fontSize: 'clamp(0.9rem, 1.8vw, 1rem)',
                         }}
                         className={`flex-shrink-0 border flex items-center justify-center font-bold ${letterBadgeStyles}`}
                       >
                         {selected !== null && isCorrect ? (
-                          <Check size={22} className="stroke-[3]" />
+                          <Check size={18} className="stroke-[3]" />
                         ) : selected !== null && isSelected && !isCorrect ? (
-                          <CloseIcon size={22} className="stroke-[3]" />
+                          <CloseIcon size={18} className="stroke-[3]" />
                         ) : (
                           letter
                         )}
                       </div>
 
-                      {/* Option Text — Plus Jakarta Sans */}
+                      {/* Option Text */}
                       <span
                         className="flex-1 font-sans"
                         style={{ 
-                          fontSize: 'clamp(1.125rem, 2vw, 1.25rem)', // 18px to 20px
-                          fontWeight: 600,
+                          fontSize: 'clamp(0.95rem, 1.8vw, 1.125rem)',
+                          fontWeight: 500,
                           lineHeight: 1.4,
-                          color: selected !== null && !isCorrect && !isSelected ? '#9CA3AF' : '#1F2937'
+                          color: selected !== null && !isCorrect && !isSelected ? 'rgba(255, 255, 255, 0.3)' : '#FAF5F0'
                         }}
                       >
                         {opt}
@@ -291,15 +475,15 @@ export default function LoveQuiz() {
               <AnimatePresence>
                 {feedback && (
                   <motion.div
-                    initial={{ opacity: 0, y: 15, scale: 0.9 }}
+                    initial={{ opacity: 0, y: 12, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                    className="mt-8 text-center"
+                    className="mt-6 text-center"
                   >
                     <p
-                      className="text-2xl sm:text-3xl font-bold font-script"
-                      style={{ color: feedback === 'correct' ? '#059669' : '#E11D48' }}
+                      className="text-xl sm:text-2xl font-bold font-script"
+                      style={{ color: feedback === 'correct' ? '#10B981' : '#F43F5E' }}
                     >
                       {feedback === 'correct' ? '✓ Exactly right! You remember! 💕' : '✗ Aww, close! But I still love you 🥰'}
                     </p>
@@ -307,37 +491,256 @@ export default function LoveQuiz() {
                 )}
               </AnimatePresence>
             </motion.div>
-          ) : (
+          )}
+
+          {quizState === "transitioning" && (
             <motion.div
-              key="done"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ type: 'spring', stiffness: 240, damping: 22 }}
-              className="bg-white/95 backdrop-blur-xl rounded-3xl p-8 sm:p-14 text-center shadow-2xl border border-rose-200/90"
+              key="transition-stage"
+              initial={{ opacity: 1 }}
+              animate={{ opacity: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+              style={{ minHeight: '300px' }}
+            />
+          )}
+
+          {quizState === "result" && (
+            <motion.div
+              key="result-stage"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: [0.25, 1, 0.5, 1] }}
+              style={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
             >
-              <div className="text-6xl sm:text-7xl mb-4 animate-bounce">
-                {finalScore === questions.length ? '👑' : '💝'}
+              {/* ── Center Heart ── */}
+              <div style={{ position: 'relative', display: 'inline-block', marginBottom: '1.2rem' }}>
+                {/* Champagne/Blush Celebration Particles Starburst */}
+                {particles.map(p => (
+                  <motion.span
+                    key={p.id}
+                    initial={{ x: 24, y: 22, opacity: 1, scale: 0.2 }}
+                    animate={{
+                      x: 24 + Math.cos((p.angle * Math.PI) / 180) * p.distance,
+                      y: 22 + Math.sin((p.angle * Math.PI) / 180) * p.distance,
+                      opacity: 0,
+                      scale: 1.2,
+                    }}
+                    transition={{ duration: 1.5, ease: 'easeOut', delay: p.delay }}
+                    style={{
+                      position: 'absolute',
+                      transform: 'translate(-50%, -50%)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      pointerEvents: 'none',
+                      color: p.id % 2 === 0 ? '#E8B4B8' : '#FAF5F0',
+                    }}
+                  >
+                    {p.type === 'heart' ? (
+                      <span style={{ fontSize: `${p.size}px`, lineHeight: 1 }}>♥</span>
+                    ) : (
+                      <span 
+                        style={{ 
+                          width: `${p.size}px`, 
+                          height: `${p.size}px`, 
+                          borderRadius: '50%', 
+                          background: 'currentColor',
+                          boxShadow: `0 0 8px currentColor`
+                        }} 
+                      />
+                    )}
+                  </motion.span>
+                ))}
+
+                <motion.div
+                  whileHover={{ scale: 1.08 }}
+                  animate={{
+                    scale: [1, 1.08, 1.02, 1.15, 1, 1],
+                    filter: [
+                      'drop-shadow(0 0 10px rgba(232, 180, 184, 0.4))',
+                      'drop-shadow(0 0 20px rgba(232, 180, 184, 0.7))',
+                      'drop-shadow(0 0 12px rgba(232, 180, 184, 0.5))',
+                      'drop-shadow(0 0 24px rgba(232, 180, 184, 0.8))',
+                      'drop-shadow(0 0 10px rgba(232, 180, 184, 0.4))',
+                      'drop-shadow(0 0 10px rgba(232, 180, 184, 0.4))'
+                    ]
+                  }}
+                  transition={{
+                    duration: 2.0,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    times: [0, 0.1, 0.18, 0.32, 0.48, 1]
+                  }}
+                  style={{
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => {
+                    playSound('heart');
+                    spawnHearts(window.innerWidth / 2, window.innerHeight / 3.5, 6);
+                  }}
+                >
+                  <svg
+                    width="48"
+                    height="44"
+                    viewBox="0 0 160 150"
+                  >
+                    <path
+                      d="M80 135 C 40 100, 0 80, 0 50 C 0 25, 20 10, 40 10 C 55 10, 68 18, 80 30 C 92 18, 105 10, 120 10 C 140 10, 160 25, 160 50 C 160 80, 120 100, 80 135Z"
+                      fill="#E8B4B8"
+                    />
+                  </svg>
+                </motion.div>
               </div>
-              <span className="text-xs font-extrabold uppercase tracking-widest text-rose-500 mb-2 block">
-                Quiz Results
-              </span>
-              <h3 className="text-3xl sm:text-4xl font-bold font-serif text-gray-900 mb-4">
-                {finalScore} of {questions.length} Correct
-              </h3>
-              <p className="text-xl sm:text-2xl text-rose-600 mb-8 max-w-md mx-auto leading-relaxed font-script" style={{ fontSize: '1.65rem' }}>
-                "{getResult()}"
-              </p>
-              <button
-                type="button"
-                onClick={restart}
-                className="px-10 py-3.5 rounded-full text-white font-bold text-sm bg-gradient-to-r from-rose-500 to-pink-500 shadow-xl hover:shadow-2xl hover:scale-105 transition cursor-pointer"
+
+              {/* Quiz Result Title */}
+              <span 
+                style={{
+                  display: 'block',
+                  fontSize: '0.72rem',
+                  fontWeight: 700,
+                  letterSpacing: '0.24em',
+                  textTransform: 'uppercase',
+                  color: 'rgba(232,180,184,0.65)',
+                  marginBottom: '1.5rem',
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                }}
               >
-                Play Again ↩
-              </button>
+                {getResultHeader()}
+              </span>
+
+              {/* ── Main Score Centerpiece (Vertical Stack) ── */}
+              <div 
+                style={{ 
+                  margin: '0.5rem 0 2.5rem 0',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <motion.div 
+                  animate={scoreSettled ? { 
+                    scale: [1, 1.08, 1],
+                    textShadow: [
+                      '0 0 25px rgba(232, 180, 184, 0.2)',
+                      '0 0 50px rgba(232, 180, 184, 0.6)',
+                      '0 0 35px rgba(232, 180, 184, 0.3)'
+                    ]
+                  } : {}}
+                  transition={{ duration: 0.6, ease: 'easeOut' }}
+                  style={{
+                    fontSize: 'clamp(6rem, 15vw, 9.5rem)',
+                    fontWeight: 200,
+                    fontFamily: "'Playfair Display', 'Cormorant Garamond', serif",
+                    color: '#FAF5F0',
+                    lineHeight: 0.85,
+                  }}
+                >
+                  {displayScore}
+                </motion.div>
+                
+                <div style={{
+                  fontSize: 'clamp(1.1rem, 2.5vw, 1.4rem)',
+                  color: 'rgba(232,180,184,0.65)',
+                  fontFamily: "'Cormorant Garamond', serif",
+                  fontStyle: 'italic',
+                  lineHeight: 1.2,
+                  marginTop: '0.5rem',
+                }}>
+                  of {questions.length}
+                </div>
+
+                <div style={{
+                  fontSize: '0.72rem',
+                  fontWeight: 800,
+                  letterSpacing: '0.2em',
+                  textTransform: 'uppercase',
+                  color: '#E8B4B8',
+                  marginTop: '0.4rem',
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                }}>
+                  correct
+                </div>
+              </div>
+
+              {/* ── Personal Message Quote ── */}
+              <AnimatePresence>
+                {scoreSettled && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 12, filter: 'blur(4px)' }}
+                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                    transition={{ duration: 0.8, ease: 'easeOut', delay: 0.15 }}
+                    style={{ textAlign: 'center' }}
+                  >
+                    <p 
+                      style={{
+                        fontFamily: "'Cormorant Garamond', 'Playfair Display', serif",
+                        fontSize: 'clamp(1.35rem, 3.5vw, 1.85rem)',
+                        fontStyle: 'italic',
+                        color: '#FAF5F0',
+                        lineHeight: 1.65,
+                        maxWidth: '460px',
+                        margin: '0 auto 2.8rem auto',
+                        wordBreak: 'break-word',
+                        padding: '0 1rem',
+                      }}
+                    >
+                      "{getResult()}"
+                    </p>
+
+                    {/* ── Try Again Pill Button ── */}
+                    <motion.button
+                      type="button"
+                      onClick={restart}
+                      whileHover={{ y: -2, boxShadow: '0 12px 28px rgba(232, 180, 184, 0.45)', filter: 'brightness(1.08)' }}
+                      whileTap={{ scale: 0.97 }}
+                      style={{
+                        background: '#E8B4B8',
+                        border: '1px solid rgba(255, 255, 255, 0.25)',
+                        borderRadius: '9999px',
+                        padding: '13px 36px',
+                        fontSize: '0.82rem',
+                        fontWeight: 700,
+                        letterSpacing: '0.15em',
+                        textTransform: 'uppercase',
+                        color: '#150a29',
+                        boxShadow: '0 8px 24px rgba(232, 180, 184, 0.25)',
+                        cursor: 'pointer',
+                        outline: 'none',
+                        fontFamily: "'Plus Jakarta Sans', sans-serif",
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '6px',
+                      }}
+                    >
+                      <span>Try Again</span>
+                      <span style={{ fontSize: '0.85rem' }}>♥</span>
+                    </motion.button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
+
+      <style>{`
+        @keyframes twinkle {
+          from { opacity: var(--op-from, 0.1); transform: scale(0.9); }
+          to   { opacity: var(--op-to, 0.35);  transform: scale(1.2); }
+        }
+        @keyframes heartGlow {
+          from { opacity: 0.5; transform: scale(1); }
+          to   { opacity: 0.95; transform: scale(1.15); }
+        }
+      `}</style>
     </section>
   );
 }

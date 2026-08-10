@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, memo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCouple } from '../CoupleContext';
 import { Lock, Unlock, Heart } from 'lucide-react';
+import { useSound } from '../SoundContext';
 
 function pad(n) { return String(n).padStart(2, '0'); }
 
@@ -97,6 +98,7 @@ const FLOATING_HEARTS = Array.from({ length: 8 }).map((_, i) => {
 
 export default function TimeCapsule() {
   const { couple } = useCouple();
+  const { playSound } = useSound();
   const rawTarget = couple?.timeCapsuleDate;
   const targetObj = useMemo(() => {
     return rawTarget instanceof Date && !isNaN(rawTarget.getTime())
@@ -263,6 +265,7 @@ export default function TimeCapsule() {
   }, []);
 
   const handleCapsuleClick = () => {
+    playSound('open');
     setIsOpen(true);
     setTimeout(() => {
       triggerBurst();
@@ -270,6 +273,7 @@ export default function TimeCapsule() {
   };
 
   const sealCapsule = () => {
+    playSound('close');
     setIsOpen(false);
     setActiveContent({ type: 'tab', id: 'story' });
   };
@@ -654,7 +658,11 @@ export default function TimeCapsule() {
                     <button
                       key={tab.id}
                       type="button"
-                      onClick={() => setActiveContent({ type: 'tab', id: tab.id })}
+                      onMouseEnter={() => playSound('hover')}
+                      onClick={() => {
+                        playSound('click');
+                        setActiveContent({ type: 'tab', id: tab.id });
+                      }}
                       className="relative pb-2.5 font-sans text-xs sm:text-sm tracking-wider uppercase font-semibold cursor-pointer transition-all duration-300 flex items-center gap-2 select-none border-none bg-transparent"
                       style={{
                         color: isActive ? '#EAD6C3' : 'rgba(255, 255, 255, 0.4)',
@@ -704,7 +712,11 @@ export default function TimeCapsule() {
                             type="button"
                             whileHover={{ scale: 1.25 }}
                             whileTap={{ scale: 0.9 }}
-                            onClick={() => setActiveContent({ type: 'timeline', id: pt.id })}
+                            onMouseEnter={() => playSound('hover')}
+                            onClick={() => {
+                              playSound(pt.id === 'today' ? 'timeline-today' : 'timeline-select');
+                              setActiveContent({ type: 'timeline', id: pt.id });
+                            }}
                             className={`rounded-full transition-all duration-300 cursor-pointer relative z-20 ${
                               isActive 
                                 ? 'w-3.5 h-3.5 bg-[#EAD6C3] border border-white shadow-[0_0_12px_#EAD6C3,_0_0_24px_rgba(234,214,195,0.7)]' 

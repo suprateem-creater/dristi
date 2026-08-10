@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCouple } from '../CoupleContext';
 import { spawnHearts } from './HeartCanvas';
+import { useSound } from '../SoundContext';
 
 const DEFAULT_OPEN_WHEN = [
   { label: "Open when you miss me", icon: "🌙", message: "Close your eyes. Remember that afternoon when we got caught in the rain and laughed until we couldn't breathe. That's where I am. Always close." },
@@ -16,8 +17,10 @@ export default function OpenWhenCards() {
   const { couple } = useCouple();
   const [openCard, setOpenCard] = useState(null);
   const [opened, setOpened] = useState(new Set());
+  const { playSound } = useSound();
 
   const handleOpen = (card, e) => {
+    playSound('letter-open');
     setOpenCard(card);
     setOpened(prev => new Set([...prev, card.label]));
     const x = e?.clientX ?? window.innerWidth / 2;
@@ -25,6 +28,11 @@ export default function OpenWhenCards() {
     for (let i = 0; i < 8; i++) {
       setTimeout(() => spawnHearts(x + (Math.random()-0.5)*80, y + (Math.random()-0.5)*80, 3), i * 80);
     }
+  };
+
+  const handleClose = () => {
+    playSound('letter-seal');
+    setOpenCard(null);
   };
 
   const rawCards = couple?.openWhenCards && couple.openWhenCards.length > 0
@@ -67,6 +75,7 @@ export default function OpenWhenCards() {
                 transition={{ delay: i * 0.08 }}
                 whileHover={{ y: -6, scale: 1.015 }}
                 whileTap={{ scale: 0.985 }}
+                onMouseEnter={() => playSound('hover')}
                 onClick={(e) => handleOpen(card, e)}
                 className="cursor-pointer rounded-3xl relative overflow-hidden group w-full text-left shadow-md hover:shadow-xl transition-all duration-300 border flex flex-col justify-between"
                 style={{
@@ -153,7 +162,7 @@ export default function OpenWhenCards() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/65 backdrop-blur-xs"
-            onClick={() => setOpenCard(null)}
+            onClick={handleClose}
           >
             <motion.div
               initial={{ scale: 0.7, rotateY: -60, opacity: 0 }}
@@ -185,7 +194,7 @@ export default function OpenWhenCards() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => setOpenCard(null)}
+                onClick={handleClose}
                 className="px-8 py-2.5 rounded-full text-xs font-bold text-white shadow-md hover:shadow-lg transition cursor-pointer"
                 style={{ background: 'linear-gradient(135deg, #D4838A, #C9A08A)' }}
               >

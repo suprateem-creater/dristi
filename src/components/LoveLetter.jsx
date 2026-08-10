@@ -1,28 +1,54 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCouple } from '../CoupleContext';
 import { spawnHearts } from './HeartCanvas';
+import { useSound } from '../SoundContext';
 
 export default function LoveLetter() {
   const { couple } = useCouple();
   const [open, setOpen] = useState(false);
   const [typed, setTyped] = useState('');
   const text = couple.loveLetterText;
+  const { playSound } = useSound();
 
   useEffect(() => {
-    if (!open) { setTyped(''); return; }
+    if (!open) {
+      setTyped('');
+      return;
+    }
+    
     let i = 0;
+
     const interval = setInterval(() => {
       if (i < text.length) {
         setTyped(text.slice(0, ++i));
       } else {
         clearInterval(interval);
       }
-    }, 18);
-    return () => clearInterval(interval);
-  }, [open, text]);
+    }, 38);
+
+    return () => {
+      clearInterval(interval);
+      // No requestAnimationFrames to cancel
+    };
+  }, [open, text, playSound]);
+
+  // Play typing sound after each new audible character is rendered
+  const prevTypedRef = useRef('');
+  useEffect(() => {
+    if (!open) return;
+    if (typed.length > prevTypedRef.current.length) {
+      const newChar = typed[typed.length - 1];
+      const isAudible = newChar && newChar.trim() !== '';
+      if (isAudible) {
+        playSound('typing');
+      }
+    }
+    prevTypedRef.current = typed;
+  }, [typed, open, playSound]);
 
   const handleOpen = (e) => {
+    playSound('letter-open');
     setOpen(true);
     spawnHearts(e.clientX, e.clientY, 8);
   };
@@ -238,7 +264,10 @@ export default function LoveLetter() {
                 <motion.button
                   whileHover={{ scale: 1.02, y: -1 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => setOpen(false)}
+                  onClick={() => {
+                    playSound('letter-seal');
+                    setOpen(false);
+                  }}
                   className="px-6 py-2 rounded-full cursor-pointer text-xs font-sans tracking-widest uppercase transition border shadow-xs"
                   style={{
                     background: 'rgba(212, 131, 138, 0.08)',

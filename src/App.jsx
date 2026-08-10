@@ -274,7 +274,7 @@ function MainApp() {
       {/* Floating Customize / Editor Button */}
       <Link
         to="/editor"
-        className="fixed bottom-6 right-6 z-50 bg-white/90 hover:bg-white text-[#D4838A] border border-[#D4838A]/30 px-4 py-2.5 rounded-full shadow-lg backdrop-blur-sm text-sm font-semibold flex items-center gap-2 hover:scale-105 transition active:scale-95 cursor-pointer"
+        className="fixed bottom-6 right-6 z-50 bg-black/60 backdrop-blur-md shadow-xl border border-rose-500/20 text-rose-200 hover:text-white hover:bg-black/80 hover:border-rose-500/40 px-4 py-2.5 rounded-full text-sm font-semibold flex items-center gap-2 hover:scale-105 transition active:scale-95 cursor-pointer"
         style={{ fontFamily: 'Outfit, sans-serif' }}
       >
         <span>✏️ Customize Site</span>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { spawnHearts } from './HeartCanvas';
 import { useCouple } from '../CoupleContext';
+import { useSound } from '../SoundContext';
 
 function Confetti({ active }) {
   if (!active) return null;
@@ -26,15 +27,18 @@ export default function AnniversaryCake() {
   const [blown, setBlown] = useState([false, false]);
   const [revealed, setRevealed] = useState(false);
   const [confetti, setConfetti] = useState(false);
+  const { playSound } = useSound();
 
   const blowCandle = (index, e) => {
     if (blown[index]) return;
+    playSound('candle-extinguish');
     const next = [...blown];
     next[index] = true;
     setBlown(next);
     spawnHearts(e.clientX, e.clientY, 6);
     if (next.every(Boolean)) {
       setTimeout(() => {
+        playSound('celebration');
         setRevealed(true);
         setConfetti(true);
         for (let i = 0; i < 20; i++) {
@@ -45,7 +49,11 @@ export default function AnniversaryCake() {
     }
   };
 
-  const reset = () => { setBlown([false, false]); setRevealed(false); };
+  const reset = () => { 
+    playSound('candle-light');
+    setBlown([false, false]); 
+    setRevealed(false); 
+  };
 
   return (
     <section id="cake" className="py-24 px-4 relative overflow-hidden" style={{ background: 'transparent' }}>

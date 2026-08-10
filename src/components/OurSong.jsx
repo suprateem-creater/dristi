@@ -1,12 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCouple } from '../CoupleContext';
+import { useSound } from '../SoundContext';
 
 export default function OurSong() {
   const { couple } = useCouple();
   const [playing, setPlaying] = useState(false);
   const [audioUrl, setAudioUrl] = useState(null);
   const audioRef = useRef(null);
+  const { playSound, setOurSongPlaying } = useSound();
 
   const toggle = () => {
     if (!audioUrl && !audioRef.current?.src) {
@@ -14,9 +16,13 @@ export default function OurSong() {
       return;
     }
     if (playing) {
+      playSound('vinyl-stop');
       audioRef.current.pause();
+      setOurSongPlaying(false);
     } else {
+      playSound('vinyl-start');
       audioRef.current.play().catch(e => console.error("Error playing audio:", e));
+      setOurSongPlaying(true);
     }
     setPlaying(!playing);
   };
@@ -27,6 +33,7 @@ export default function OurSong() {
       const url = URL.createObjectURL(file);
       setAudioUrl(url);
       setPlaying(false);
+      setOurSongPlaying(false);
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current.src = url;
@@ -37,15 +44,31 @@ export default function OurSong() {
   useEffect(() => {
     const audio = audioRef.current;
     if (audio) {
-      const onEnded = () => setPlaying(false);
+      const onEnded = () => {
+        setPlaying(false);
+        setOurSongPlaying(false);
+      };
       audio.addEventListener('ended', onEnded);
-      return () => audio.removeEventListener('ended', onEnded);
+      return () => {
+        audio.removeEventListener('ended', onEnded);
+        // Unmount safety: reset ducking state when component unmounts
+        setOurSongPlaying(false);
+      };
     }
-  }, [audioUrl]);
+  }, [audioUrl, setOurSongPlaying]);
 
   return (
-    <section id="song" className="py-24 px-4 relative overflow-hidden" style={{ background: 'transparent' }}>
-      <div className="max-w-xl mx-auto text-center relative z-10 flex flex-col items-center">
+    <section 
+      id="song" 
+      className="px-4 relative overflow-hidden flex items-center justify-center" 
+      style={{ 
+        background: 'transparent',
+        minHeight: 'clamp(80vh, 100vh, 90vh)',
+        paddingTop: 'clamp(4rem, 8vw, 6rem)',
+        paddingBottom: 'clamp(4rem, 8vw, 6rem)',
+      }}
+    >
+      <div className="max-w-xl mx-auto text-center relative z-10 flex flex-col items-center justify-center w-full">
         
         {/* Editorial Subtitle & Title */}
         <motion.div
@@ -53,9 +76,13 @@ export default function OurSong() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
-          className="mb-10 text-center"
+          className="text-center"
+          style={{ marginBottom: 'clamp(30px, 6vw, 48px)' }}
         >
-          <p className="text-[10px] font-sans font-semibold tracking-[0.22em] uppercase mb-2 text-[#FF758F]">
+          <p 
+            className="text-[10px] font-sans font-semibold tracking-[0.22em] uppercase text-[#FF758F]"
+            style={{ marginBottom: 'clamp(8px, 1.5vw, 12px)' }}
+          >
             Playing in my Heart
           </p>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-light text-[#FAF6F0] tracking-[0.05em] uppercase">
@@ -64,7 +91,10 @@ export default function OurSong() {
         </motion.div>
 
         {/* Turntable / Vinyl Composition Area */}
-        <div className="relative flex items-center justify-center w-72 h-72 sm:w-80 sm:h-80 mb-10 select-none">
+        <div 
+          className="relative flex items-center justify-center w-72 h-72 sm:w-80 sm:h-80 select-none"
+          style={{ marginBottom: 'clamp(30px, 6vw, 45px)' }}
+        >
           
           {/* Soft warm spotlight behind the record */}
           <div 
@@ -141,16 +171,23 @@ export default function OurSong() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="mb-8 text-center"
+          className="text-center"
+          style={{ marginBottom: 'clamp(12px, 2.5vw, 18px)' }}
         >
-          <h3 className="text-xl sm:text-2xl font-serif text-[#FAF6F0] mb-1 font-light">
+          <h3 
+            className="text-xl sm:text-2xl font-serif text-[#FAF6F0] font-light"
+            style={{ marginBottom: 'clamp(4px, 1vw, 8px)' }}
+          >
             {couple.song}
           </h3>
           <p className="text-xs font-sans tracking-widest text-[#EAD6C3]/65 uppercase font-medium">{couple.songArtist}</p>
         </motion.div>
 
         {/* Minimal Rounded-Bar Waveform */}
-        <div className="flex justify-center gap-[3px] mb-8 h-8 items-center w-64 sm:w-72">
+        <div 
+          className="flex justify-center gap-[3px] h-8 items-center w-64 sm:w-72"
+          style={{ marginBottom: 'clamp(18px, 3.5vw, 24px)' }}
+        >
           {Array.from({ length: 18 }).map((_, i) => (
             <motion.div
               key={i}
