@@ -57,15 +57,9 @@ export default function PolaroidWall() {
         >
           <span className="section-eyebrow text-center">Captured In Time</span>
           <h2 className="section-title text-center">Polaroid Wall</h2>
-          <p className="section-subtitle text-center mb-6">
+          <p className="section-subtitle text-center">
             Pinned memories from our favorite days. Click any polaroid to take a closer look!
           </p>
-
-          <label className={`inline-flex items-center gap-2 cursor-pointer px-6 py-2.5 rounded-full text-xs font-bold transition shadow-sm hover:shadow-md ${isCompressing ? 'opacity-60 pointer-events-none' : ''}`} style={{ background: 'rgba(212,131,138,0.15)', color: '#D4838A', border: '1px solid rgba(212,131,138,0.35)' }}>
-            <Plus size={14} />
-            {isCompressing ? 'Compressing photos...' : 'Add More Polaroids'}
-            <input type="file" multiple accept="image/*" className="hidden" disabled={isCompressing} onChange={handleFileUpload} />
-          </label>
         </motion.div>
 
         {/* Responsive Organic Polaroid Grid */}

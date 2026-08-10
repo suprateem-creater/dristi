@@ -118,11 +118,6 @@ export default function LoveMeter() {
               background: `linear-gradient(to right, #F43F5E ${value}%, #E5E7EB ${value}%)`,
             }}
           />
-          <div className="flex justify-between text-xs font-semibold text-gray-400 mt-2">
-            <span>0%</span>
-            <span>50%</span>
-            <span>{labels.length > 5 ? labels[5] : '100% ∞'}</span>
-          </div>
         </div>
 
         {burst && (

@@ -475,12 +475,12 @@ export default function Editor() {
   };
 
   const Section = ({ title, icon, subtitle, children }) => (
-    <div className="mb-12 bg-white p-6 md:p-8 rounded-3xl border border-rose-100/60 shadow-sm">
-      <div className="flex items-center gap-3 mb-2 pb-2 border-b border-rose-100">
-        {icon && <div className="p-2 rounded-xl bg-rose-50 text-[#D4838A]">{icon}</div>}
+    <div className="mb-12 p-6 md:p-8 rounded-3xl border border-white/5 shadow-2xl backdrop-blur-2xl relative overflow-hidden" style={{ background: 'rgba(15, 7, 23, 0.25)', boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.06), 0 20px 50px rgba(0,0,0,0.5)' }}>
+      <div className="flex items-center gap-3 mb-2 pb-3 border-b border-white/5">
+        {icon && <div className="p-2 rounded-xl bg-rose-500/10 text-rose-300">{icon}</div>}
         <div>
-          <h2 className="text-2xl font-bold text-gray-800" style={{ fontFamily: 'Playfair Display' }}>{title}</h2>
-          {subtitle && <p className="text-xs text-gray-500">{subtitle}</p>}
+          <h2 className="text-xl sm:text-2xl font-semibold font-serif text-[#EAD6C3]">{title}</h2>
+          {subtitle && <p className="text-xs text-white/50 mt-0.5">{subtitle}</p>}
         </div>
       </div>
       <div className="pt-4">
@@ -490,16 +490,143 @@ export default function Editor() {
   );
 
   return (
-    <div className="min-h-screen p-4 md:p-8 pb-32" style={{ background: '#FFFBFB', color: '#3D3D3D' }}>
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen p-4 md:p-8 pb-32 relative overflow-hidden font-sans" style={{ background: 'linear-gradient(180deg, #07020d 0%, #0d0617 50%, #07020d 100%)', color: '#FAF6F0' }}>
+      {/* Background radial overlays for luxury depth */}
+      <div className="absolute w-[500px] h-[500px] rounded-full bg-radial from-rose-500/5 to-transparent blur-3xl pointer-events-none z-0" style={{ left: '20%', top: '15%' }} />
+      <div className="absolute w-[450px] h-[450px] rounded-full bg-radial from-amber-400/3 to-transparent blur-3xl pointer-events-none z-0" style={{ right: '20%', bottom: '25%' }} />
+      
+      <style>{`
+        /* Dynamic Dark Theme Overrides for Inputs & Form Blocks */
+        input[type="text"],
+        input[type="date"],
+        input[type="number"],
+        input[type="email"],
+        select,
+        textarea {
+          background: rgba(255, 255, 255, 0.03) !important;
+          border: 1px solid rgba(255, 255, 255, 0.08) !important;
+          color: #FAF6F0 !important;
+          border-radius: 12px !important;
+          outline: none !important;
+          transition: all 0.3s ease !important;
+        }
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        input[type="number"]:focus,
+        input[type="email"]:focus,
+        select:focus,
+        textarea:focus {
+          border-color: #EAD6C3 !important;
+          background: rgba(255, 255, 255, 0.08) !important;
+          box-shadow: 0 0 12px rgba(234, 214, 195, 0.2) !important;
+        }
+        /* Custom labels & descriptions */
+        label {
+          color: rgba(255, 255, 255, 0.5) !important;
+          font-weight: 600 !important;
+          letter-spacing: 0.05em !important;
+        }
+        .text-gray-500,
+        .text-gray-600,
+        .text-slate-500 {
+          color: rgba(255, 255, 255, 0.45) !important;
+        }
+        /* Override form container blocks */
+        .bg-purple-50\\/60,
+        .bg-rose-50\\/60,
+        .bg-amber-50\\/50,
+        .bg-blue-50\\/50,
+        .bg-gray-50,
+        .bg-white {
+          background: rgba(15, 7, 23, 0.3) !important;
+          border: 1px solid rgba(255, 255, 255, 0.06) !important;
+          border-radius: 16px !important;
+        }
+        /* Override border colors globally for form blocks */
+        .border,
+        .border-rose-100,
+        .border-slate-200,
+        .border-purple-200,
+        .border-amber-200 {
+          border-color: rgba(255, 255, 255, 0.06) !important;
+        }
+        /* Dropdown options rendering */
+        select option {
+          background: #0f0717 !important;
+          color: #FAF6F0 !important;
+        }
+        /* Delete buttons */
+        .text-red-500 {
+          color: #F43F5E !important;
+        }
+        .text-red-500:hover {
+          color: #E11D48 !important;
+        }
+        /* Save / Action buttons */
+        .bg-rose-500 {
+          background: linear-gradient(135deg, #FF758F 0%, #E11D48 100%) !important;
+          border: none !important;
+        }
+        .bg-rose-600 {
+          background: #E11D48 !important;
+        }
+        .text-rose-700 {
+          color: #FF758F !important;
+        }
+        .bg-rose-50 {
+          background: rgba(255, 117, 143, 0.1) !important;
+          border-color: rgba(255, 117, 143, 0.2) !important;
+        }
+        .hover\\:bg-rose-100:hover {
+          background: rgba(255, 117, 143, 0.2) !important;
+        }
+        /* Grid lists */
+        .border-dashed {
+          border-color: rgba(255, 255, 255, 0.15) !important;
+        }
+        .hover\\:bg-rose-50\\/50:hover {
+          background: rgba(255, 255, 255, 0.04) !important;
+          border-color: #EAD6C3 !important;
+        }
+        .text-rose-600 {
+          color: #EAD6C3 !important;
+        }
+        .bg-purple-100, .bg-rose-100, .bg-amber-100 {
+          background: rgba(255, 255, 255, 0.08) !important;
+          color: #EAD6C3 !important;
+        }
+        .text-purple-900, .text-purple-700, .text-amber-900, .text-rose-800 {
+          color: #EAD6C3 !important;
+        }
+        /* Bottom floating sticky save bar override */
+        .fixed.bottom-0 {
+          background: rgba(15, 7, 23, 0.95) !important;
+          border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+          box-shadow: 0 -15px 40px rgba(0, 0, 0, 0.8) !important;
+        }
+        .fixed.bottom-0 .text-slate-500,
+        .fixed.bottom-0 .text-emerald-600 {
+          color: rgba(255, 255, 255, 0.5) !important;
+        }
+        .fixed.bottom-0 .bg-slate-50 {
+          background: rgba(255, 255, 255, 0.05) !important;
+          border-color: rgba(255, 255, 255, 0.1) !important;
+          color: #FAF6F0 !important;
+        }
+        .fixed.bottom-0 .bg-slate-50:hover {
+          background: rgba(255, 255, 255, 0.1) !important;
+        }
+      `}</style>
+
+      <div className="max-w-6xl mx-auto relative z-10">
         
         {/* Header */}
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8 pb-6 border-b bg-white p-6 md:p-8 rounded-3xl shadow-md border border-rose-100/60">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8 p-6 md:p-8 rounded-3xl shadow-2xl border border-white/5 backdrop-blur-2xl" style={{ background: 'rgba(15, 7, 23, 0.25)' }}>
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold flex items-center gap-2" style={{ fontFamily: 'Playfair Display', color: '#C9A08A' }}>
-              Site Customizer <Sparkles className="text-pink-400 animate-pulse" size={24} />
+            <h1 className="text-2xl md:text-3xl font-light uppercase tracking-widest flex items-center gap-2 font-serif text-[#EAD6C3]" style={{ textShadow: '0 0 15px rgba(234, 214, 195, 0.25)' }}>
+              Site Customizer <Sparkles className="text-rose-300 animate-pulse" size={22} />
             </h1>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-xs text-white/50 mt-1.5 font-sans">
               Personalize every single date, map location, constellation star, memory, and message.
             </p>
           </div>
@@ -508,14 +635,14 @@ export default function Editor() {
             <button
               onClick={exportConfigJson}
               title="Download backup file of your customized site"
-              className="px-3.5 py-2 rounded-xl border border-gray-300 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition flex items-center gap-1.5 cursor-pointer shadow-sm bg-white"
+              className="px-3.5 py-2 rounded-xl border border-white/10 text-xs font-semibold text-gray-300 hover:bg-white/5 transition flex items-center gap-1.5 cursor-pointer shadow-sm bg-transparent"
             >
               <Download size={14} /> Export Backup
             </button>
             <button
               onClick={() => fileInputRef.current?.click()}
               title="Load a previously saved backup file"
-              className="px-3.5 py-2 rounded-xl border border-gray-300 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition flex items-center gap-1.5 cursor-pointer shadow-sm bg-white"
+              className="px-3.5 py-2 rounded-xl border border-white/10 text-xs font-semibold text-gray-300 hover:bg-white/5 transition flex items-center gap-1.5 cursor-pointer shadow-sm bg-transparent"
             >
               <Upload size={14} /> Import Backup
             </button>
@@ -528,7 +655,7 @@ export default function Editor() {
             />
             <Link
               to="/"
-              className="px-4 py-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold hover:bg-rose-100 transition shadow-sm"
+              className="px-4 py-2 rounded-xl bg-rose-950/40 border border-rose-300/30 text-rose-300 text-xs font-bold hover:bg-rose-900/40 transition shadow-sm"
             >
               ← View Live Site
             </Link>
@@ -537,24 +664,25 @@ export default function Editor() {
 
         {/* Top Link Banner if generated */}
         {shareLink && (
-          <div ref={linkRef} className="mb-8 p-6 bg-gradient-to-r from-pink-50 to-rose-50 rounded-3xl border-2 border-pink-200 shadow-md">
-            <div className="flex items-center gap-2 text-rose-800 font-bold text-lg mb-2">
-              <Sparkles className="text-pink-500" size={20} />
-              <span>Your Custom Shareable Link is Ready!</span>
+          <div ref={linkRef} className="mb-8 p-6 rounded-3xl border border-rose-500/20 shadow-2xl backdrop-blur-2xl relative overflow-hidden" style={{ background: 'rgba(244, 63, 94, 0.05)' }}>
+            <div className="flex items-center gap-2 text-rose-300 font-bold text-lg mb-2">
+              <Sparkles className="text-rose-300" size={20} />
+              <span className="font-serif">Your Custom Shareable Link is Ready!</span>
             </div>
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-sm text-white/60 mb-4 font-sans">
               Share this permanent link with your partner. All your photos, dates, map, and constellation are live!
             </p>
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 relative z-10">
               <input
                 type="text"
                 readOnly
                 value={shareLink}
-                className="flex-1 p-3 bg-white border border-pink-300 rounded-xl text-sm font-mono text-gray-800 select-all shadow-inner"
+                className="flex-1 p-3 bg-slate-950/50 border border-white/10 rounded-xl text-sm font-mono text-white select-all shadow-inner"
               />
               <button
                 onClick={() => copyToClipboard(shareLink)}
-                className="px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow transition cursor-pointer"
+                className="px-6 py-3 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow transition cursor-pointer border-none"
+                style={{ background: 'linear-gradient(135deg, #FF758F 0%, #E11D48 100%)' }}
               >
                 {copied ? <Check size={18} /> : <Copy size={18} />}
                 {copied ? 'Copied!' : 'Copy Link'}
@@ -563,7 +691,7 @@ export default function Editor() {
                 href={shareLink}
                 target="_blank"
                 rel="noreferrer"
-                className="px-5 py-3 bg-white border border-rose-300 text-rose-700 hover:bg-rose-50 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-sm transition"
+                className="px-5 py-3 bg-white/5 border border-white/10 text-white hover:bg-white/10 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-sm transition"
               >
                 <ExternalLink size={18} />
                 Open Site
@@ -576,10 +704,10 @@ export default function Editor() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Tabs Sidebar */}
-          <div className="lg:col-span-4 lg:sticky lg:top-8 bg-white p-5 rounded-3xl border border-rose-100/60 shadow-md space-y-4">
+          <div className="lg:col-span-4 lg:sticky lg:top-8 p-5 rounded-3xl border border-white/5 shadow-2xl backdrop-blur-2xl space-y-4" style={{ background: 'rgba(15, 7, 23, 0.25)' }}>
             <div>
-              <h3 className="text-[11px] font-bold uppercase tracking-wider text-gray-400 px-1">Navigation</h3>
-              <p className="text-[10px] text-gray-400 px-1 mt-0.5">Customize your anniversary site page by page</p>
+              <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#EAD6C3]/60 px-1">Navigation</h3>
+              <p className="text-[10px] text-white/40 px-1 mt-0.5">Customize your anniversary site page by page</p>
             </div>
             
             {/* Scrollable list on mobile, stack on desktop */}
@@ -596,16 +724,21 @@ export default function Editor() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex-shrink-0 flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-bold transition-all text-left w-auto lg:w-full cursor-pointer ${
+                    className={`flex-shrink-0 flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-bold transition-all text-left w-auto lg:w-full cursor-pointer border-none ${
                       isActive 
-                        ? 'bg-rose-500 text-white shadow-lg shadow-rose-500/20 scale-[1.02]' 
-                        : 'text-gray-600 hover:bg-rose-50/50 hover:text-[#D4838A] bg-gray-50 lg:bg-transparent'
+                        ? 'text-[#1A0923] shadow-lg scale-[1.02]' 
+                        : 'text-white/50 hover:bg-white/5 hover:text-white bg-white/5 lg:bg-transparent'
                     }`}
+                    style={{
+                      background: isActive 
+                        ? 'linear-gradient(135deg, #EAD6C3 0%, #CDB39B 100%)' 
+                        : '',
+                    }}
                   >
                     <span className="text-base">{tab.label.split(' ')[0]}</span>
                     <div className="hidden lg:block text-left">
                       <div className="font-bold leading-tight">{tab.label.split(' ').slice(1).join(' ')}</div>
-                      <div className={`text-[10px] font-normal leading-tight mt-0.5 ${isActive ? 'text-rose-100' : 'text-gray-400'}`}>{tab.desc}</div>
+                      <div className={`text-[10px] font-normal leading-tight mt-0.5 ${isActive ? 'text-[#1A0923]/70' : 'text-white/40'}`}>{tab.desc}</div>
                     </div>
                     {/* Fallback label for smaller screens */}
                     <span className="lg:hidden font-bold">{tab.label.split(' ').slice(1).join(' ')}</span>
@@ -967,109 +1100,132 @@ export default function Editor() {
             )}
 
             {activeTab === 'photos' && (
-              <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-200">
+              <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-200 font-sans">
                 
                 {/* 7. Memory Carousel */}
-                <Section title="Memory Carousel (Featured Moments)" icon={<Sparkles size={20} />} subtitle="Your featured swipeable memories with photo, location, date, and caption">
+                <Section title="Memory Carousel (Featured Moments)" icon={<Sparkles size={20} />} subtitle="Your featured swipeable memories with photo, location, date, and caption.">
                   <div className="space-y-6">
-                    <p className="text-xs text-gray-500">Upload key story moments that will be shown in the high-fidelity sliding memory deck.</p>
-                    {(formData.memories || []).map((mem, i) => {
-                      const isUploading = uploadingSlot === `memories-${i}`;
-                      return (
-                        <div key={mem.id || i} className="p-5 bg-white rounded-2xl border border-rose-100 shadow-sm flex flex-col md:flex-row gap-6">
-                          <div className="w-full md:w-1/3">
-                            {mem.photo ? (
-                              <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-gray-100 mb-2 shadow-inner border">
-                                <img src={mem.photo} alt="Memory" className="w-full h-full object-cover" />
-                              </div>
-                            ) : (
-                              <div className="w-full aspect-square rounded-xl bg-gray-100 border border-dashed flex items-center justify-center mb-2">
-                                <span className="text-gray-400 text-xs">No Image</span>
-                              </div>
-                            )}
-                            <label className={`cursor-pointer block w-full text-center p-2 bg-rose-50 hover:bg-rose-100/85 text-[#D4838A] border border-rose-150 rounded-xl shadow-xs text-xs font-bold transition flex items-center justify-center gap-2 ${isUploading ? 'opacity-70 pointer-events-none bg-amber-50' : ''}`}>
-                              {isUploading ? (
-                                <>
-                                  <Loader2 className="animate-spin text-[#D4838A]" size={14} />
-                                  <span className="text-xs font-semibold text-[#D4838A]">{uploadStatusMsg || 'Uploading...'}</span>
-                                </>
+                    <p className="text-xs text-slate-400 font-sans">Upload key story moments that will be shown in the high-fidelity sliding memory deck.</p>
+                    
+                    <div className="space-y-4">
+                      {(formData.memories || []).map((mem, i) => {
+                        const isUploading = uploadingSlot === `memories-${i}`;
+                        return (
+                          <div key={mem.id || i} className="p-5 bg-slate-50/30 rounded-xl border border-slate-200/60 shadow-xs flex flex-col md:flex-row gap-6">
+                            {/* Photo Upload Side */}
+                            <div className="w-full md:w-1/3 space-y-2 font-sans">
+                              {mem.photo ? (
+                                <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-white shadow-inner border border-slate-250">
+                                  <img src={mem.photo} alt="Memory" className="w-full h-full object-cover" />
+                                </div>
                               ) : (
-                                <>
-                                  <ImagePlus size={14} />
-                                  <span>Upload Photo</span>
-                                </>
+                                <div className="w-full aspect-square rounded-xl bg-white border border-dashed border-slate-350 flex flex-col items-center justify-center text-xs text-slate-400">
+                                  <span>No Image Uploaded</span>
+                                </div>
                               )}
+                              
+                              <label className={`cursor-pointer block w-full text-center py-2 bg-rose-50 hover:bg-rose-100/70 border border-rose-200/65 rounded-xl text-rose-700 text-xs font-bold transition flex items-center justify-center gap-2 ${isUploading ? 'opacity-70 pointer-events-none' : ''}`}>
+                                {isUploading ? (
+                                  <>
+                                    <Loader2 className="animate-spin text-rose-700" size={14} />
+                                    <span>{uploadStatusMsg || 'Uploading...'}</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <ImagePlus size={14} className="text-rose-500" />
+                                    <span>Upload Photo</span>
+                                  </>
+                                )}
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  className="hidden"
+                                  disabled={isUploading}
+                                  onChange={e => handleSinglePhotoUpload(e, 'memories', i, 'photo')}
+                                />
+                              </label>
+                              
                               <input
-                                type="file"
-                                accept="image/*"
-                                className="hidden"
-                                disabled={isUploading}
-                                onChange={e => handleSinglePhotoUpload(e, 'memories', i, 'photo')}
+                                type="text"
+                                value={mem.photo && !mem.photo.startsWith('data:') ? mem.photo : ''}
+                                onChange={e => handleArrayChange('memories', i, 'photo', e.target.value)}
+                                className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs text-slate-500 focus:border-rose-300 focus:ring-4 focus:ring-rose-50/50 outline-none transition"
+                                placeholder="Or paste image URL"
                               />
-                            </label>
-                            <input
-                              type="text"
-                              value={mem.photo && !mem.photo.startsWith('data:') ? mem.photo : ''}
-                              onChange={e => handleArrayChange('memories', i, 'photo', e.target.value)}
-                              className="w-full p-2 border rounded-lg text-xs mt-2 text-gray-500 bg-gray-50 focus:bg-white transition"
-                              placeholder="Or paste image URL"
-                            />
+                            </div>
+                            
+                            {/* Inputs Side */}
+                            <div className="w-full md:w-2/3 space-y-4 font-sans">
+                              <div className="flex justify-between items-center pb-2 border-b border-slate-100">
+                                <h4 className="font-bold text-slate-700 text-xs uppercase tracking-wider font-sans font-sans">Memory #{i + 1}</h4>
+                                <button 
+                                  onClick={() => handleRemoveItem('memories', i)} 
+                                  className="text-red-500 hover:text-red-700 bg-white border border-slate-200 hover:bg-slate-50 p-1.5 rounded-xl cursor-pointer shadow-xs transition"
+                                >
+                                  <Trash2 size={14}/>
+                                </button>
+                              </div>
+                              <div className="space-y-1">
+                                <label className="block text-xs font-semibold text-slate-500">Date text</label>
+                                <input type="text" value={mem.date || ''} onChange={e => handleArrayChange('memories', i, 'date', e.target.value)} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:border-rose-300 focus:ring-4 focus:ring-rose-50/50 outline-none transition shadow-xs" placeholder="e.g. August 9, 2025" />
+                              </div>
+                              <div className="space-y-1">
+                                <label className="block text-xs font-semibold text-slate-500">Location</label>
+                                <input type="text" value={mem.location || ''} onChange={e => handleArrayChange('memories', i, 'location', e.target.value)} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:border-rose-300 focus:ring-4 focus:ring-rose-50/50 outline-none transition shadow-xs" placeholder="e.g. Rome, Italy" />
+                              </div>
+                              <div className="space-y-1">
+                                <label className="block text-xs font-semibold text-slate-500 font-sans">Caption text</label>
+                                <textarea value={mem.caption || ''} onChange={e => handleArrayChange('memories', i, 'caption', e.target.value)} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:border-rose-300 focus:ring-4 focus:ring-rose-50/50 outline-none transition shadow-xs h-20 leading-relaxed" placeholder="Describe the memory..." />
+                              </div>
+                            </div>
                           </div>
-                          
-                          <div className="w-full md:w-2/3 space-y-3">
-                            <div className="flex justify-between items-center">
-                              <h4 className="font-bold text-gray-800 text-sm">Memory #{i + 1}</h4>
-                              <button onClick={() => handleRemoveItem('memories', i)} className="text-red-500 hover:text-red-700 hover:bg-rose-50 p-1.5 rounded-lg border cursor-pointer"><Trash2 size={16}/></button>
-                            </div>
-                            <div>
-                              <label className="block text-[10px] font-bold text-gray-400 uppercase mb-0.5">Date text</label>
-                              <input type="text" value={mem.date || ''} onChange={e => handleArrayChange('memories', i, 'date', e.target.value)} className="w-full p-2 bg-gray-50 border rounded-lg text-xs" placeholder="e.g. August 9, 2025" />
-                            </div>
-                            <div>
-                              <label className="block text-[10px] font-bold text-gray-400 uppercase mb-0.5">Location</label>
-                              <input type="text" value={mem.location || ''} onChange={e => handleArrayChange('memories', i, 'location', e.target.value)} className="w-full p-2 bg-gray-50 border rounded-lg text-xs" placeholder="Location Name" />
-                            </div>
-                            <div>
-                              <label className="block text-[10px] font-bold text-gray-400 uppercase mb-0.5">Caption text</label>
-                              <textarea value={mem.caption || ''} onChange={e => handleArrayChange('memories', i, 'caption', e.target.value)} className="w-full p-2 bg-gray-50 border rounded-lg text-xs h-20" placeholder="Describe the memory..." />
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                    <button onClick={addNewMemory} className="w-full p-4 border-2 border-dashed border-rose-300 rounded-2xl flex items-center justify-center gap-2 text-[#D4838A] font-bold hover:bg-rose-50 cursor-pointer text-xs">
-                      <Plus size={16} /> Add New Memory
+                        );
+                      })}
+                    </div>
+
+                    <button 
+                      onClick={addNewMemory} 
+                      className="w-full py-3 border border-dashed border-rose-300 hover:border-rose-400 rounded-xl flex items-center justify-center gap-2 text-rose-600 font-bold hover:bg-rose-50/50 transition cursor-pointer text-xs"
+                    >
+                      <Plus size={14} /> Add New Memory
                     </button>
                   </div>
                 </Section>
-
+ 
                 {/* 8. Polaroid Wall */}
-                <Section title="Polaroid Wall" icon={<ImagePlus size={20} />} subtitle="Aesthetic pinboard of rotating polaroid snapshots">
+                <Section title="Polaroid Wall" icon={<ImagePlus size={20} />} subtitle="Aesthetic pinboard of rotating polaroid snapshots.">
                   <div className="space-y-4">
-                    <p className="text-xs text-gray-500">Configure polaroid snapshot style cards with custom hand-written style titles.</p>
+                    <p className="text-xs text-slate-400 font-sans font-sans">Configure polaroid snapshot style cards with custom hand-written style titles.</p>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {(formData.polaroidPhotos || []).map((pol, i) => {
                         const isUploading = uploadingSlot === `polaroidPhotos-${i}`;
                         return (
-                          <div key={i} className="p-4 bg-white rounded-2xl border border-rose-100 shadow-sm flex flex-col gap-3">
-                            <div className="flex justify-between items-center">
-                              <h4 className="font-bold text-xs text-gray-700">Polaroid Card #{i + 1}</h4>
-                              <button onClick={() => handleRemoveItem('polaroidPhotos', i)} className="text-red-500 hover:text-red-700 cursor-pointer p-1 hover:bg-rose-50 rounded"><Trash2 size={15}/></button>
+                          <div key={i} className="p-4 bg-slate-50/30 rounded-xl border border-slate-200/60 shadow-xs flex flex-col gap-3 font-sans">
+                            <div className="flex justify-between items-center pb-1 border-b border-slate-100">
+                              <h4 className="font-bold text-xs text-slate-700 uppercase tracking-wider font-sans font-sans">Polaroid Card #{i + 1}</h4>
+                              <button 
+                                onClick={() => handleRemoveItem('polaroidPhotos', i)} 
+                                className="text-red-500 hover:text-red-700 cursor-pointer p-1.5 hover:bg-slate-55 bg-white border border-slate-200 rounded-lg shadow-xs transition"
+                              >
+                                <Trash2 size={13}/>
+                              </button>
                             </div>
+                            
                             {pol.src ? (
-                              <img src={pol.src} alt="Polaroid" className="w-full h-40 object-cover rounded-xl shadow-sm border" />
+                              <img src={pol.src} alt="Polaroid" className="w-full h-40 object-cover rounded-lg shadow-sm border border-slate-200" />
                             ) : (
-                              <div className="w-full h-40 bg-gray-50 border border-dashed rounded-xl flex items-center justify-center text-xs text-gray-400">No Image</div>
+                              <div className="w-full h-40 bg-white border border-dashed border-slate-350 rounded-lg flex items-center justify-center text-xs text-slate-400">No Image Uploaded</div>
                             )}
-                            <label className={`cursor-pointer block w-full text-center p-2 bg-rose-50 hover:bg-rose-100/80 border border-rose-100 rounded-xl shadow-xs text-xs font-bold transition flex items-center justify-center gap-1.5 ${isUploading ? 'opacity-70 pointer-events-none bg-amber-50' : ''}`}>
+                            
+                            <label className={`cursor-pointer block w-full text-center py-2 bg-rose-50 hover:bg-rose-100/70 border border-rose-200/65 rounded-xl text-rose-707 text-xs font-bold transition flex items-center justify-center gap-1.5 ${isUploading ? 'opacity-70 pointer-events-none' : ''}`}>
                               {isUploading ? (
                                 <>
-                                  <Loader2 className="animate-spin text-[#D4838A]" size={14} />
-                                  <span className="text-xs font-semibold text-[#D4838A]">{uploadStatusMsg || 'Uploading...'}</span>
+                                  <Loader2 className="animate-spin text-rose-700" size={14} />
+                                  <span>{uploadStatusMsg || 'Uploading...'}</span>
                                 </>
                               ) : (
                                 <>
-                                  <ImagePlus size={14} />
+                                  <ImagePlus size={14} className="text-rose-500" />
                                   <span>Upload Photo</span>
                                 </>
                               )}
@@ -1081,41 +1237,64 @@ export default function Editor() {
                                 onChange={e => handleSinglePhotoUpload(e, 'polaroidPhotos', i, 'src')}
                               />
                             </label>
+                            
                             <input
                               type="text"
                               value={pol.src && !pol.src.startsWith('data:') ? pol.src : ''}
                               onChange={e => handleArrayChange('polaroidPhotos', i, 'src', e.target.value)}
-                              className="w-full p-1.5 border rounded-lg text-xs text-gray-500 bg-gray-50"
+                              className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs text-slate-505 focus:border-rose-300 focus:ring-4 focus:ring-rose-50/50 outline-none transition"
                               placeholder="Or paste image URL"
                             />
-                            <input type="text" value={pol.caption || ''} onChange={e => handleArrayChange('polaroidPhotos', i, 'caption', e.target.value)} className="w-full p-2 bg-gray-50 border rounded-lg text-xs font-bold" placeholder="Caption (e.g. Rome 2025)" />
+                            
+                            <div className="space-y-1">
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider font-sans font-sans">Hand-written Caption</label>
+                              <input type="text" value={pol.caption || ''} onChange={e => handleArrayChange('polaroidPhotos', i, 'caption', e.target.value)} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:border-rose-300 focus:ring-4 focus:ring-rose-50/50 outline-none transition shadow-xs" placeholder="e.g. Rome 2025" />
+                            </div>
                           </div>
                         );
                       })}
-                      <button onClick={addNewPolaroid} className="h-full min-h-[220px] border-2 border-dashed border-rose-300 rounded-2xl flex items-center justify-center gap-2 text-[#D4838A] font-bold hover:bg-rose-50 cursor-pointer text-xs">
-                        <Plus size={20} /> Add Polaroid
+                      
+                      <button 
+                        onClick={addNewPolaroid} 
+                        className="h-full min-h-[260px] border border-dashed border-rose-300 hover:border-rose-450 hover:bg-rose-50/50 rounded-xl flex flex-col items-center justify-center gap-2 text-rose-600 font-bold transition cursor-pointer text-xs p-6"
+                      >
+                        <Plus size={20} className="text-rose-500" />
+                        <span>Add Polaroid Card</span>
                       </button>
                     </div>
                   </div>
                 </Section>
 
                 {/* 9. Vault Gallery */}
-                <Section title="Photo Vault Gallery" icon={<ImagePlus size={20} />} subtitle="Full photo grid celebrating your adventures">
+                <Section title="Photo Vault Gallery" icon={<ImagePlus size={20} />} subtitle="Full photo grid celebrating your adventures.">
                   <div className="space-y-4">
-                    <p className="text-xs text-gray-500">Configure the complete gallery grid of your favorite photo collection.</p>
+                    <p className="text-xs text-slate-400 font-sans font-sans">Configure the complete gallery grid of your favorite photo collection.</p>
+                    
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       {(formData.photos || []).map((photoUrl, i) => {
                         const isUploading = uploadingSlot === `photos-${i}`;
                         return (
-                          <div key={i} className="relative group p-2 bg-white rounded-2xl border border-rose-100 shadow-xs flex flex-col gap-2">
-                            <button onClick={() => handleRemoveItem('photos', i)} className="absolute top-3 right-3 bg-white/90 hover:bg-white p-1 rounded-full text-red-500 shadow border hover:text-red-700 z-10 cursor-pointer"><Trash2 size={12}/></button>
+                          <div key={i} className="relative group p-2.5 bg-slate-50/30 rounded-xl border border-slate-200/60 shadow-xs flex flex-col gap-2 font-sans">
+                            <button 
+                              onClick={() => handleRemoveItem('photos', i)} 
+                              className="absolute top-4 right-4 bg-white hover:bg-red-55 p-1.5 rounded-lg text-red-500 shadow-sm border border-slate-200 hover:text-red-700 z-10 cursor-pointer transition"
+                            >
+                              <Trash2 size={12}/>
+                            </button>
+                            
                             {photoUrl ? (
-                              <img src={photoUrl} alt="Vault" className="w-full h-24 object-cover rounded-xl border" />
+                              <img src={photoUrl} alt="Vault" className="w-full h-24 object-cover rounded-lg border border-slate-200" />
                             ) : (
-                              <div className="w-full h-24 bg-gray-50 border border-dashed rounded-xl flex items-center justify-center text-[10px] text-gray-400">No Image</div>
+                              <div className="w-full h-24 bg-white border border-dashed border-slate-350 rounded-lg flex items-center justify-center text-[10px] text-slate-450">No Image</div>
                             )}
-                            <label className={`cursor-pointer block w-full text-center p-1 bg-rose-50 hover:bg-rose-100 border border-rose-100 rounded-lg text-[10px] font-bold transition flex items-center justify-center gap-1 ${isUploading ? 'opacity-70 pointer-events-none' : ''}`}>
-                              {isUploading ? '...' : 'Upload'}
+                            
+                            <label className={`cursor-pointer block w-full text-center py-1 bg-rose-50 hover:bg-rose-100/80 border border-rose-200/55 rounded-lg text-[10px] font-bold text-rose-707 transition flex items-center justify-center gap-1 ${isUploading ? 'opacity-70 pointer-events-none' : ''}`}>
+                              {isUploading ? (
+                                <Loader2 className="animate-spin text-rose-700" size={10} />
+                              ) : (
+                                <ImagePlus size={10} />
+                              )}
+                              <span>{isUploading ? '...' : 'Upload'}</span>
                               <input
                                 type="file"
                                 accept="image/*"
@@ -1124,18 +1303,24 @@ export default function Editor() {
                                 onChange={e => handleSinglePhotoUpload(e, 'photos', i, null)}
                               />
                             </label>
+                            
                             <input
                               type="text"
                               value={photoUrl && !photoUrl.startsWith('data:') ? photoUrl : ''}
                               onChange={e => handleArrayChange('photos', i, null, e.target.value)}
-                              className="w-full p-1 border rounded text-[9px] text-gray-500 bg-gray-50"
-                              placeholder="URL"
+                              className="w-full px-2 py-1 bg-white border border-slate-200 rounded-lg text-[10px] text-slate-505 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition"
+                              placeholder="Or paste URL"
                             />
                           </div>
                         );
                       })}
-                      <button onClick={addNewVaultPhoto} className="h-full min-h-[120px] border-2 border-dashed border-rose-300 rounded-2xl flex items-center justify-center gap-1 text-[#D4838A] hover:bg-rose-50 text-xs font-bold cursor-pointer">
-                        <Plus size={16} /> Add Photo
+                      
+                      <button 
+                        onClick={addNewVaultPhoto} 
+                        className="h-full min-h-[160px] border border-dashed border-rose-300 hover:border-rose-450 hover:bg-rose-50/50 rounded-xl flex flex-col items-center justify-center gap-1 text-rose-600 hover:bg-rose-50 text-xs font-bold cursor-pointer transition p-4 font-sans"
+                      >
+                        <Plus size={16} className="text-rose-500" />
+                        <span>Add Photo</span>
                       </button>
                     </div>
                   </div>
@@ -1144,108 +1329,118 @@ export default function Editor() {
             )}
 
             {activeTab === 'mapsky' && (
-              <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-200">
+              <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-200 font-sans">
                 
                 {/* 10. Our Love Map */}
-                <Section title="Our Love Map" icon={<MapPin size={20} />} subtitle="Map special coordinates where your love stories occurred">
+                <Section title="Our Love Map" icon={<MapPin size={20} />} subtitle="Map special coordinates where your love stories occurred.">
                   <div className="space-y-6">
-                    <p className="text-xs text-gray-500">Pick city presets to auto-fill latitude and longitude coordinates automatically, or input custom ones.</p>
+                    <p className="text-xs text-slate-400 font-sans">Pick city presets to auto-fill latitude and longitude coordinates automatically, or input custom ones.</p>
                     
-                    {(formData.loveMap || []).map((loc, i) => (
-                      <div key={i} className="p-5 bg-white rounded-2xl border border-rose-100 shadow-sm space-y-4">
-                        <div className="flex justify-between items-center">
-                          <div className="flex items-center gap-2">
-                            <span className="text-lg">{loc.emoji || '💖'}</span>
-                            <span className="text-sm font-bold text-gray-800">{loc.name || 'Special Location'}</span>
+                    <div className="space-y-4">
+                      {(formData.loveMap || []).map((loc, i) => (
+                        <div key={i} className="p-5 bg-slate-50/30 rounded-xl border border-slate-200/60 shadow-xs space-y-4 font-sans">
+                          <div className="flex justify-between items-center pb-2 border-b border-slate-105">
+                            <div className="flex items-center gap-2">
+                              <span className="text-base">{loc.emoji || '💖'}</span>
+                              <span className="text-sm font-bold text-slate-700">{loc.name || 'Special Location'}</span>
+                            </div>
+                            <button 
+                              onClick={() => handleRemoveItem('loveMap', i)} 
+                              className="text-red-500 hover:text-red-750 border border-slate-200 p-1.5 rounded-xl cursor-pointer bg-white shadow-xs transition hover:bg-slate-50"
+                            >
+                              <Trash2 size={14}/>
+                            </button>
                           </div>
-                          <button onClick={() => handleRemoveItem('loveMap', i)} className="text-red-500 hover:text-red-700 border p-1.5 rounded-lg cursor-pointer bg-white"><Trash2 size={16}/></button>
-                        </div>
 
-                        {/* Quick Presets Dropdown */}
-                        <div className="p-3 bg-rose-50/50 rounded-xl border border-rose-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-                          <span className="text-xs font-bold text-rose-800">⚡ Auto-fill Preset City:</span>
-                          <select
-                            onChange={e => {
-                              const cityIndex = Number(e.target.value);
-                              if (cityIndex > 0) {
-                                setMapPreset(i, POPULAR_CITIES[cityIndex]);
-                              }
-                            }}
-                            className="p-1.5 text-xs border rounded-lg bg-white font-medium text-gray-700 cursor-pointer"
-                          >
-                            {POPULAR_CITIES.map((city, cIdx) => (
-                              <option key={cIdx} value={cIdx}>{city.emoji} {city.name}</option>
-                            ))}
-                          </select>
-                        </div>
+                          {/* Quick Presets Dropdown */}
+                          <div className="p-3.5 bg-rose-50/30 rounded-xl border border-rose-100/70 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                            <span className="text-xs font-bold text-rose-800 tracking-wider">⚡ AUTO-FILL PRESET CITY</span>
+                            <select
+                              onChange={e => {
+                                const cityIndex = Number(e.target.value);
+                                if (cityIndex > 0) {
+                                  setMapPreset(i, POPULAR_CITIES[cityIndex]);
+                                }
+                              }}
+                              className="px-2 py-1 text-xs border border-rose-205 rounded-lg bg-white font-semibold text-rose-700 cursor-pointer shadow-xs focus:outline-none"
+                            >
+                              {POPULAR_CITIES.map((city, cIdx) => (
+                                <option key={cIdx} value={cIdx}>{city.emoji} {city.name}</option>
+                              ))}
+                            </select>
+                          </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                          <div>
-                            <label className="block text-[10px] font-bold text-gray-400 uppercase">Place Name</label>
-                            <input type="text" value={loc.name || ''} onChange={e => handleArrayChange('loveMap', i, 'name', e.target.value)} className="w-full p-2 bg-gray-50 border rounded-lg text-xs" placeholder="Rome, Italy" />
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                            <div className="space-y-1">
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Place Name</label>
+                              <input type="text" value={loc.name || ''} onChange={e => handleArrayChange('loveMap', i, 'name', e.target.value)} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-rose-300 focus:ring-4 focus:ring-rose-50/50 outline-none transition shadow-xs" placeholder="Rome, Italy" />
+                            </div>
+                            <div className="space-y-1">
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Emoji Icon</label>
+                              <input type="text" value={loc.emoji || ''} onChange={e => handleArrayChange('loveMap', i, 'emoji', e.target.value)} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-rose-300 focus:ring-4 focus:ring-rose-50/50 outline-none transition shadow-xs" placeholder="🌸" />
+                            </div>
+                            <div className="space-y-1">
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Latitude</label>
+                              <input type="number" step="0.0001" value={loc.coords?.[0] || 0} onChange={e => handleArrayChange('loveMap', i, 'coords', [Number(e.target.value), loc.coords?.[1] || 0])} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-rose-300 focus:ring-4 focus:ring-rose-50/50 outline-none transition shadow-xs" />
+                            </div>
+                            <div className="space-y-1">
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Longitude</label>
+                              <input type="number" step="0.0001" value={loc.coords?.[1] || 0} onChange={e => handleArrayChange('loveMap', i, 'coords', [loc.coords?.[0] || 0, Number(e.target.value)])} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-rose-300 focus:ring-4 focus:ring-rose-50/50 outline-none transition shadow-xs" />
+                            </div>
                           </div>
-                          <div>
-                            <label className="block text-[10px] font-bold text-gray-400 uppercase">Emoji Icon</label>
-                            <input type="text" value={loc.emoji || ''} onChange={e => handleArrayChange('loveMap', i, 'emoji', e.target.value)} className="w-full p-2 bg-gray-50 border rounded-lg text-xs" placeholder="🌸" />
-                          </div>
-                          <div>
-                            <label className="block text-[10px] font-bold text-gray-400 uppercase">Latitude</label>
-                            <input type="number" step="0.0001" value={loc.coords?.[0] || 0} onChange={e => handleArrayChange('loveMap', i, 'coords', [Number(e.target.value), loc.coords?.[1] || 0])} className="w-full p-2 bg-gray-50 border rounded-lg text-xs" />
-                          </div>
-                          <div>
-                            <label className="block text-[10px] font-bold text-gray-400 uppercase">Longitude</label>
-                            <input type="number" step="0.0001" value={loc.coords?.[1] || 0} onChange={e => handleArrayChange('loveMap', i, 'coords', [loc.coords?.[0] || 0, Number(e.target.value)])} className="w-full p-2 bg-gray-50 border rounded-lg text-xs" />
+
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div className="space-y-1">
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Milestone Date</label>
+                              <input type="text" value={loc.date || ''} onChange={e => handleArrayChange('loveMap', i, 'date', e.target.value)} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-rose-300 focus:ring-4 focus:ring-rose-50/50 outline-none transition shadow-xs" placeholder="e.g. Aug 9, 2025" />
+                            </div>
+                            <div className="space-y-1">
+                              <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">The Place Story</label>
+                              <input type="text" value={loc.story || ''} onChange={e => handleArrayChange('loveMap', i, 'story', e.target.value)} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-rose-300 focus:ring-4 focus:ring-rose-50/50 outline-none transition shadow-xs" placeholder="e.g. Where it started" />
+                            </div>
                           </div>
                         </div>
+                      ))}
+                    </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          <div>
-                            <label className="block text-[10px] font-bold text-gray-400 uppercase">Milestone Date</label>
-                            <input type="text" value={loc.date || ''} onChange={e => handleArrayChange('loveMap', i, 'date', e.target.value)} className="w-full p-2 bg-gray-50 border rounded-lg text-xs" placeholder="e.g. Aug 9, 2025" />
-                          </div>
-                          <div>
-                            <label className="block text-[10px] font-bold text-gray-400 uppercase">The Place Story</label>
-                            <input type="text" value={loc.story || ''} onChange={e => handleArrayChange('loveMap', i, 'story', e.target.value)} className="w-full p-2 bg-gray-50 border rounded-lg text-xs" placeholder="e.g. Where it started" />
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-
-                    <button onClick={addNewLoveMapLocation} className="w-full p-4 border-2 border-dashed border-rose-300 rounded-2xl flex items-center justify-center gap-2 text-[#D4838A] font-bold hover:bg-rose-50 transition cursor-pointer text-xs">
-                      <Plus size={16} /> Add New Map Location
+                    <button 
+                      onClick={addNewLoveMapLocation} 
+                      className="w-full py-3 border border-dashed border-rose-300 hover:border-rose-450 rounded-xl flex items-center justify-center gap-2 text-rose-600 font-bold hover:bg-rose-50/50 transition cursor-pointer text-xs"
+                    >
+                      <Plus size={14} /> Add New Map Location
                     </button>
                   </div>
                 </Section>
 
                 {/* 11. Our Love Constellation */}
-                <Section title="Our Love Constellation" icon={<Star size={20} />} subtitle="Arrange the stars in your love sky with interactive layout presets and position controls">
+                <Section title="Our Love Constellation" icon={<Star size={20} />} subtitle="Arrange the stars in your love sky with interactive layout presets and position controls.">
                   <div className="space-y-6">
                     
                     {/* Quick Layout Presets */}
-                    <div className="p-4 bg-gray-900 rounded-2xl text-white border border-purple-500/30 shadow-sm">
-                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
-                        <span className="text-xs font-bold uppercase tracking-wider text-purple-300">✨ One-Click Constellation Shapes:</span>
+                    <div className="p-4 bg-slate-900 rounded-xl text-white border border-slate-800 shadow-sm space-y-4 font-sans">
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                        <span className="text-xs font-bold uppercase tracking-wider text-purple-200 font-sans">✨ Constellation Shape Presets:</span>
                         <div className="flex flex-wrap gap-2">
                           <button
                             type="button"
                             onClick={() => applyConstellationPreset('heart')}
-                            className="px-3 py-1.5 rounded-lg bg-pink-600 hover:bg-pink-500 text-xs font-bold transition flex items-center gap-1 cursor-pointer"
+                            className="px-3 py-1.5 rounded-lg bg-rose-500 hover:bg-rose-600 text-xs font-semibold transition flex items-center gap-1 cursor-pointer"
                           >
-                            ❤️ Romantic Heart
+                            ❤️ Heart
                           </button>
                           <button
                             type="button"
                             onClick={() => applyConstellationPreset('cosmos')}
-                            className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-xs font-bold transition flex items-center gap-1 cursor-pointer"
+                            className="px-3 py-1.5 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-xs font-semibold transition flex items-center gap-1 cursor-pointer"
                           >
-                            🌌 Stellar Galaxy
+                            🌌 Galaxy
                           </button>
                           <button
                             type="button"
                             onClick={() => applyConstellationPreset('infinity')}
-                            className="px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-xs font-bold transition flex items-center gap-1 cursor-pointer"
+                            className="px-3 py-1.5 rounded-lg bg-purple-500 hover:bg-purple-600 text-xs font-semibold transition flex items-center gap-1 cursor-pointer"
                           >
-                            ♾️ Infinite Love
+                            ♾️ Infinity
                           </button>
                         </div>
                       </div>
@@ -1263,7 +1458,7 @@ export default function Editor() {
                             setFormData({ ...formData, constellationStars: newStars });
                           }
                         }}
-                        className="relative w-full h-48 bg-gradient-to-b from-black via-[#14081E] to-black rounded-2xl overflow-hidden border border-purple-400/30 cursor-crosshair select-none"
+                        className="relative w-full h-48 bg-gradient-to-b from-slate-950 to-slate-900 rounded-xl overflow-hidden border border-slate-800 cursor-crosshair select-none"
                       >
                         <svg className="absolute inset-0 w-full h-full pointer-events-none">
                           {(formData.constellationStars || []).map((star, sIdx) => {
@@ -1276,9 +1471,9 @@ export default function Editor() {
                                 y1={`${prevStar.y ?? 50}%`}
                                 x2={`${star.x ?? 50}%`}
                                 y2={`${star.y ?? 50}%`}
-                                stroke="#E8B4B8"
+                                stroke="#F43F5E"
                                 strokeWidth="1.5"
-                                opacity="0.5"
+                                opacity="0.4"
                               />
                             );
                           })}
@@ -1298,17 +1493,17 @@ export default function Editor() {
                               title={`Star #${sIdx + 1}: ${star.label || 'Star'} (${star.x ?? 50}%, ${star.y ?? 50}%)`}
                             >
                               <div
-                                className={`rounded-full transition-transform ${isSelected ? 'w-4 h-4 bg-pink-300 ring-4 ring-pink-500/50 scale-125' : 'w-2.5 h-2.5 bg-white shadow-[0_0_8px_#E8B4B8] group-hover:scale-150'}`}
+                                className={`rounded-full transition-transform ${isSelected ? 'w-3.5 h-3.5 bg-rose-400 ring-4 ring-rose-500/50 scale-125' : 'w-2 h-2 bg-white shadow-[0_0_8px_#F43F5E] group-hover:scale-150'}`}
                               />
-                              <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[10px] font-bold whitespace-nowrap bg-black/90 px-1.5 py-0.5 rounded text-pink-200 pointer-events-none shadow-md">
+                              <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[9px] font-bold whitespace-nowrap bg-slate-900/90 border border-slate-800 px-1.5 py-0.5 rounded text-rose-200 pointer-events-none shadow-md">
                                 #{sIdx + 1} {star.label || 'Star'}
                               </span>
                             </div>
                           );
                         })}
 
-                        <span className="absolute bottom-2 right-2 text-[10px] text-purple-300/80 bg-black/60 px-2 py-0.5 rounded pointer-events-none">
-                          💡 Click anywhere on sky to position Star #{activeStarPreview !== null ? activeStarPreview + 1 : 1}
+                        <span className="absolute bottom-2 right-2 text-[9px] text-slate-400 bg-slate-900/80 px-2 py-0.5 rounded pointer-events-none">
+                          💡 Click anywhere to reposition Star #{activeStarPreview !== null ? activeStarPreview + 1 : 1}
                         </span>
                       </div>
                     </div>
@@ -1321,13 +1516,13 @@ export default function Editor() {
                           <div
                             key={star.id || i}
                             onClick={() => setActiveStarPreview(i)}
-                            className={`p-5 bg-white rounded-2xl border transition space-y-3 cursor-pointer ${isSelected ? 'border-purple-400 ring-2 ring-purple-100 bg-purple-50/10' : 'border-rose-100 shadow-sm'}`}
+                            className={`p-5 bg-white rounded-xl border transition space-y-4 cursor-pointer ${isSelected ? 'border-rose-355 ring-4 ring-rose-50/50 bg-rose-50/5' : 'border-slate-200/60 shadow-xs'}`}
                           >
-                            <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-between pb-2 border-b border-slate-100 font-sans">
                               <div className="flex items-center gap-2">
-                                <span className="text-base">⭐</span>
-                                <span className="text-xs font-bold text-gray-800">Star #{i + 1}: {star.label || 'Unnamed Star'}</span>
-                                {isSelected && <span className="text-[9px] bg-purple-100 text-purple-700 font-bold px-2 py-0.5 rounded-full animate-pulse">Active Star</span>}
+                                <span className="text-sm">⭐</span>
+                                <span className="text-xs font-bold text-slate-700">Star #{i + 1}: {star.label || 'Unnamed Star'}</span>
+                                {isSelected && <span className="text-[9px] bg-rose-50 text-rose-700 font-bold px-2.5 py-0.5 rounded-full border border-rose-100 animate-pulse font-sans">Selected</span>}
                               </div>
                               <button
                                 type="button"
@@ -1335,41 +1530,41 @@ export default function Editor() {
                                   e.stopPropagation();
                                   handleRemoveItem('constellationStars', i);
                                 }}
-                                className="text-red-500 hover:text-red-700 text-[11px] font-bold flex items-center gap-1 cursor-pointer bg-white px-2 py-1 rounded-lg border shadow-xs hover:bg-rose-50 transition"
+                                className="text-red-500 hover:text-red-750 text-xs font-bold flex items-center gap-1 cursor-pointer bg-white px-2.5 py-1.5 rounded-xl border border-slate-200 shadow-xs transition hover:bg-slate-55"
                               >
-                                <Trash2 size={12} /> Remove Star
+                                <Trash2 size={13} /> Remove Star
                               </button>
                             </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                              <div>
-                                <label className="block text-[10px] font-bold text-gray-400 uppercase mb-0.5">Star Label</label>
+                              <div className="space-y-1">
+                                <label className="block text-[10px] font-bold text-slate-505 uppercase tracking-wider font-sans">Star Label</label>
                                 <input
                                   type="text"
                                   value={star.label || ''}
                                   onChange={e => handleArrayChange('constellationStars', i, 'label', e.target.value)}
-                                  className="w-full p-2 bg-gray-50 border rounded-lg text-xs font-bold text-gray-800"
+                                  className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-550 transition"
                                   placeholder="e.g. First Hello"
                                 />
                               </div>
-                              <div>
-                                <label className="block text-[10px] font-bold text-gray-400 uppercase mb-0.5">Date / Time</label>
+                              <div className="space-y-1">
+                                <label className="block text-[10px] font-bold text-slate-505 uppercase tracking-wider font-sans">Date / Time</label>
                                 <input
                                   type="text"
                                   value={star.date || ''}
                                   onChange={e => handleArrayChange('constellationStars', i, 'date', e.target.value)}
-                                  className="w-full p-2 bg-gray-50 border rounded-lg text-xs text-gray-800"
+                                  className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-550 transition"
                                   placeholder="e.g. Aug 9, 2025"
                                 />
                               </div>
                             </div>
 
                             {/* Position Sliders */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-3 bg-gray-50 rounded-xl border border-gray-100 shadow-inner">
-                              <div className="space-y-1">
-                                <div className="flex items-center justify-between text-[10px] font-bold text-gray-500">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-slate-50 rounded-xl border border-slate-100 shadow-inner font-sans">
+                              <div className="space-y-1.5">
+                                <div className="flex items-center justify-between text-[10px] font-bold text-slate-500 font-sans">
                                   <span>X Position (Horizontal)</span>
-                                  <span>{star.x ?? 50}%</span>
+                                  <span className="bg-white px-1.5 py-0.5 rounded border text-[9px]">{star.x ?? 50}%</span>
                                 </div>
                                 <input
                                   type="range"
@@ -1377,13 +1572,13 @@ export default function Editor() {
                                   max="100"
                                   value={star.x ?? 50}
                                   onChange={e => handleArrayChange('constellationStars', i, 'x', Number(e.target.value))}
-                                  className="w-full h-1 bg-gray-200 rounded-lg accent-rose-500 cursor-pointer"
+                                  className="w-full h-1 bg-slate-200 rounded-lg accent-rose-500 cursor-pointer"
                                 />
                               </div>
-                              <div className="space-y-1">
-                                <div className="flex items-center justify-between text-[10px] font-bold text-gray-500">
+                              <div className="space-y-1.5">
+                                <div className="flex items-center justify-between text-[10px] font-bold text-slate-500 font-sans">
                                   <span>Y Position (Vertical)</span>
-                                  <span>{star.y ?? 50}%</span>
+                                  <span className="bg-white px-1.5 py-0.5 rounded border text-[9px]">{star.y ?? 50}%</span>
                                 </div>
                                 <input
                                   type="range"
@@ -1391,17 +1586,17 @@ export default function Editor() {
                                   max="100"
                                   value={star.y ?? 50}
                                   onChange={e => handleArrayChange('constellationStars', i, 'y', Number(e.target.value))}
-                                  className="w-full h-1 bg-gray-200 rounded-lg accent-rose-500 cursor-pointer"
+                                  className="w-full h-1 bg-slate-200 rounded-lg accent-rose-500 cursor-pointer"
                                 />
                               </div>
                             </div>
 
-                            <div>
-                              <label className="block text-[10px] font-bold text-gray-400 uppercase mb-0.5">Star Memory Story</label>
+                            <div className="space-y-1">
+                              <label className="block text-[10px] font-bold text-slate-505 uppercase tracking-wider font-sans">Star Memory Story</label>
                               <textarea
                                 value={star.story || ''}
                                 onChange={e => handleArrayChange('constellationStars', i, 'story', e.target.value)}
-                                className="w-full p-2 bg-gray-50 border rounded-lg text-xs h-14 text-gray-700"
+                                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs h-16 text-slate-700 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-550 transition font-sans"
                                 placeholder="Describe this star's story..."
                               />
                             </div>
@@ -1412,9 +1607,9 @@ export default function Editor() {
                       <button
                         type="button"
                         onClick={addNewConstellationStar}
-                        className="w-full p-4 border-2 border-dashed border-purple-300 rounded-2xl flex items-center justify-center gap-2 text-purple-700 font-bold hover:bg-purple-50 transition cursor-pointer text-xs"
+                        className="w-full py-3 border border-dashed border-purple-300 hover:border-purple-400 rounded-xl flex items-center justify-center gap-2 text-purple-700 font-bold hover:bg-purple-50/50 transition cursor-pointer text-xs"
                       >
-                        <Plus size={16} /> Add New Constellation Star
+                        <Plus size={14} /> Add New Constellation Star
                       </button>
                     </div>
                   </div>
@@ -1423,377 +1618,393 @@ export default function Editor() {
             )}
 
             {activeTab === 'stories' && (
-              <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-200">
+              <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-200 font-sans">
                 {/* 12. Reasons I Love You Cards */}
-                <Section title="Reasons I Love You Cards" icon={<Heart size={20} />} subtitle="Personalize the flipping cards containing things you love about them">
+                <Section title="Reasons I Love You Cards" icon={<Heart size={20} />} subtitle="Personalize the flipping cards containing things you love about them.">
                   <div className="space-y-5">
-                    <p className="text-xs text-gray-500">Add beautiful cards that flip to reveal secret reasons why you love your partner.</p>
-                    {(formData.loveReasons || []).map((reason, rIdx) => (
-                      <div key={rIdx} className="p-5 bg-white rounded-2xl border border-rose-100 shadow-sm space-y-3">
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs bg-rose-50 text-rose-600 px-3 py-1 rounded-full font-bold">Reason Card #{rIdx + 1}</span>
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveItem('loveReasons', rIdx)}
-                            className="text-red-500 hover:text-red-700 text-xs font-bold flex items-center gap-1 cursor-pointer bg-white px-2.5 py-1.5 rounded-lg border shadow-sm"
-                          >
-                            <Trash2 size={14} /> Remove Card
-                          </button>
-                        </div>
+                    <p className="text-xs text-slate-400 font-sans">Add beautiful cards that flip to reveal secret reasons why you love your partner.</p>
+                    
+                    <div className="space-y-4 font-sans">
+                      {(formData.loveReasons || []).map((reason, rIdx) => (
+                        <div key={rIdx} className="p-5 bg-slate-50/30 rounded-xl border border-slate-200/60 shadow-xs space-y-4">
+                          <div className="flex items-center justify-between pb-2 border-b border-slate-100 font-sans font-sans">
+                            <span className="text-xs bg-rose-50 border border-rose-100 text-rose-700 px-3 py-1 rounded-full font-bold">Reason Card #{rIdx + 1}</span>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveItem('loveReasons', rIdx)}
+                              className="text-red-500 hover:text-red-700 text-xs font-bold flex items-center gap-1 cursor-pointer bg-white px-2.5 py-1.5 rounded-xl border border-slate-200 shadow-xs hover:bg-slate-55 transition"
+                            >
+                              <Trash2 size={13} /> Remove Card
+                            </button>
+                          </div>
 
-                        <div className="grid grid-cols-1 gap-3">
-                          <div>
-                            <label className="block text-xs font-bold text-gray-650 mb-1">Card Front (Short title, e.g. Your Kindness)</label>
-                            <input
-                              type="text"
-                              value={reason.front || ''}
-                              onChange={e => handleArrayChange('loveReasons', rIdx, 'front', e.target.value)}
-                              className="w-full p-2 bg-gray-50 border rounded-lg text-sm text-gray-800 font-bold focus:ring-2 focus:ring-rose-200 focus:bg-white transition"
-                              placeholder="e.g. Your Laugh"
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-xs font-bold text-gray-655 mb-1">Card Back (Memory details)</label>
-                            <textarea
-                              value={reason.back || ''}
-                              onChange={e => handleArrayChange('loveReasons', rIdx, 'back', e.target.value)}
-                              className="w-full p-2.5 bg-gray-50 border rounded-lg text-sm text-gray-800 h-20 focus:ring-2 focus:ring-rose-200 focus:bg-white transition"
-                              placeholder="Why is this one of the reasons you love them..."
-                            />
+                          <div className="space-y-3 font-sans">
+                            <div className="space-y-1">
+                              <label className="block text-xs font-semibold text-slate-500">Card Front (Short title, e.g. Your Kindness)</label>
+                              <input
+                                type="text"
+                                value={reason.front || ''}
+                                onChange={e => handleArrayChange('loveReasons', rIdx, 'front', e.target.value)}
+                                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition"
+                                placeholder="e.g. Your Laugh"
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <label className="block text-xs font-semibold text-slate-500 font-sans">Card Back (Memory details)</label>
+                              <textarea
+                                value={reason.back || ''}
+                                onChange={e => handleArrayChange('loveReasons', rIdx, 'back', e.target.value)}
+                                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-700 h-20 leading-relaxed focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition"
+                                placeholder="Why is this one of the reasons you love them..."
+                              />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
 
                     <button
                       type="button"
                       onClick={addNewLoveReason}
-                      className="w-full p-4 border-2 border-dashed border-rose-300 rounded-2xl flex items-center justify-center gap-2 text-[#D4838A] font-bold hover:bg-rose-50 transition cursor-pointer text-xs"
+                      className="w-full py-3 border border-dashed border-rose-300 hover:border-rose-450 hover:bg-rose-50/50 rounded-xl flex items-center justify-center gap-2 text-rose-600 font-bold transition cursor-pointer text-xs font-sans"
                     >
-                      <Plus size={16} /> Add New Reason Card
+                      <Plus size={14} /> Add New Reason Card
                     </button>
                   </div>
                 </Section>
 
                 {/* 13. Chapters & Milestones Timeline */}
-                <Section title="Chapters & Milestones Timeline" icon={<Calendar size={20} />} subtitle="Personalize your relationship history timeline events, dates, and icons">
+                <Section title="Chapters & Milestones Timeline" icon={<Calendar size={20} />} subtitle="Personalize your relationship history timeline events, dates, and icons.">
                   <div className="space-y-5">
-                    <p className="text-xs text-gray-500">Define the core relationship milestones that populate the main vertical timeline.</p>
-                    {(formData.timeline || []).map((item, tIdx) => (
-                      <div key={tIdx} className="p-5 bg-white rounded-2xl border border-rose-100 shadow-sm space-y-3">
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs bg-rose-50 text-rose-600 px-3 py-1 rounded-full font-bold">Milestone #{tIdx + 1}</span>
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveItem('timeline', tIdx)}
-                            className="text-red-500 hover:text-red-700 text-xs font-bold flex items-center gap-1 cursor-pointer bg-white px-2.5 py-1.5 rounded-lg border shadow-sm"
-                          >
-                            <Trash2 size={14} /> Remove Event
-                          </button>
-                        </div>
+                    <p className="text-xs text-slate-400 font-sans">Define the core relationship milestones that populate the main vertical timeline.</p>
+                    
+                    <div className="space-y-4">
+                      {(formData.timeline || []).map((item, tIdx) => (
+                        <div key={tIdx} className="p-5 bg-slate-50/30 rounded-xl border border-slate-200/60 shadow-xs space-y-4 font-sans">
+                          <div className="flex items-center justify-between pb-2 border-b border-slate-100 font-sans font-sans font-sans">
+                            <span className="text-xs bg-rose-50 border border-rose-100 text-rose-700 px-3 py-1 rounded-full font-bold">Milestone #{tIdx + 1}</span>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveItem('timeline', tIdx)}
+                              className="text-red-500 hover:text-red-700 text-xs font-bold flex items-center gap-1 cursor-pointer bg-white px-2.5 py-1.5 rounded-xl border border-slate-200 shadow-xs hover:bg-slate-55 transition"
+                            >
+                              <Trash2 size={13} /> Remove Event
+                            </button>
+                          </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                          <div>
-                            <label className="block text-xs font-bold text-gray-650 mb-1">Date string</label>
-                            <input
-                              type="text"
-                              value={item.date || ''}
-                              onChange={e => handleArrayChange('timeline', tIdx, 'date', e.target.value)}
-                              className="w-full p-2 bg-gray-55 border rounded-lg text-sm text-gray-800 focus:ring-2 focus:ring-rose-200 focus:bg-white transition"
-                              placeholder="e.g. Aug 9, 2025"
-                            />
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div className="space-y-1">
+                              <label className="block text-xs font-semibold text-slate-500">Date string</label>
+                              <input
+                                type="text"
+                                value={item.date || ''}
+                                onChange={e => handleArrayChange('timeline', tIdx, 'date', e.target.value)}
+                                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition"
+                                placeholder="e.g. Aug 9, 2025"
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <label className="block text-xs font-semibold text-slate-500">Event title</label>
+                              <input
+                                type="text"
+                                value={item.event || ''}
+                                onChange={e => handleArrayChange('timeline', tIdx, 'event', e.target.value)}
+                                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition"
+                                placeholder="e.g. First Meeting"
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <label className="block text-xs font-semibold text-slate-500">Emoji badge</label>
+                              <input
+                                type="text"
+                                value={item.icon || '💌'}
+                                onChange={e => handleArrayChange('timeline', tIdx, 'icon', e.target.value)}
+                                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition"
+                                placeholder="e.g. 💌, 🩺, 📞"
+                              />
+                            </div>
                           </div>
-                          <div>
-                            <label className="block text-xs font-bold text-gray-650 mb-1">Event title</label>
-                            <input
-                              type="text"
-                              value={item.event || ''}
-                              onChange={e => handleArrayChange('timeline', tIdx, 'event', e.target.value)}
-                              className="w-full p-2 bg-gray-55 border rounded-lg text-sm text-gray-800 font-bold focus:ring-2 focus:ring-rose-200 focus:bg-white transition"
-                              placeholder="e.g. First Meeting"
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-xs font-bold text-gray-650 mb-1">Emoji badge</label>
-                            <input
-                              type="text"
-                              value={item.icon || '💌'}
-                              onChange={e => handleArrayChange('timeline', tIdx, 'icon', e.target.value)}
-                              className="w-full p-2 bg-gray-55 border rounded-lg text-sm text-gray-800 focus:ring-2 focus:ring-rose-200 focus:bg-white transition"
-                              placeholder="e.g. 💌, 🩺, 📞"
-                            />
-                          </div>
-                        </div>
 
-                        <div>
-                          <label className="block text-xs font-bold text-gray-650 mb-1">Milestone description</label>
-                          <textarea
-                            value={item.desc || ''}
-                            onChange={e => handleArrayChange('timeline', tIdx, 'desc', e.target.value)}
-                            className="w-full p-2 bg-gray-55 border rounded-lg text-sm text-gray-800 h-16 focus:ring-2 focus:ring-rose-200 focus:bg-white transition"
-                            placeholder="Describe this milestone..."
-                          />
+                          <div className="space-y-1">
+                            <label className="block text-xs font-semibold text-slate-500">Milestone description</label>
+                            <textarea
+                              value={item.desc || ''}
+                              onChange={e => handleArrayChange('timeline', tIdx, 'desc', e.target.value)}
+                              className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-700 h-16 leading-relaxed focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition"
+                              placeholder="Describe this milestone..."
+                            />
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
 
                     <button
                       type="button"
                       onClick={addNewTimelineItem}
-                      className="w-full p-4 border-2 border-dashed border-rose-300 rounded-2xl flex items-center justify-center gap-2 text-[#D4838A] font-bold hover:bg-rose-50 transition cursor-pointer text-xs"
+                      className="w-full py-3 border border-dashed border-rose-300 hover:border-rose-450 hover:bg-rose-50/50 rounded-xl flex items-center justify-center gap-2 text-rose-600 font-bold transition cursor-pointer text-xs font-sans"
                     >
-                      <Plus size={16} /> Add New Timeline Event
+                      <Plus size={14} /> Add New Timeline Event
                     </button>
                   </div>
                 </Section>
 
                 {/* 14. Open When Letters */}
-                <Section title="Open When Letters" icon={<Sparkles size={20} />} subtitle="Personalize the 'Open When' letter notes and envelope labels">
+                <Section title="Open When Letters" icon={<Sparkles size={20} />} subtitle="Personalize the 'Open When' letter notes and envelope labels.">
                   <div className="space-y-5">
-                    <p className="text-xs text-gray-500">Configure special envelopes that contain warm letters for different emotions or occasions.</p>
+                    <p className="text-xs text-slate-400 font-sans">Configure special envelopes that contain warm letters for different emotions or occasions.</p>
                     
-                    {(formData.openWhenCards || []).map((card, owIdx) => (
-                      <div key={owIdx} className="p-5 bg-white rounded-2xl border border-rose-100 shadow-sm space-y-3">
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs bg-rose-50 text-rose-600 px-3 py-1 rounded-full font-bold">Open When Letter #{owIdx + 1}</span>
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveItem('openWhenCards', owIdx)}
-                            className="text-red-500 hover:text-red-700 text-xs font-bold flex items-center gap-1 cursor-pointer bg-white px-2.5 py-1.5 rounded-lg border shadow-sm"
-                          >
-                            <Trash2 size={14} /> Remove Letter
-                          </button>
-                        </div>
+                    <div className="space-y-4">
+                      {(formData.openWhenCards || []).map((card, owIdx) => (
+                        <div key={owIdx} className="p-5 bg-slate-50/30 rounded-xl border border-slate-200/60 shadow-xs space-y-4 font-sans">
+                          <div className="flex items-center justify-between pb-2 border-b border-slate-100 font-sans">
+                            <span className="text-xs bg-rose-50 border border-rose-100 text-rose-700 px-3 py-1 rounded-full font-bold">Open When Letter #{owIdx + 1}</span>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveItem('openWhenCards', owIdx)}
+                              className="text-red-500 hover:text-red-700 text-xs font-bold flex items-center gap-1 cursor-pointer bg-white px-2.5 py-1.5 rounded-xl border border-slate-200 shadow-xs hover:bg-slate-55 transition"
+                            >
+                              <Trash2 size={13} /> Remove Letter
+                            </button>
+                          </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          <div>
-                            <label className="block text-xs font-bold text-gray-650 mb-1">Envelope Label (e.g. Open when you miss me)</label>
-                            <input
-                              type="text"
-                              value={card.label || ''}
-                              onChange={e => handleArrayChange('openWhenCards', owIdx, 'label', e.target.value)}
-                              className="w-full p-2 bg-gray-50 border rounded-lg text-sm text-gray-800 font-bold focus:ring-2 focus:ring-rose-200 focus:bg-white transition"
-                              placeholder="Open when you miss me"
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div className="space-y-1">
+                              <label className="block text-xs font-semibold text-slate-500 font-sans font-sans">Envelope Label (e.g. Open when you miss me)</label>
+                              <input
+                                type="text"
+                                value={card.label || ''}
+                                onChange={e => handleArrayChange('openWhenCards', owIdx, 'label', e.target.value)}
+                                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition"
+                                placeholder="Open when you miss me"
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <label className="block text-xs font-semibold text-slate-500 font-sans font-sans font-sans">Emoji Icon</label>
+                              <input
+                                type="text"
+                                value={card.icon || '✉️'}
+                                onChange={e => handleArrayChange('openWhenCards', owIdx, 'icon', e.target.value)}
+                                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition"
+                                placeholder="e.g. 🌙, 🌧️, 🌞"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="space-y-1 font-sans">
+                            <label className="block text-xs font-semibold text-slate-500">Letter message content</label>
+                            <textarea
+                              value={card.message || ''}
+                              onChange={e => handleArrayChange('openWhenCards', owIdx, 'message', e.target.value)}
+                              className="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-xs text-slate-700 h-24 font-serif leading-relaxed focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition"
+                              placeholder="Write your sweet note to read..."
                             />
                           </div>
-                          <div>
-                            <label className="block text-xs font-bold text-gray-655 mb-1">Emoji Icon</label>
-                            <input
-                              type="text"
-                              value={card.icon || '✉️'}
-                              onChange={e => handleArrayChange('openWhenCards', owIdx, 'icon', e.target.value)}
-                              className="w-full p-2 bg-gray-50 border rounded-lg text-sm text-gray-800 focus:ring-2 focus:ring-rose-200 focus:bg-white transition"
-                              placeholder="e.g. 🌙, 🌧️, 🌞"
-                            />
-                          </div>
                         </div>
-
-                        <div>
-                          <label className="block text-xs font-bold text-gray-650 mb-1">Letter message content</label>
-                          <textarea
-                            value={card.message || ''}
-                            onChange={e => handleArrayChange('openWhenCards', owIdx, 'message', e.target.value)}
-                            className="w-full p-2.5 bg-gray-50 border rounded-lg text-sm text-gray-800 h-24 font-serif leading-relaxed focus:ring-2 focus:ring-rose-200 focus:bg-white transition"
-                            placeholder="Write your sweet note to read..."
-                          />
-                        </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
 
                     <button
                       type="button"
                       onClick={addNewOpenWhenCard}
-                      className="w-full p-4 border-2 border-dashed border-rose-300 rounded-2xl flex items-center justify-center gap-2 text-[#D4838A] font-bold hover:bg-rose-50 transition cursor-pointer text-xs"
+                      className="w-full py-3 border border-dashed border-rose-300 hover:border-rose-455 hover:bg-rose-50/50 rounded-xl flex items-center justify-center gap-2 text-rose-600 font-bold transition cursor-pointer text-xs font-sans"
                     >
-                      <Plus size={16} /> Add New Open When Letter
+                      <Plus size={14} /> Add New Open When Letter
                     </button>
                   </div>
                 </Section>
 
                 {/* 15. Future Bucket List */}
-                <Section title="Our Future Bucket List" icon={<Compass size={20} />} subtitle="Personalize the dreams and adventures waiting in your future together">
+                <Section title="Our Future Bucket List" icon={<Compass size={20} />} subtitle="Personalize the dreams and adventures waiting in your future together.">
                   <div className="space-y-5">
-                    <p className="text-xs text-gray-500">Define shared future plans or milestones that flip open dynamically.</p>
+                    <p className="text-xs text-slate-400 font-sans font-sans">Define shared future plans or milestones that flip open dynamically.</p>
                     
-                    {(formData.futureDreams || []).map((dream, fdIdx) => (
-                      <div key={fdIdx} className="p-5 bg-white rounded-2xl border border-rose-100 shadow-sm space-y-3">
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs bg-rose-50 text-rose-600 px-3 py-1 rounded-full font-bold">Dream Item #{fdIdx + 1}</span>
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveItem('futureDreams', fdIdx)}
-                            className="text-red-500 hover:text-red-700 text-xs font-bold flex items-center gap-1 cursor-pointer bg-white px-2.5 py-1.5 rounded-lg border shadow-sm"
-                          >
-                            <Trash2 size={14} /> Remove Item
-                          </button>
-                        </div>
+                    <div className="space-y-4">
+                      {(formData.futureDreams || []).map((dream, fdIdx) => (
+                        <div key={fdIdx} className="p-5 bg-slate-50/30 rounded-xl border border-slate-200/60 shadow-xs space-y-4 font-sans">
+                          <div className="flex items-center justify-between pb-2 border-b border-slate-100 font-sans">
+                            <span className="text-xs bg-rose-50 border border-rose-100 text-rose-700 px-3 py-1 rounded-full font-bold">Dream Item #{fdIdx + 1}</span>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveItem('futureDreams', fdIdx)}
+                              className="text-red-500 hover:text-red-750 text-xs font-bold flex items-center gap-1 cursor-pointer bg-white px-2.5 py-1.5 rounded-xl border border-slate-200 shadow-xs hover:bg-slate-55 transition"
+                            >
+                              <Trash2 size={13} /> Remove Item
+                            </button>
+                          </div>
 
-                        <div>
-                          <label className="block text-xs font-bold text-gray-650 mb-1">Dream Title</label>
-                          <input
-                            type="text"
-                            value={dream.title || ''}
-                            onChange={e => handleArrayChange('futureDreams', fdIdx, 'title', e.target.value)}
-                            className="w-full p-2 bg-gray-50 border rounded-lg text-sm text-gray-800 font-bold focus:ring-2 focus:ring-rose-200 focus:bg-white transition"
-                            placeholder="e.g. Travel the World"
-                          />
+                          <div className="space-y-3 font-sans">
+                            <div className="space-y-1">
+                              <label className="block text-xs font-semibold text-slate-500">Dream Title</label>
+                              <input
+                                type="text"
+                                value={dream.title || ''}
+                                onChange={e => handleArrayChange('futureDreams', fdIdx, 'title', e.target.value)}
+                                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition"
+                                placeholder="e.g. Travel the World"
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <label className="block text-xs font-semibold text-slate-500">Dream description / details</label>
+                              <textarea
+                                value={dream.desc || ''}
+                                onChange={e => handleArrayChange('futureDreams', fdIdx, 'desc', e.target.value)}
+                                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-700 h-16 leading-relaxed focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition"
+                                placeholder="Write details about this dream..."
+                              />
+                            </div>
+                          </div>
                         </div>
-                        <div>
-                          <label className="block text-xs font-bold text-gray-650 mb-1">Dream description / details</label>
-                          <textarea
-                            value={dream.desc || ''}
-                            onChange={e => handleArrayChange('futureDreams', fdIdx, 'desc', e.target.value)}
-                            className="w-full p-2 bg-gray-50 border rounded-lg text-sm text-gray-800 h-16 focus:ring-2 focus:ring-rose-200 focus:bg-white transition"
-                            placeholder="Write details about this dream..."
-                          />
-                        </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
 
                     <button
                       type="button"
                       onClick={addNewFutureDream}
-                      className="w-full p-4 border-2 border-dashed border-rose-300 rounded-2xl flex items-center justify-center gap-2 text-[#D4838A] font-bold hover:bg-rose-50 transition cursor-pointer text-xs"
+                      className="w-full py-3 border border-dashed border-rose-300 hover:border-rose-455 hover:bg-rose-50/50 rounded-xl flex items-center justify-center gap-2 text-rose-600 font-bold transition cursor-pointer text-xs font-sans"
                     >
-                      <Plus size={16} /> Add New Bucket List Dream
+                      <Plus size={14} /> Add New Bucket List Dream
                     </button>
                   </div>
                 </Section>
 
                 {/* 16. Beating Heart Section */}
-                <Section title="Heartbeat Customizer" icon={<Heart className="animate-pulse" size={20} />} subtitle="Configure the heartbeat section titles and custom messages">
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                      <div>
-                        <label className="block text-xs font-bold text-gray-605 mb-1">Eyebrow Tag</label>
+                <Section title="Heartbeat Customizer" icon={<Heart className="animate-pulse text-rose-500" size={20} />} subtitle="Configure the heartbeat section titles and custom messages.">
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 font-sans">
+                      <div className="space-y-1">
+                        <label className="block text-xs font-semibold text-slate-500">Eyebrow Tag</label>
                         <input
                           type="text"
                           name="heartbeatEyebrow"
                           value={formData.heartbeatEyebrow || ''}
                           onChange={handleChange}
-                          className="w-full p-2 bg-gray-50 border rounded-lg text-sm"
+                          className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition shadow-xs"
                           placeholder="Feel It"
                         />
                       </div>
-                      <div>
-                        <label className="block text-xs font-bold text-gray-605 mb-1">Section Title</label>
+                      <div className="space-y-1">
+                        <label className="block text-xs font-semibold text-slate-500 font-sans">Section Title</label>
                         <input
                           type="text"
                           name="heartbeatTitle"
                           value={formData.heartbeatTitle || ''}
                           onChange={handleChange}
-                          className="w-full p-2 bg-gray-50 border rounded-lg text-sm"
+                          className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition shadow-xs"
                           placeholder="My Heartbeat For You"
                         />
                       </div>
-                      <div>
-                        <label className="block text-xs font-bold text-gray-605 mb-1">Section Subtitle</label>
+                      <div className="space-y-1">
+                        <label className="block text-xs font-semibold text-slate-500 font-sans">Section Subtitle</label>
                         <input
                           type="text"
                           name="heartbeatSubtitle"
                           value={formData.heartbeatSubtitle || ''}
                           onChange={handleChange}
-                          className="w-full p-2 bg-gray-50 border rounded-lg text-sm"
+                          className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-805 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-550 transition shadow-xs"
                           placeholder="Tap the beating heart..."
                         />
                       </div>
                     </div>
 
-                    <div className="pt-4 border-t space-y-3">
-                      <label className="block text-xs font-bold text-gray-700">Heartbeat Messages List</label>
-                      {(formData.heartbeatMessages || [
-                        "You make my heart race. ❤️",
-                        "Still choosing you every single day.",
-                        "My favorite place is in your arms.",
-                        "365 days and I'm still falling for you.",
-                        "Every single beat belongs to you.",
-                        "You are my whole universe. ✨"
-                      ]).map((msg, hIdx) => (
-                        <div key={hIdx} className="flex items-center gap-3">
-                          <input
-                            type="text"
-                            value={msg || ''}
-                            onChange={e => handleArrayChange('heartbeatMessages', hIdx, null, e.target.value)}
-                            className="flex-1 p-2 bg-white border rounded-xl text-sm"
-                            placeholder="Write heartbeat note..."
-                          />
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveItem('heartbeatMessages', hIdx)}
-                            className="text-red-500 hover:text-red-700 cursor-pointer p-2 bg-white border rounded-xl"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
-                      ))}
+                    <div className="pt-4 border-t border-slate-200/60 space-y-3 font-sans">
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider font-sans">Heartbeat Messages List</label>
+                      
+                      <div className="space-y-2.5">
+                        {(formData.heartbeatMessages || [
+                          "You make my heart race. ❤️",
+                          "Still choosing you every single day.",
+                          "My favorite place is in your arms.",
+                          "365 days and I'm still falling for you.",
+                          "Every single beat belongs to you.",
+                          "You are my whole universe. ✨"
+                        ]).map((msg, hIdx) => (
+                          <div key={hIdx} className="flex items-center gap-3">
+                            <input
+                              type="text"
+                              value={msg || ''}
+                              onChange={e => handleArrayChange('heartbeatMessages', hIdx, null, e.target.value)}
+                              className="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-550 transition shadow-xs"
+                              placeholder="Write heartbeat note..."
+                            />
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveItem('heartbeatMessages', hIdx)}
+                              className="text-red-500 hover:text-red-750 bg-white border border-slate-200 hover:bg-slate-50 p-2.5 rounded-xl cursor-pointer shadow-xs transition"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                      
                       <button
                         type="button"
                         onClick={addNewHeartbeatMessage}
-                        className="w-full p-3 border-2 border-dashed border-rose-300 rounded-xl flex items-center justify-center gap-2 text-[#D4838A] font-bold text-xs"
+                        className="w-full py-2.5 border border-dashed border-rose-300 hover:border-rose-455 rounded-xl flex items-center justify-center gap-2 text-rose-600 font-bold hover:bg-rose-50/50 transition cursor-pointer text-xs"
                       >
-                        <Plus size={16} /> Add Heartbeat Message
+                        <Plus size={14} /> Add Heartbeat Message
                       </button>
                     </div>
                   </div>
                 </Section>
 
                 {/* 17. Love Meter Customizer */}
-                <Section title="Love Meter Customizer" icon={<Sparkles size={20} />} subtitle="Configure labels, headings, and messages for the love meter slider">
-                  <div className="space-y-4">
+                <Section title="Love Meter Customizer" icon={<Sparkles size={20} />} subtitle="Configure labels, headings, and messages for the love meter slider.">
+                  <div className="space-y-6 animate-in fade-in duration-200 font-sans font-sans">
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                      <div>
-                        <label className="block text-xs font-bold text-gray-605 mb-1">Eyebrow Tag</label>
+                      <div className="space-y-1">
+                        <label className="block text-xs font-semibold text-slate-500">Eyebrow Tag</label>
                         <input
                           type="text"
                           name="lovemeterEyebrow"
                           value={formData.lovemeterEyebrow || ''}
                           onChange={handleChange}
-                          className="w-full p-2 bg-gray-50 border rounded-lg text-sm"
+                          className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition shadow-xs"
                           placeholder="An Important Question"
                         />
                       </div>
-                      <div>
-                        <label className="block text-xs font-bold text-gray-605 mb-1">Section Title</label>
+                      <div className="space-y-1">
+                        <label className="block text-xs font-semibold text-slate-500">Section Title</label>
                         <input
                           type="text"
                           name="lovemeterTitle"
                           value={formData.lovemeterTitle || ''}
                           onChange={handleChange}
-                          className="w-full p-2 bg-gray-50 border rounded-lg text-sm"
+                          className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition shadow-xs font-sans"
                           placeholder="How Much Do We Love Each Other?"
                         />
                       </div>
-                      <div>
-                        <label className="block text-xs font-bold text-gray-605 mb-1">Section Subtitle</label>
+                      <div className="space-y-1">
+                        <label className="block text-xs font-semibold text-slate-500">Section Subtitle</label>
                         <input
                           type="text"
                           name="lovemeterSubtitle"
                           value={formData.lovemeterSubtitle || ''}
                           onChange={handleChange}
-                          className="w-full p-2 bg-gray-50 border rounded-lg text-sm"
+                          className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-805 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-550 transition shadow-xs font-sans"
                           placeholder="Drag the slider to test..."
                         />
                       </div>
                     </div>
 
-                    <div>
-                      <label className="block text-xs font-bold text-gray-605 mb-1">100% Overflow Success Message</label>
+                    <div className="space-y-1">
+                      <label className="block text-xs font-semibold text-slate-500">100% Overflow Success Message</label>
                       <input
                         type="text"
                         name="lovemeterSuccessMessage"
                         value={formData.lovemeterSuccessMessage || ''}
                         onChange={handleChange}
-                        className="w-full p-2.5 bg-gray-50 border rounded-lg text-sm"
+                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition shadow-xs"
                         placeholder="Overflowing with Love! 🌹✨"
                       />
                     </div>
 
-                    <div className="pt-4 border-t space-y-3">
-                      <label className="block text-xs font-bold text-gray-700">Love Meter Slider Labels (From 0% to 100%)</label>
+                    <div className="pt-4 border-t border-slate-200/60 space-y-3 font-sans">
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider font-sans">Love Meter Slider Labels (From 0% to 100%)</label>
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                         {[0, 1, 2, 3, 4, 5].map(idx => (
-                          <div key={idx}>
-                            <label className="block text-[10px] font-bold text-gray-405 uppercase mb-0.5">Label {idx + 1}</label>
+                          <div key={idx} className="space-y-1">
+                            <label className="block text-[10px] font-bold text-slate-505 uppercase tracking-wider">Label {idx + 1}</label>
                             <input
                               type="text"
                               value={
@@ -1805,7 +2016,7 @@ export default function Editor() {
                                 current[idx] = e.target.value;
                                 setFormData({ ...formData, lovemeterLabels: current });
                               }}
-                              className="w-full p-2 bg-white border rounded-lg text-xs"
+                              className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition shadow-xs font-sans"
                             />
                           </div>
                         ))}
@@ -1815,64 +2026,64 @@ export default function Editor() {
                 </Section>
 
                 {/* 18. Virtual Kiss Customizer */}
-                <Section title="Virtual Kiss Customizer" icon={<Sparkles size={20} />} subtitle="Configure text elements of the virtual kiss shower button">
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                      <div>
-                        <label className="block text-xs font-bold text-gray-605 mb-1">Eyebrow Tag</label>
+                <Section title="Virtual Kiss Customizer" icon={<Sparkles size={20} />} subtitle="Configure text elements of the virtual kiss shower button.">
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 font-sans font-sans">
+                      <div className="space-y-1">
+                        <label className="block text-xs font-semibold text-slate-500">Eyebrow Tag</label>
                         <input
                           type="text"
                           name="kissEyebrow"
                           value={formData.kissEyebrow || ''}
                           onChange={handleChange}
-                          className="w-full p-2 bg-gray-50 border rounded-lg text-sm"
+                          className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition shadow-xs font-sans"
                           placeholder="Just Because"
                         />
                       </div>
-                      <div>
-                        <label className="block text-xs font-bold text-gray-605 mb-1">Section Title</label>
+                      <div className="space-y-1">
+                        <label className="block text-xs font-semibold text-slate-500">Section Title</label>
                         <input
                           type="text"
                           name="kissTitle"
                           value={formData.kissTitle || ''}
                           onChange={handleChange}
-                          className="w-full p-2 bg-gray-50 border rounded-lg text-sm"
+                          className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition shadow-xs"
                           placeholder="Send a Kiss"
                         />
                       </div>
-                      <div>
-                        <label className="block text-xs font-bold text-gray-605 mb-1">Section Subtitle</label>
+                      <div className="space-y-1">
+                        <label className="block text-xs font-semibold text-slate-500">Section Subtitle</label>
                         <input
                           type="text"
                           name="kissSubtitle"
                           value={formData.kissSubtitle || ''}
                           onChange={handleChange}
-                          className="w-full p-2 bg-gray-50 border rounded-lg text-sm"
+                          className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-850 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-550 transition shadow-xs"
                           placeholder="Tap the giant kiss..."
                         />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-xs font-bold text-gray-605 mb-1">Button text label</label>
+                      <div className="space-y-1">
+                        <label className="block text-xs font-semibold text-slate-500">Button text label</label>
                         <input
                           type="text"
                           name="kissButtonText"
                           value={formData.kissButtonText || ''}
                           onChange={handleChange}
-                          className="w-full p-2.5 bg-gray-50 border rounded-lg text-sm"
+                          className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition shadow-xs"
                           placeholder="Send A Kiss 💋"
                         />
                       </div>
-                      <div>
-                        <label className="block text-xs font-bold text-gray-605 mb-1">Success message content</label>
+                      <div className="space-y-1">
+                        <label className="block text-xs font-semibold text-slate-500 font-sans font-sans">Success message content</label>
                         <input
                           type="text"
                           name="kissSuccessMessage"
                           value={formData.kissSuccessMessage || ''}
                           onChange={handleChange}
-                          className="w-full p-2.5 bg-gray-50 border rounded-lg text-sm"
+                          className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition shadow-xs font-sans"
                           placeholder="A kiss has been delivered 💋"
                         />
                       </div>
@@ -1881,122 +2092,123 @@ export default function Editor() {
                 </Section>
 
                 {/* 19. Anniversary Cake Wish Customizer */}
-                <Section title="Wish Cake Customizer" icon={<Sparkles size={20} />} subtitle="Configure the wish cake, number of years, candles, and unlocked wishes">
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                      <div className="sm:col-span-2">
-                        <label className="block text-xs font-bold text-gray-605 mb-1">Eyebrow Tag</label>
+                <Section title="Wish Cake Customizer" icon={<Sparkles size={20} />} subtitle="Configure the wish cake, number of years, candles, and unlocked wishes.">
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 font-sans font-sans font-sans">
+                      <div className="sm:col-span-2 space-y-1">
+                        <label className="block text-xs font-semibold text-slate-500">Eyebrow Tag</label>
                         <input
                           type="text"
                           name="cakeEyebrow"
                           value={formData.cakeEyebrow || ''}
                           onChange={handleChange}
-                          className="w-full p-2 bg-gray-50 border rounded-lg text-sm"
+                          className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition shadow-xs font-sans"
                           placeholder="One Year of Magic"
                         />
                       </div>
-                      <div className="sm:col-span-1">
-                        <label className="block text-xs font-bold text-gray-605 mb-1">Cake Title</label>
+                      <div className="sm:col-span-1 space-y-1">
+                        <label className="block text-xs font-semibold text-slate-550 font-sans font-sans">Cake Title</label>
                         <input
                           type="text"
                           name="cakeTitle"
                           value={formData.cakeTitle || ''}
                           onChange={handleChange}
-                          className="w-full p-2 bg-gray-50 border rounded-lg text-sm"
+                          className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition shadow-xs font-sans"
                           placeholder="Make a Wish"
                         />
                       </div>
-                      <div className="sm:col-span-1">
-                        <label className="block text-xs font-bold text-gray-605 mb-1">Cake Year Number</label>
+                      <div className="sm:col-span-1 space-y-1">
+                        <label className="block text-xs font-semibold text-slate-550">Cake Year Number</label>
                         <input
                           type="number"
                           name="cakeYears"
                           value={formData.cakeYears ?? 1}
                           onChange={e => setFormData({ ...formData, cakeYears: Number(e.target.value) })}
-                          className="w-full p-2 bg-gray-50 border rounded-lg text-sm"
+                          className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition shadow-xs font-sans"
                           placeholder="1"
                         />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-xs font-bold text-gray-605 mb-1">Blow Candle instructions message</label>
+                      <div className="space-y-1">
+                        <label className="block text-xs font-semibold text-slate-500">Blow Candle instructions message</label>
                         <input
                           type="text"
                           name="cakeBlowMessage"
                           value={formData.cakeBlowMessage || ''}
                           onChange={handleChange}
-                          className="w-full p-2.5 bg-gray-50 border rounded-lg text-sm"
+                          className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-850 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition shadow-xs font-sans"
                           placeholder="Tap each glowing candle to blow it out together 🎂"
                         />
                       </div>
-                      <div>
-                        <label className="block text-xs font-bold text-gray-605 mb-1">Cake Success Message</label>
+                      <div className="space-y-1">
+                        <label className="block text-xs font-semibold text-slate-500">Cake Success Message</label>
                         <input
                           type="text"
                           name="cakeSuccessMessage"
                           value={formData.cakeSuccessMessage || ''}
                           onChange={handleChange}
-                          className="w-full p-2.5 bg-gray-50 border rounded-lg text-sm"
+                          className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-850 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition shadow-xs font-sans"
                           placeholder="Your wish is sealed in our hearts! ✨"
                         />
                       </div>
                     </div>
 
-                    <div className="p-4 bg-rose-50/40 border border-rose-100 rounded-2xl grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="sm:col-span-2">
-                        <h4 className="text-xs font-bold text-rose-800">🎁 Wish Revealed Details</h4>
-                      </div>
-                      <div>
-                        <label className="block text-xs font-bold text-gray-605 mb-1">Wish Title Headline</label>
-                        <input
-                          type="text"
-                          name="cakeRevealedMessage"
-                          value={formData.cakeRevealedMessage || ''}
-                          onChange={handleChange}
-                          className="w-full p-2.5 bg-white border rounded-lg text-sm"
-                          placeholder="Here's to another year of us."
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-bold text-gray-605 mb-1">Wish Subtitle Headline</label>
-                        <input
-                          type="text"
-                          name="cakeRevealedSubtitle"
-                          value={formData.cakeRevealedSubtitle || ''}
-                          onChange={handleChange}
-                          className="w-full p-2.5 bg-white border rounded-lg text-sm"
-                          placeholder="May every year be sweeter than the last. 🎂✨"
-                        />
+                    <div className="p-5 bg-rose-50/20 border border-rose-100 rounded-xl space-y-4">
+                      <h4 className="text-xs font-bold text-rose-800 tracking-wider">🎁 WISH REVEALED DETAILS</h4>
+                      
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="space-y-1 font-sans">
+                          <label className="block text-xs font-semibold text-slate-500">Wish Title Headline</label>
+                          <input
+                            type="text"
+                            name="cakeRevealedMessage"
+                            value={formData.cakeRevealedMessage || ''}
+                            onChange={handleChange}
+                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition shadow-xs"
+                            placeholder="Here's to another year of us."
+                          />
+                        </div>
+                        <div className="space-y-1 font-sans font-sans">
+                          <label className="block text-xs font-semibold text-slate-500">Wish Subtitle Headline</label>
+                          <input
+                            type="text"
+                            name="cakeRevealedSubtitle"
+                            value={formData.cakeRevealedSubtitle || ''}
+                            onChange={handleChange}
+                            className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition shadow-xs font-sans"
+                            placeholder="May every year be sweeter than the last. 🎂✨"
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
                 </Section>
 
                 {/* 20. Forever Section Customizer */}
-                <Section title="Forever Section Customizer" icon={<Sparkles size={20} />} subtitle="Configure the final concluding section lines">
-                  <div className="space-y-4">
+                <Section title="Forever Section Customizer" icon={<Sparkles size={20} />} subtitle="Configure the final concluding section lines.">
+                  <div className="space-y-4 font-sans font-sans">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-xs font-bold text-gray-605 mb-1">Forever Section Line 1</label>
+                      <div className="space-y-1">
+                        <label className="block text-xs font-semibold text-slate-500">Forever Section Line 1</label>
                         <input
                           type="text"
                           name="foreverLine1"
                           value={formData.foreverLine1 || ''}
                           onChange={handleChange}
-                          className="w-full p-2.5 bg-gray-50 border rounded-lg text-sm"
+                          className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition shadow-xs font-sans"
                           placeholder="365 days down."
                         />
                       </div>
-                      <div>
-                        <label className="block text-xs font-bold text-gray-605 mb-1">Forever Section Line 2</label>
+                      <div className="space-y-1 font-sans">
+                        <label className="block text-xs font-semibold text-slate-500">Forever Section Line 2</label>
                         <input
                           type="text"
                           name="foreverLine2"
                           value={formData.foreverLine2 || ''}
                           onChange={handleChange}
-                          className="w-full p-2.5 bg-gray-50 border rounded-lg text-sm"
+                          className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-50 transition shadow-xs font-sans"
                           placeholder="Forever to go."
                         />
                       </div>
@@ -2007,27 +2219,29 @@ export default function Editor() {
             )}
 
           {/* Bottom Save Button */}
-          <div className="mt-12 pt-8 border-t">
+          <div className="mt-12 pt-8 border-t border-slate-200/60">
             {shareLink ? (
-              <div className="p-6 bg-green-50 rounded-2xl text-center border border-green-200 shadow-sm">
-                <p className="text-green-800 font-bold mb-4 text-xl">🎉 Your Custom Link is Ready!</p>
+              <div className="p-6 bg-emerald-50/50 rounded-xl text-center border border-emerald-200/60 shadow-xs">
+                <p className="text-emerald-800 font-bold mb-4 text-lg font-sans">🎉 Your Custom Link is Ready!</p>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                  <a href={shareLink} target="_blank" className="text-blue-600 underline text-lg font-medium break-all" rel="noreferrer">{shareLink}</a>
-                  <button onClick={() => copyToClipboard(shareLink)} className="px-6 py-2 bg-white border border-green-300 rounded-full shadow hover:bg-green-100 transition font-bold text-green-700 cursor-pointer flex items-center gap-2">
-                    {copied ? <Check size={16} /> : <Copy size={16} />}
+                  <a href={shareLink} target="_blank" className="text-rose-600 hover:text-rose-755 underline text-base font-semibold break-all" rel="noreferrer">{shareLink}</a>
+                  <button 
+                    onClick={() => copyToClipboard(shareLink)} 
+                    className="px-6 py-2.5 bg-white border border-slate-200 rounded-xl shadow-xs hover:bg-slate-50 transition font-bold text-slate-700 cursor-pointer flex items-center gap-2"
+                  >
+                    {copied ? <Check size={16} className="text-emerald-600" /> : <Copy size={16} />}
                     {copied ? 'Copied!' : 'Copy Link'}
                   </button>
                 </div>
-                <p className="text-sm text-green-700 mt-4">Anyone with this link will see your customized version of the site!</p>
+                <p className="text-xs text-slate-500 mt-4">Anyone with this link will see your customized version of the site!</p>
               </div>
             ) : (
               <button 
                 onClick={saveConfig} 
                 disabled={saving || !!uploadingSlot}
-                className="w-full py-4 rounded-2xl flex items-center justify-center gap-2 text-white text-xl font-bold transition shadow-xl hover:opacity-95 cursor-pointer disabled:opacity-50"
-                style={{ background: saving ? '#ccc' : '#D4838A' }}
+                className="w-full py-4 rounded-xl flex items-center justify-center gap-2 text-white text-base font-bold transition shadow-md hover:bg-rose-700 cursor-pointer disabled:opacity-50 disabled:bg-slate-300 bg-rose-600"
               >
-                {saving ? <Loader2 className="animate-spin" /> : <Save size={24} />}
+                {saving ? <Loader2 className="animate-spin text-white" /> : <Save size={18} />}
                 {saving ? 'Generating Link...' : 'Save & Generate Shareable Link'}
               </button>
             )}
@@ -2038,20 +2252,20 @@ export default function Editor() {
     </div>
 
       {/* Floating Sticky Save Bar at the Bottom */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-2xl z-40 flex items-center justify-between max-w-4xl mx-auto rounded-t-3xl">
-        <div className="text-sm">
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-2xl z-40 flex items-center justify-between max-w-4xl mx-auto rounded-t-2xl font-sans">
+        <div className="text-sm font-medium">
           {uploadingSlot ? (
-            <span className="flex items-center gap-2 text-amber-600 font-semibold">
+            <span className="flex items-center gap-2 text-rose-600">
               <Loader2 className="animate-spin" size={16} />
               {uploadStatusMsg || 'Uploading image...'}
             </span>
           ) : shareLink ? (
-            <span className="flex items-center gap-2 text-green-600 font-semibold">
+            <span className="flex items-center gap-2 text-emerald-600">
               <Check size={16} />
               Custom Link Ready!
             </span>
           ) : (
-            <span className="text-gray-500 text-xs sm:text-sm">
+            <span className="text-slate-500 text-xs sm:text-sm font-sans">
               Ready to generate your custom celebration link
             </span>
           )}
@@ -2062,18 +2276,18 @@ export default function Editor() {
             <>
               <button
                 onClick={() => copyToClipboard(shareLink)}
-                className="px-5 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl font-bold text-sm flex items-center gap-2 shadow transition cursor-pointer"
+                className="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs flex items-center gap-2 shadow-xs transition cursor-pointer"
               >
-                {copied ? <Check size={16} /> : <Copy size={16} />}
+                {copied ? <Check size={14} /> : <Copy size={14} />}
                 {copied ? 'Copied Link' : 'Copy Link'}
               </button>
               <a
                 href={shareLink}
                 target="_blank"
                 rel="noreferrer"
-                className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-xl font-semibold text-sm flex items-center gap-1.5 transition"
+                className="px-4 py-2.5 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl font-semibold text-xs flex items-center gap-1.5 transition"
               >
-                <ExternalLink size={16} />
+                <ExternalLink size={14} />
                 Open
               </a>
             </>
@@ -2081,9 +2295,9 @@ export default function Editor() {
             <button
               onClick={saveConfig}
               disabled={saving || !!uploadingSlot}
-              className="px-6 py-2.5 bg-[#D4838A] hover:bg-[#c37279] text-white rounded-xl font-bold text-sm flex items-center gap-2 shadow-md transition cursor-pointer disabled:opacity-50"
+              className="px-6 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs flex items-center gap-2 shadow-xs transition cursor-pointer disabled:opacity-50 disabled:bg-slate-300"
             >
-              {saving ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} />}
+              {saving ? <Loader2 className="animate-spin" size={14} /> : <Save size={14} />}
               {saving ? 'Generating...' : 'Save & Generate Link'}
             </button>
           )}
@@ -2092,44 +2306,44 @@ export default function Editor() {
 
       {/* Success Modal Popup */}
       {showSuccessModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl border text-center animate-in fade-in zoom-in duration-200">
-            <div className="w-16 h-16 bg-rose-100 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Sparkles size={32} />
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-8 max-w-lg w-full shadow-2xl border border-slate-100 text-center animate-in fade-in zoom-in duration-200">
+            <div className="w-14 h-14 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-4 border border-rose-100">
+              <Sparkles size={28} />
             </div>
-            <h2 className="text-2xl font-bold mb-2" style={{ fontFamily: 'Playfair Display', color: '#3D3D3D' }}>
+            <h2 className="text-xl font-bold mb-2 text-slate-800 font-sans">
               Your Custom Link is Ready!
             </h2>
-            <p className="text-sm text-gray-600 mb-6">
+            <p className="text-xs text-slate-500 mb-6 font-sans">
               All your dates, map locations, constellation stars, and photos have been saved. Share this unique link with your partner!
             </p>
 
-            <div className="p-3 bg-gray-50 border rounded-xl font-mono text-xs text-gray-700 break-all select-all mb-6">
+            <div className="p-3 bg-slate-50 border border-slate-200/60 rounded-xl font-mono text-xs text-slate-600 break-all select-all mb-6">
               {shareLink}
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={() => copyToClipboard(shareLink)}
-                className="flex-1 py-3 bg-rose-500 hover:bg-rose-600 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow transition cursor-pointer"
+                className="flex-1 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition cursor-pointer"
               >
-                {copied ? <Check size={18} /> : <Copy size={18} />}
+                {copied ? <Check size={16} /> : <Copy size={16} />}
                 {copied ? 'Copied to Clipboard!' : 'Copy Link'}
               </button>
               <a
                 href={shareLink}
                 target="_blank"
                 rel="noreferrer"
-                className="py-3 px-6 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition"
+                className="py-3 px-6 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition"
               >
-                <ExternalLink size={18} />
+                <ExternalLink size={16} />
                 Open Site
               </a>
             </div>
 
             <button
               onClick={() => setShowSuccessModal(false)}
-              className="mt-4 text-xs text-gray-400 hover:text-gray-600 underline cursor-pointer"
+              className="mt-4 text-xs text-slate-400 hover:text-rose-600 underline cursor-pointer font-sans"
             >
               Close this window
             </button>

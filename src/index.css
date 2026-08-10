@@ -390,3 +390,24 @@ section > div:not(.absolute):not(.fixed):not(.hero-orb):not(.petal):not(canvas),
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 }
+
+/* Copy protection styles */
+.no-copy {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-touch-callout: none;
+  user-drag: none;
+  -webkit-user-drag: none;
+}
+
+.no-copy input, 
+.no-copy textarea, 
+.no-copy select, 
+.no-copy [contenteditable="true"] {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+}

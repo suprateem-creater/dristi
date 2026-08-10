@@ -76,11 +76,7 @@ export default function PhotoGallery() {
         >
           <span className="section-eyebrow text-center">Captured Moments</span>
           <h2 className="section-title text-center">Our Memory Vault</h2>
-          <p className="section-subtitle text-center mb-6">A collection of our favorite snapshots and candid memories together.</p>
-          <label className={`inline-flex items-center gap-2 cursor-pointer px-6 py-2.5 rounded-full text-xs font-bold transition shadow-sm hover:shadow-md ${isCompressing ? 'opacity-60 pointer-events-none' : ''}`} style={{ background: 'rgba(212,131,138,0.15)', color: '#D4838A', border: '1px solid rgba(212,131,138,0.35)' }}>
-            {isCompressing ? '⚡ Compressing Photos...' : '+ Add Your Photos'}
-            <input type="file" multiple accept="image/*" className="hidden" disabled={isCompressing} onChange={handleFileUpload} />
-          </label>
+          <p className="section-subtitle text-center">A collection of our favorite snapshots and candid memories together.</p>
         </motion.div>
 
         {validPhotos.length > 0 ? (

@@ -31,6 +31,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from './firebase';
 import { useCouple } from './CoupleContext';
 import Editor from './Editor';
+import { useCopyProtection } from './utils/useCopyProtection';
 
 /* ── Hero Section ─────────────────────────────────────────── */
 function Hero() {
@@ -281,6 +282,7 @@ function MainApp() {
 }
 
 export default function App() {
+  useCopyProtection();
   return (
     <Routes>
       <Route path="/" element={<MainApp />} />
