@@ -1,0 +1,363 @@
+{
+  "communities": {
+    "0": [
+      "ref_react",
+      "src_app",
+      "src_app_app",
+      "src_app_sectionreveal",
+      "src_components_atmosphericbackground",
+      "src_components_atmosphericbackground_atmosphericbackground",
+      "src_components_atmosphericbackground_generateparticles",
+      "src_components_constellation",
+      "src_components_constellation_constellation",
+      "src_components_coupleinitials",
+      "src_components_coupleinitials_coupleinitials",
+      "src_components_floatingnav",
+      "src_components_floatingnav_floatingnav",
+      "src_components_floatingnav_nav_sections",
+      "src_components_futuredreams",
+      "src_components_futuredreams_dreamcard",
+      "src_components_futuredreams_futuredreams",
+      "src_components_kissbutton",
+      "src_components_kissbutton_kissbutton",
+      "src_components_kissbutton_magneticbutton",
+      "src_components_lovereasons",
+      "src_components_lovereasons_lovecard",
+      "src_components_lovereasons_lovereasons",
+      "src_components_oursong",
+      "src_components_randomlovemessage",
+      "src_components_randomlovemessage_bg_sparkles",
+      "src_components_randomlovemessage_default_messages",
+      "src_components_randomlovemessage_orbitingstarbutton",
+      "src_components_randomlovemessage_randomlovemessage",
+      "src_components_randomlovemessage_star_config",
+      "src_couplecontext",
+      "src_couplecontext_couplecontext",
+      "src_couplecontext_coupleprovider",
+      "src_coupledata",
+      "src_coupledata_couple",
+      "src_main",
+      "src_soundcontext",
+      "src_soundcontext_soundcontext",
+      "src_soundcontext_soundprovider",
+      "src_utils_usecopyprotection",
+      "src_utils_usecopyprotection_usecopyprotection"
+    ],
+    "1": [
+      "src_app_hero",
+      "src_app_mainapp",
+      "src_components_anniversarycake",
+      "src_components_anniversarycake_anniversarycake",
+      "src_components_anniversarycake_confetti",
+      "src_components_foreversection",
+      "src_components_foreversection_foreversection",
+      "src_components_heartbeatsection",
+      "src_components_heartbeatsection_default_heartbeat_messages",
+      "src_components_heartbeatsection_heartbeatsection",
+      "src_components_heartcanvas",
+      "src_components_heartcanvas_palettes",
+      "src_components_heartcanvas_spawnhearts",
+      "src_components_loveletter",
+      "src_components_loveletter_loveletter",
+      "src_components_lovemeter",
+      "src_components_lovemeter_default_labels",
+      "src_components_lovemeter_lovemeter",
+      "src_components_lovequiz",
+      "src_components_lovequiz_bg_sparkles",
+      "src_components_lovequiz_default_questions",
+      "src_components_lovequiz_lovequiz",
+      "src_components_lovequiz_option_letters",
+      "src_components_openwhencards",
+      "src_components_openwhencards_default_open_when",
+      "src_components_openwhencards_openwhencards",
+      "src_components_oursong_oursong",
+      "src_components_timeline_timelinequizcard",
+      "src_couplecontext_usecouple",
+      "src_soundcontext_usesound"
+    ],
+    "2": [
+      "oxlint",
+      "package",
+      "package_devdependencies",
+      "package_devdependencies_oxlint",
+      "package_devdependencies_tailwindcss",
+      "package_devdependencies_tailwindcss_vite",
+      "package_devdependencies_types_react",
+      "package_devdependencies_types_react_dom",
+      "package_devdependencies_vite",
+      "package_devdependencies_vitejs_plugin_react",
+      "package_name",
+      "package_private",
+      "package_scripts",
+      "package_scripts_build",
+      "package_scripts_dev",
+      "package_scripts_lint",
+      "package_scripts_preview",
+      "package_type",
+      "package_version",
+      "tailwindcss",
+      "tailwindcss_vite",
+      "types_react",
+      "types_react_dom",
+      "vite",
+      "vitejs_plugin_react"
+    ],
+    "3": [
+      "firebase",
+      "framer_motion",
+      "leaflet",
+      "lucide_react",
+      "package_dependencies",
+      "package_dependencies_firebase",
+      "package_dependencies_framer_motion",
+      "package_dependencies_leaflet",
+      "package_dependencies_lucide_react",
+      "package_dependencies_react",
+      "package_dependencies_react_dom",
+      "package_dependencies_react_leaflet",
+      "package_dependencies_react_router_dom",
+      "react",
+      "react_dom",
+      "react_leaflet",
+      "react_router_dom"
+    ],
+    "4": [
+      "src_editor",
+      "src_editor_constellation_presets",
+      "src_editor_editor",
+      "src_editor_inputfield",
+      "src_editor_popular_cities",
+      "src_editor_sanitizeforfirestore",
+      "src_editor_section",
+      "src_editor_tabs",
+      "src_editor_textareafield",
+      "src_editor_todisplaydateformat",
+      "src_editor_toinputdateformat",
+      "src_firebase",
+      "src_firebase_app",
+      "src_firebase_db",
+      "src_firebase_firebaseconfig",
+      "src_firebase_storage",
+      "src_utils_imagecompressor_compressimagetodataurl"
+    ],
+    "5": [
+      "src_components_memorycarousel",
+      "src_components_memorycarousel_memorycarousel",
+      "src_components_photogallery",
+      "src_components_photogallery_parallaxphoto",
+      "src_components_photogallery_photogallery",
+      "src_components_polaroidwall",
+      "src_components_polaroidwall_polaroidwall",
+      "src_utils_imagecompressor",
+      "src_utils_imagecompressor_compressimage",
+      "src_utils_imagecompressor_compressimages",
+      "src_utils_imagecompressor_formatfilesize"
+    ],
+    "6": [
+      "oxlintrc",
+      "oxlintrc_plugins",
+      "oxlintrc_rules",
+      "oxlintrc_rules_react_only_export_components",
+      "oxlintrc_rules_react_rules_of_hooks",
+      "oxlintrc_schema",
+      "ref_oxc",
+      "ref_warn"
+    ],
+    "7": [
+      "src_components_timeline",
+      "src_components_timeline_cardcontent",
+      "src_components_timeline_default_quiz_questions",
+      "src_components_timeline_milestoneicon",
+      "src_components_timeline_option_letters",
+      "src_components_timeline_quiz_scatter_hearts",
+      "src_components_timeline_timeline",
+      "src_components_timeline_timelinecard"
+    ],
+    "8": [
+      "src_components_lovemap",
+      "src_components_lovemap_default_map_locations",
+      "src_components_lovemap_hearticon",
+      "src_components_lovemap_invalidatemapsize",
+      "src_components_lovemap_lovemap",
+      "src_components_lovemap_markers",
+      "src_components_lovemap_recentermap"
+    ],
+    "9": [
+      "src_components_timecapsule",
+      "src_components_timecapsule_countdowngrid",
+      "src_components_timecapsule_floating_hearts",
+      "src_components_timecapsule_getcountdown",
+      "src_components_timecapsule_pad",
+      "src_components_timecapsule_static_stars",
+      "src_components_timecapsule_timecapsule"
+    ],
+    "10": [
+      "readme_constellation_spec",
+      "readme_live_customizer_spec",
+      "readme_love_meter_spec",
+      "readme_project_overview",
+      "readme_quiz_spec",
+      "readme_sound_engine_spec"
+    ],
+    "11": [
+      "src_components_heartcanvas_heartcanvas",
+      "src_components_heartcanvas_romanticparticle",
+      "src_components_heartcanvas_romanticparticle_constructor",
+      "src_components_heartcanvas_romanticparticle_draw",
+      "src_components_heartcanvas_romanticparticle_reset",
+      "src_components_heartcanvas_romanticparticle_update"
+    ],
+    "12": [
+      "src_components_countdown",
+      "src_components_countdown_countdown",
+      "src_components_countdown_countdownunit",
+      "src_components_countdown_getelapsed",
+      "src_components_countdown_pad"
+    ],
+    "13": [
+      "index_html_root_entrypoint",
+      "public_heart_svg_icon"
+    ],
+    "14": [
+      "public_favicon_svg_icon"
+    ],
+    "15": [
+      "public_icons_svg_sheet"
+    ],
+    "16": [
+      "vite_config"
+    ]
+  },
+  "cohesion": {
+    "0": 0.10121951219512196,
+    "1": 0.16091954022988506,
+    "2": 0.08,
+    "3": 0.11764705882352941,
+    "4": 0.15441176470588236,
+    "5": 0.32727272727272727,
+    "6": 0.25,
+    "7": 0.25,
+    "8": 0.3333333333333333,
+    "9": 0.38095238095238093,
+    "10": 0.3333333333333333,
+    "11": 0.6,
+    "12": 0.6,
+    "13": 1.0,
+    "14": 1.0,
+    "15": 1.0,
+    "16": 1.0
+  },
+  "gods": [
+    {
+      "id": "src_couplecontext_usecouple",
+      "label": "useCouple()",
+      "degree": 48
+    },
+    {
+      "id": "src_soundcontext_usesound",
+      "label": "useSound()",
+      "degree": 30
+    },
+    {
+      "id": "ref_react",
+      "label": "react",
+      "degree": 30
+    },
+    {
+      "id": "src_components_heartcanvas_spawnhearts",
+      "label": "spawnHearts()",
+      "degree": 17
+    },
+    {
+      "id": "src_utils_imagecompressor_compressimages",
+      "label": "compressImages()",
+      "degree": 8
+    },
+    {
+      "id": "src_editor_editor",
+      "label": "Editor()",
+      "degree": 7
+    },
+    {
+      "id": "src_components_heartcanvas_romanticparticle",
+      "label": "RomanticParticle",
+      "degree": 6
+    },
+    {
+      "id": "src_components_anniversarycake_anniversarycake",
+      "label": "AnniversaryCake()",
+      "degree": 5
+    },
+    {
+      "id": "src_components_heartbeatsection_heartbeatsection",
+      "label": "HeartbeatSection()",
+      "degree": 5
+    },
+    {
+      "id": "src_components_loveletter_loveletter",
+      "label": "LoveLetter()",
+      "degree": 5
+    }
+  ],
+  "surprises": [
+    {
+      "source": "HTML Document and Font Loader Entrypoint",
+      "target": "Heart Visual SVG Asset",
+      "source_files": [
+        "index.html",
+        "public/heart.svg"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "crosses file types (doc \u2194 image); connects across different repos/directories"
+    },
+    {
+      "source": "DreamCard()",
+      "target": "useSound()",
+      "source_files": [
+        "src/components/FutureDreams.jsx",
+        "src/SoundContext.jsx"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities; peripheral node `DreamCard()` unexpectedly reaches hub `useSound()`"
+    },
+    {
+      "source": "LoveCard()",
+      "target": "useSound()",
+      "source_files": [
+        "src/components/LoveReasons.jsx",
+        "src/SoundContext.jsx"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities; peripheral node `LoveCard()` unexpectedly reaches hub `useSound()`"
+    },
+    {
+      "source": "FloatingNav()",
+      "target": "useSound()",
+      "source_files": [
+        "src/components/FloatingNav.jsx",
+        "src/SoundContext.jsx"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "FutureDreams()",
+      "target": "useCouple()",
+      "source_files": [
+        "src/components/FutureDreams.jsx",
+        "src/CoupleContext.jsx"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "bridges separate communities"
+    }
+  ],
+  "tokens": {
+    "input": 0,
+    "output": 0
+  }
+}
