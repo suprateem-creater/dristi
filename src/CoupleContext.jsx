@@ -6,7 +6,7 @@ const CoupleContext = createContext();
 export function CoupleProvider({ children, initialData = null }) {
   const [data, setData] = useState(() => {
     try {
-      const saved = localStorage.getItem('dristi_custom_couple_config');
+      const saved = localStorage.getItem('sophia_dev_custom_couple_config');
       if (saved) {
         const parsed = JSON.parse(saved);
         return { ...defaultCouple, ...parsed };
@@ -21,7 +21,7 @@ export function CoupleProvider({ children, initialData = null }) {
     setData((prev) => {
       const resolved = typeof newData === 'function' ? newData(prev) : newData;
       try {
-        localStorage.setItem('dristi_custom_couple_config', JSON.stringify(resolved));
+        localStorage.setItem('sophia_dev_custom_couple_config', JSON.stringify(resolved));
       } catch (e) {
         console.error("Error saving couple config to localStorage:", e);
       }

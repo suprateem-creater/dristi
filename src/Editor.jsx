@@ -759,15 +759,15 @@ export default function Editor() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Partner 1</label>
-                      <input type="text" name="partner1" value={formData.partner1 || ''} onChange={handleChange} className="w-full p-2.5 bg-gray-50 border rounded-xl font-medium text-gray-800 text-sm focus:ring-2 focus:ring-rose-200 focus:bg-white transition shadow-sm" placeholder="Dristi" />
+                      <input type="text" name="partner1" value={formData.partner1 || ''} onChange={handleChange} className="w-full p-2.5 bg-gray-50 border rounded-xl font-medium text-gray-800 text-sm focus:ring-2 focus:ring-rose-200 focus:bg-white transition shadow-sm" placeholder="Sophia" />
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Partner 2</label>
-                      <input type="text" name="partner2" value={formData.partner2 || ''} onChange={handleChange} className="w-full p-2.5 bg-gray-50 border rounded-xl font-medium text-gray-800 text-sm focus:ring-2 focus:ring-rose-200 focus:bg-white transition shadow-sm" placeholder="Vedant" />
+                      <input type="text" name="partner2" value={formData.partner2 || ''} onChange={handleChange} className="w-full p-2.5 bg-gray-50 border rounded-xl font-medium text-gray-800 text-sm focus:ring-2 focus:ring-rose-200 focus:bg-white transition shadow-sm" placeholder="Dev" />
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Initials Animation</label>
-                      <input type="text" name="initials" value={formData.initials || ''} onChange={handleChange} className="w-full p-2.5 bg-gray-50 border rounded-xl font-medium text-gray-800 text-sm focus:ring-2 focus:ring-rose-200 focus:bg-white transition shadow-sm" placeholder="D ♡ V" />
+                      <input type="text" name="initials" value={formData.initials || ''} onChange={handleChange} className="w-full p-2.5 bg-gray-50 border rounded-xl font-medium text-gray-800 text-sm focus:ring-2 focus:ring-rose-200 focus:bg-white transition shadow-sm" placeholder="S ♡ D" />
                     </div>
                   </div>
                   

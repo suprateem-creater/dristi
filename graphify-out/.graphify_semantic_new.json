@@ -1,0 +1,193 @@
+{
+  "nodes": [
+    {
+      "id": "readme_project_overview",
+      "label": "Sophia & Dev - Our Shared Journey Overview",
+      "file_type": "document",
+      "source_file": "C:\\Users\\SUPRATEEM\\Downloads\\dristi\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_love_meter_spec",
+      "label": "Love Meter Feature Specification",
+      "file_type": "concept",
+      "source_file": "C:\\Users\\SUPRATEEM\\Downloads\\dristi\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_constellation_spec",
+      "label": "Orbiting Constellation Feature Specification",
+      "file_type": "concept",
+      "source_file": "C:\\Users\\SUPRATEEM\\Downloads\\dristi\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_quiz_spec",
+      "label": "Interactive Quiz Feature Specification",
+      "file_type": "concept",
+      "source_file": "C:\\Users\\SUPRATEEM\\Downloads\\dristi\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_live_customizer_spec",
+      "label": "Live Customizer In-App Editor Specification",
+      "file_type": "concept",
+      "source_file": "C:\\Users\\SUPRATEEM\\Downloads\\dristi\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_sound_engine_spec",
+      "label": "Web Audio API Synthesizer Architecture Specification",
+      "file_type": "rationale",
+      "source_file": "C:\\Users\\SUPRATEEM\\Downloads\\dristi\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "index_html_root_entrypoint",
+      "label": "HTML Document and Font Loader Entrypoint",
+      "file_type": "document",
+      "source_file": "C:\\Users\\SUPRATEEM\\Downloads\\dristi\\index.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "public_favicon_svg_icon",
+      "label": "Favicon Brand Icon SVG",
+      "file_type": "image",
+      "source_file": "C:\\Users\\SUPRATEEM\\Downloads\\dristi\\public\\favicon.svg",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "public_heart_svg_icon",
+      "label": "Heart Visual SVG Asset",
+      "file_type": "image",
+      "source_file": "C:\\Users\\SUPRATEEM\\Downloads\\dristi\\public\\heart.svg",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "public_icons_svg_sheet",
+      "label": "App SVG Icons Sprite Sheet",
+      "file_type": "image",
+      "source_file": "C:\\Users\\SUPRATEEM\\Downloads\\dristi\\public\\icons.svg",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "index_html_root_entrypoint",
+      "target": "public_heart_svg_icon",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\SUPRATEEM\\Downloads\\dristi\\index.html",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_project_overview",
+      "target": "readme_love_meter_spec",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\SUPRATEEM\\Downloads\\dristi\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_project_overview",
+      "target": "readme_constellation_spec",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\SUPRATEEM\\Downloads\\dristi\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_project_overview",
+      "target": "readme_quiz_spec",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\SUPRATEEM\\Downloads\\dristi\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_project_overview",
+      "target": "readme_live_customizer_spec",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "C:\\Users\\SUPRATEEM\\Downloads\\dristi\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "readme_sound_engine_spec",
+      "target": "readme_love_meter_spec",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "C:\\Users\\SUPRATEEM\\Downloads\\dristi\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "he_interactive_features",
+      "label": "Interactive Romance Experiences",
+      "nodes": [
+        "readme_love_meter_spec",
+        "readme_constellation_spec",
+        "readme_quiz_spec"
+      ],
+      "relation": "form",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "C:\\Users\\SUPRATEEM\\Downloads\\dristi\\README.md"
+    }
+  ],
+  "input_tokens": 1200,
+  "output_tokens": 800
+}

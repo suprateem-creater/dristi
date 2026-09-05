@@ -3,9 +3,9 @@
 // ============================================================
 
 export const couple = {
-  partner1: "Dristi",
-  partner2: "Vedant",
-  initials: "D ♡ V",
+  partner1: "Sophia",
+  partner2: "Dev",
+  initials: "S ♡ D",
   anniversaryDate: "September 15, 2026",
   anniversaryDateObj: new Date("2026-09-15T00:00:00"),
   song: "Perfect",
@@ -169,7 +169,7 @@ export const couple = {
     },
     {
       question: "Who said 'I love you' first?",
-      options: ["Dristi", "Vedant", "We said it at the same time", "It was in a note"],
+      options: ["Sophia", "Dev", "We said it at the same time", "It was in a note"],
       correct: 0,
     },
     {
@@ -184,7 +184,7 @@ export const couple = {
     },
     {
       question: "Who takes longer to reply to texts?",
-      options: ["Dristi", "Vedant", "We're both equally bad", "Depends on the day"],
+      options: ["Sophia", "Dev", "We're both equally bad", "Depends on the day"],
       correct: 1,
     },
     {
@@ -203,7 +203,7 @@ export const couple = {
     { src: "https://images.unsplash.com/photo-1503516459261-40c66117780a?w=400&q=80", caption: "adventure mode 🏔️", rotation: 2 },
   ],
 
-  loveLetterText: `My dearest Dristi,
+  loveLetterText: `My dearest Sophia,
 
 A year ago, you spilled a latte on my notebook and apologized seventeen times. I haven't stopped smiling since.
 
@@ -217,5 +217,5 @@ I don't know what the next 365 days hold. But I know I want every one of them to
 
 With all of my heart — now, and in every year that follows,
 
-Vedant ❤️`,
+Dev ❤️`,
 };
