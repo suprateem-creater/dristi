@@ -146,24 +146,26 @@ function DreamCard({ dream, index }) {
                 {dream.title}
               </h3>
 
-              {/* Floating Quote (No bounding rectangle box) */}
-              <div className="mb-8 px-3 max-w-sm mx-auto">
+              {/* Floating Quote */}
+              <div className="relative mb-8 px-4 max-w-md mx-auto">
+                <span className="absolute -top-3 left-0 font-serif text-5xl text-rose-300/[0.12] select-none pointer-events-none italic leading-none">“</span>
                 <p 
-                  className="text-xl sm:text-2xl leading-relaxed text-[#F3E1CD] font-script italic font-light opacity-95"
-                  style={{ lineHeight: 1.7 }}
+                  className="text-xl sm:text-2xl md:text-[23px] leading-[1.8] text-[#FAF6F0] font-serif italic font-normal tracking-[0.015em] relative z-10"
                 >
-                  "{dream.desc}"
+                  “{dream.desc}”
                 </p>
               </div>
 
-              {/* Minimal Close Prompt */}
-              <button
+              {/* Refined Tactile Close Prompt */}
+              <motion.button
+                whileHover={{ scale: 1.04, y: -2 }}
+                whileTap={{ scale: 0.96 }}
                 type="button"
                 onClick={handleClose}
-                className="text-xs font-bold uppercase tracking-widest text-[#C4B5C5] hover:text-[#FFF3E3] transition cursor-pointer flex items-center gap-1 mx-auto bg-transparent border-none outline-none"
+                className="px-8 py-2.5 rounded-full text-xs font-semibold uppercase tracking-[0.2em] text-[#FAF6F0] border border-white/20 bg-white/[0.06] hover:bg-white/[0.12] hover:border-white/30 shadow-[0_6px_20px_rgba(0,0,0,0.4)] transition cursor-pointer flex items-center gap-1.5 mx-auto"
               >
                 Close ♡
-              </button>
+              </motion.button>
             </motion.div>
           </motion.div>
         )}

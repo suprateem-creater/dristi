@@ -145,11 +145,11 @@ export default function LoveMeter() {
 
         {burst && (
           <motion.p
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="mt-6 text-2xl font-bold font-script text-rose-600"
+            initial={{ opacity: 0, scale: 0.9, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className="mt-6 text-2xl sm:text-3xl font-serif italic text-rose-300 tracking-wide"
           >
-            {couple.lovemeterSuccessMessage || "Overflowing with Love! 🌹✨"}
+            “{couple.lovemeterSuccessMessage || "Overflowing with Love! 🌹✨"}”
           </motion.p>
         )}
       </div>

@@ -9,7 +9,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e6d39af6`
+- Built from commit: `c9f574c6`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -112,7 +112,7 @@ Cohesion: 0.60
 Nodes (3): Countdown(), getElapsed(), pad()
 
 ## Knowledge Gaps
-- **59 isolated node(s):** `CoupleContext`, `NAV_SECTIONS`, `BG_SPARKLES`, `DEFAULT_MESSAGES`, `STAR_CONFIG` (+54 more)
+- **59 isolated node(s):** `NAV_SECTIONS`, `BG_SPARKLES`, `DEFAULT_MESSAGES`, `STAR_CONFIG`, `CoupleContext` (+54 more)
   These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 75 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **4 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -125,7 +125,7 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.077) - this node is a cross-community bridge._
 - **Why does `plugins` connect `Live Site Editor & Customizer` to `Navigation & Controls`?**
   _High betweenness centrality (0.051) - this node is a cross-community bridge._
-- **What connects `CoupleContext`, `NAV_SECTIONS`, `BG_SPARKLES` to the rest of the system?**
+- **What connects `NAV_SECTIONS`, `BG_SPARKLES`, `DEFAULT_MESSAGES` to the rest of the system?**
   _59 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Navigation & Controls` be split into smaller, more focused modules?**
   _Cohesion score 0.10121951219512196 - nodes in this community are weakly interconnected._

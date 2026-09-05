@@ -482,8 +482,8 @@ export default function LoveQuiz() {
                     className="mt-6 text-center"
                   >
                     <p
-                      className="text-xl sm:text-2xl font-bold font-script"
-                      style={{ color: feedback === 'correct' ? '#10B981' : '#F43F5E' }}
+                      className="text-xl sm:text-2xl font-serif italic tracking-wide"
+                      style={{ color: feedback === 'correct' ? '#34D399' : '#FB7185' }}
                     >
                       {feedback === 'correct' ? '✓ Exactly right! You remember! 💕' : '✗ Aww, close! But I still love you 🥰'}
                     </p>

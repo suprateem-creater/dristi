@@ -59,12 +59,12 @@
 }
 
 .hero-eyebrow {
-  font-family: 'Caveat', 'Great Vibes', cursive;
-  font-size: clamp(1.8rem, 4vw, 2.5rem);
-  font-weight: 600;
+  font-family: 'Alex Brush', 'Great Vibes', cursive;
+  font-size: clamp(2.2rem, 4.5vw, 3rem);
+  font-weight: 400;
   color: #D4838A;
   margin-bottom: 0.4rem;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
 }
 
 .hero-title {

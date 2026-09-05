@@ -192,8 +192,8 @@ export default function LoveLetter() {
               </motion.p>
 
               {/* Decorative quote */}
-              <p className="mt-4 text-xs italic max-w-xs mx-auto leading-relaxed" style={{ color: '#B8A8A0', fontFamily: 'Dancing Script', fontSize: '0.95rem' }}>
-                "The best love letters are the ones that arrive when you need them most."
+              <p className="mt-4 text-xs sm:text-sm font-serif italic max-w-sm mx-auto leading-relaxed text-[#B8A8A0] tracking-wide">
+                “The best love letters are the ones that arrive when you need them most.”
               </p>
             </motion.div>
           ) : (

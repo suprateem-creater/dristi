@@ -45,18 +45,30 @@ body {
 
 .font-serif {
   font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  word-spacing: 0.06em;
 }
 
 .font-display {
   font-family: 'Playfair Display', 'Cormorant Garamond', serif;
+  word-spacing: 0.05em;
 }
 
 .font-script {
-  font-family: 'Caveat', 'Great Vibes', cursive;
+  font-family: 'Alex Brush', 'Great Vibes', cursive;
+  word-spacing: 0.12em;
 }
 
 .font-cursive {
-  font-family: 'Great Vibes', cursive;
+  font-family: 'Alex Brush', 'Great Vibes', cursive;
+  word-spacing: 0.12em;
+}
+
+.font-quote,
+.quote-text {
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  letter-spacing: 0.015em;
+  word-spacing: 0.08em;
 }
 
 .font-sans {
@@ -331,8 +343,8 @@ section > div:not(.absolute):not(.fixed):not(.hero-orb):not(.petal):not(canvas),
   position: absolute;
   width: 100%;
   height: 100%;
-  backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
   border-radius: 16px;
 }
 
@@ -346,6 +358,7 @@ section > div:not(.absolute):not(.fixed):not(.hero-orb):not(.petal):not(canvas),
   padding: 12px 12px 40px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.15);
   cursor: grab;
+  -webkit-user-select: none;
   user-select: none;
 }
 
@@ -356,8 +369,8 @@ section > div:not(.absolute):not(.fixed):not(.hero-orb):not(.petal):not(canvas),
 /* Glassmorphism */
 .glass {
   background: rgba(253, 251, 247, 0.7);
-  backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
   border: 1px solid rgba(255,255,255,0.5);
 }
 
@@ -393,23 +406,22 @@ section > div:not(.absolute):not(.fixed):not(.hero-orb):not(.petal):not(canvas),
 
 /* Copy protection styles */
 .no-copy {
-  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  -webkit-touch-callout: none;
-  user-drag: none;
-  -webkit-user-drag: none;
+  user-select: none;
 }
 
 .no-copy input, 
 .no-copy textarea, 
 .no-copy select, 
 .no-copy [contenteditable="true"] {
-  user-select: text !important;
   -webkit-user-select: text !important;
   -moz-user-select: text !important;
   -ms-user-select: text !important;
+  user-select: text !important;
 }
 
 /* ── Dark Romantic Nighttime Overrides ── */
@@ -474,8 +486,8 @@ section,
 .bg-white\/95,
 .card-front {
   background: rgba(15, 7, 23, 0.3) !important;
-  backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
+  backdrop-filter: blur(16px) !important;
   border-color: rgba(255, 255, 255, 0.06) !important;
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.08) !important;
 }
@@ -485,8 +497,8 @@ section,
   background: rgba(15, 7, 23, 0.35) !important;
   border-color: rgba(255, 255, 255, 0.06) !important;
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.08) !important;
-  backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
+  backdrop-filter: blur(16px) !important;
 }
 
 /* Timeline Quiz Card wrapper */
@@ -494,8 +506,8 @@ section,
 #timeline div.relative.w-full.rounded-\[48px\] {
   background: rgba(15, 7, 23, 0.25) !important;
   border: 1px solid rgba(255, 255, 255, 0.06) !important;
-  backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
+  backdrop-filter: blur(16px) !important;
 }
 
 
@@ -518,24 +530,39 @@ section,
   background: rgba(15, 7, 23, 0.95) !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8) !important;
-  backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
+  backdrop-filter: blur(20px) !important;
 }
 
 .fixed.inset-0.z-50 .rounded-2xl,
 .fixed.inset-0.z-50 .rounded-xl,
 .fixed.inset-0.z-50 div[class*="bg-rose-50"] {
-  background: rgba(255, 255, 255, 0.04) !important;
-  border-color: rgba(255, 255, 255, 0.06) !important;
+  background: rgba(255, 255, 255, 0.035) !important;
+  border-color: rgba(255, 255, 255, 0.09) !important;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08), 0 12px 30px rgba(0, 0, 0, 0.35) !important;
 }
 
 .fixed.inset-0.z-50 h3 {
-  color: #EAD6C3 !important;
+  color: #FAF6F0 !important;
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif !important;
+  letter-spacing: 0.02em !important;
 }
 
 .fixed.inset-0.z-50 p,
 .fixed.inset-0.z-50 span,
 .fixed.inset-0.z-50 p[style*="color: #3D3D3D"] {
+  color: #FAF6F0 !important;
+}
+
+.fixed.inset-0.z-50 .font-script,
+.fixed.inset-0.z-50 p[class*="font-script"],
+.fixed.inset-0.z-50 .quote-text {
+  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif !important;
+  font-style: italic !important;
+  font-weight: 400 !important;
+  line-height: 1.8 !important;
+  letter-spacing: 0.015em !important;
+  word-spacing: 0.08em !important;
   color: #FAF6F0 !important;
 }
 

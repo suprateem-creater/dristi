@@ -90,15 +90,15 @@ function LoveCard({ item, index }) {
           </div>
 
           {/* Love Note Text */}
-          <div className="my-auto px-1">
-            <p className="text-white text-lg md:text-xl font-serif italic leading-relaxed">
-              "{item.back}"
+          <div className="my-auto px-2">
+            <p className="text-[#FAF6F0] text-lg md:text-[21px] font-serif italic leading-[1.75] tracking-[0.015em]">
+              “{item.back}”
             </p>
           </div>
 
           {/* Footer Heart Icon */}
-          <div className="flex items-center gap-1 text-rose-200 text-xs font-script text-base">
-            <Heart size={13} className="fill-rose-300 text-rose-300" />
+          <div className="flex items-center gap-1.5 text-rose-200/90 font-mono text-[11px] uppercase tracking-widest">
+            <Heart size={12} className="fill-rose-300 text-rose-300 animate-pulse" />
             <span>Forever Yours</span>
           </div>
         </div>

@@ -91,10 +91,9 @@ export default function HeartbeatSection() {
             className="min-h-16 flex items-center justify-center"
           >
             <p
-              className="text-xl sm:text-2xl font-bold font-script text-rose-600 leading-snug"
-              style={{ fontSize: '1.65rem' }}
+              className="text-2xl sm:text-3xl font-serif italic text-[#FAF6F0] leading-relaxed tracking-wide"
             >
-              "{heartbeatMessages[msgIndex] || ''}"
+              “{heartbeatMessages[msgIndex] || ''}”
             </p>
           </motion.div>
         </AnimatePresence>

@@ -165,38 +165,42 @@ export default function OpenWhenCards() {
             onClick={handleClose}
           >
             <motion.div
-              initial={{ scale: 0.7, rotateY: -60, opacity: 0 }}
-              animate={{ scale: 1, rotateY: 0, opacity: 1 }}
-              exit={{ scale: 0.7, rotateY: 60, opacity: 0 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-              className="max-w-md w-full rounded-3xl p-8 sm:p-10 text-center bg-[#FFFDF9] shadow-2xl relative border border-rose-200"
+              initial={{ scale: 0.88, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.88, opacity: 0, y: 20 }}
+              transition={{ type: 'spring', stiffness: 280, damping: 24 }}
+              className="max-w-lg w-full rounded-3xl p-8 sm:p-10 text-center bg-[#0D0914]/95 backdrop-blur-2xl shadow-[0_25px_60px_rgba(0,0,0,0.85),inset_0_1px_1px_rgba(255,255,255,0.1)] relative border border-white/10"
               onClick={e => e.stopPropagation()}
             >
-              <div className="text-5xl mb-3">{openCard.icon}</div>
+              {/* Floating Icon in Ambient Glass Orb */}
+              <div className="w-16 h-16 rounded-2xl mx-auto mb-5 flex items-center justify-center text-4xl bg-white/[0.04] border border-white/[0.1] shadow-[0_8px_24px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.15)]">
+                {openCard.icon}
+              </div>
               
-              <span className="text-xs font-bold uppercase tracking-widest text-rose-500 mb-1 block">
-                Open When Note
-              </span>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 mb-3">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse" />
+                <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#FFB3C1]">
+                  Open When Note
+                </span>
+              </div>
 
-              <h3 className="text-2xl sm:text-3xl font-bold font-serif text-gray-800 mb-6">
+              <h3 className="text-2xl sm:text-[28px] font-serif font-normal text-[#FAF6F0] tracking-wide mb-6">
                 {openCard.label}
               </h3>
 
-              <div className="p-6 sm:p-8 rounded-2xl bg-rose-50/70 border border-rose-100 mb-6 text-left">
-                <p
-                  className="text-xl sm:text-2xl leading-relaxed text-gray-800 font-script font-medium"
-                  style={{ fontSize: '1.45rem', lineHeight: 1.75 }}
-                >
-                  "{openCard.message}"
+              <div className="relative p-7 sm:p-8 rounded-2xl bg-white/[0.03] border border-white/[0.08] shadow-[inset_0_1px_1px_rgba(255,255,255,0.06),0_10px_30px_rgba(0,0,0,0.35)] mb-8 text-center sm:text-left overflow-hidden">
+                <span className="absolute -top-3 -left-1 font-serif text-6xl text-rose-300/[0.12] select-none pointer-events-none italic leading-none">“</span>
+                
+                <p className="text-lg sm:text-xl md:text-[21px] leading-[1.8] text-[#FAF6F0] font-serif italic font-normal tracking-[0.015em] relative z-10 quote-text">
+                  “{openCard.message}”
                 </p>
               </div>
 
               <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.04, y: -2 }}
+                whileTap={{ scale: 0.96 }}
                 onClick={handleClose}
-                className="px-8 py-2.5 rounded-full text-xs font-bold text-white shadow-md hover:shadow-lg transition cursor-pointer"
-                style={{ background: 'linear-gradient(135deg, #D4838A, #C9A08A)' }}
+                className="px-9 py-3 rounded-full text-xs font-semibold uppercase tracking-[0.2em] text-[#FAF6F0] border border-white/20 bg-white/[0.06] hover:bg-white/[0.12] hover:border-white/30 shadow-[0_8px_20px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.15)] transition-all cursor-pointer"
               >
                 Close ♡
               </motion.button>

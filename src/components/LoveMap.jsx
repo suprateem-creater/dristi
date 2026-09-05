@@ -231,41 +231,48 @@ export default function LoveMap() {
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.85, y: 25, opacity: 0 }}
               transition={{ type: 'spring', stiffness: 280, damping: 24 }}
-              className="max-w-md w-full rounded-3xl p-8 sm:p-10 text-center bg-[#FFFDF9] shadow-2xl relative border border-rose-200"
+              className="max-w-lg w-full rounded-3xl p-8 sm:p-10 text-center bg-[#0D0914]/95 backdrop-blur-2xl shadow-[0_25px_60px_rgba(0,0,0,0.85),inset_0_1px_1px_rgba(255,255,255,0.1)] relative border border-white/10"
               onClick={e => e.stopPropagation()}
             >
               <button
                 type="button"
                 onClick={handleClose}
-                className="absolute top-4 right-4 p-2 rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition cursor-pointer"
+                className="absolute top-4 right-4 p-2 rounded-full text-white/40 hover:text-white hover:bg-white/10 transition cursor-pointer"
               >
                 <X size={18} />
               </button>
 
-              <div className="text-5xl mb-3">{active.emoji || '💖'}</div>
+              {/* Ambient Emoji Orb */}
+              <div className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center text-4xl bg-white/[0.04] border border-white/[0.1] shadow-[0_8px_24px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.15)]">
+                {active.emoji || '💖'}
+              </div>
               
-              <span className="text-xs font-bold uppercase tracking-widest text-rose-500 mb-1 block">
-                Special Milestone
-              </span>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 mb-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse" />
+                <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#FFB3C1]">
+                  Special Milestone
+                </span>
+              </div>
 
-              <h3 className="text-2xl sm:text-3xl font-serif font-bold text-gray-900 mb-1 leading-snug">
+              <h3 className="text-2xl sm:text-[28px] font-serif font-normal text-[#FAF6F0] tracking-wide mb-1 leading-snug">
                 {active.name}
               </h3>
               
-              <p className="text-xs font-bold uppercase tracking-wider text-rose-400 mb-5">
+              <p className="text-xs font-mono font-medium tracking-wider text-rose-300/80 mb-6 uppercase">
                 {active.date}
               </p>
 
-              <div className="p-5 rounded-2xl bg-rose-50/70 border border-rose-100 mb-6 text-left">
-                <p className="text-lg leading-relaxed text-gray-800 font-script" style={{ fontSize: '1.35rem' }}>
-                  "{active.story}"
+              <div className="relative p-6 sm:p-8 rounded-2xl bg-white/[0.03] border border-white/[0.08] shadow-[inset_0_1px_1px_rgba(255,255,255,0.06),0_10px_30px_rgba(0,0,0,0.35)] mb-7 text-center sm:text-left overflow-hidden">
+                <span className="absolute -top-3 -left-1 font-serif text-6xl text-rose-300/[0.12] select-none pointer-events-none italic leading-none">“</span>
+                <p className="text-lg sm:text-xl leading-[1.8] text-[#FAF6F0] font-serif italic font-normal tracking-[0.015em] relative z-10">
+                  “{active.story}”
                 </p>
               </div>
 
               <button
                 type="button"
                 onClick={handleClose}
-                className="px-8 py-2.5 rounded-full text-xs font-bold text-white bg-gradient-to-r from-rose-400 to-rose-500 shadow-md hover:shadow-lg transition cursor-pointer"
+                className="px-9 py-3 rounded-full text-xs font-semibold uppercase tracking-[0.2em] text-[#FAF6F0] border border-white/20 bg-white/[0.06] hover:bg-white/[0.12] hover:border-white/30 shadow-[0_8px_20px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.15)] transition-all cursor-pointer"
               >
                 Close ♡
               </button>

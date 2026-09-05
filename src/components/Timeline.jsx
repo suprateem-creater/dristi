@@ -194,12 +194,12 @@ function CardContent({ item, index, mobile = false }) {
       {/* Description */}
       <p className={descClass}>{item.desc}</p>
 
-      {/* Chapter Label — Description-to-chapter spacing: 12px to 16px */}
+      {/* Chapter Label — Refined Luxury Monospace Badge */}
       <div 
-        className="pt-3.5 border-t border-rose-100 flex items-center justify-between text-rose-500 font-script text-sm"
+        className="pt-3.5 border-t border-white/10 flex items-center justify-between text-rose-300 font-mono text-[11px] uppercase tracking-wider"
         style={{ marginTop: 'clamp(0.75rem, 1.8vw, 1rem)' }}
       >
-        <span className="flex items-center gap-1.5 font-bold tracking-wide">
+        <span className="flex items-center gap-1.5 font-semibold">
           <Sparkles size={13} className="text-rose-400" /> Chapter #{index + 1}
         </span>
         <Heart size={13} className="fill-rose-400 text-rose-400 opacity-75 animate-pulse" />
@@ -611,8 +611,8 @@ function TimelineQuizCard() {
                     className="mt-6 text-center"
                   >
                     <p
-                      className="text-xl sm:text-2xl font-bold font-script"
-                      style={{ color: feedback === 'correct' ? '#10B981' : '#F43F5E' }}
+                      className="text-xl sm:text-2xl font-serif italic tracking-wide"
+                      style={{ color: feedback === 'correct' ? '#34D399' : '#FB7185' }}
                     >
                       {feedback === 'correct' ? '✓ Exactly right! You remember! 💕' : '✗ Aww, close! But I still love you 🥰'}
                     </p>
